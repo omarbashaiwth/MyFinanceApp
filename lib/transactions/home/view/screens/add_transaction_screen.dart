@@ -10,7 +10,6 @@ import 'package:myfinance_app/transactions/home/view/widgets/transaction_form.da
 import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/custom_text_form_field.dart';
 
 class AddTransactionScreen extends StatefulWidget {
   const AddTransactionScreen({Key? key}) : super(key: key);

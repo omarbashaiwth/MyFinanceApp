@@ -134,7 +134,7 @@ class TransactionForm {
             const SizedBox(height: 20),
             Align(
                 alignment: Alignment.centerRight,
-                child: Text('خصم المبلغ من',
+                child: Text('إضافة المبلغ إلى',
                     style: AppTextTheme.headerTextStyle
                         .copyWith(color: normalGray))),
             const SizedBox(height: 8),

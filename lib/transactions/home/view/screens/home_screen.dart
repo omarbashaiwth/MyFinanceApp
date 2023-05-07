@@ -33,12 +33,14 @@ class HomeScreen extends StatelessWidget {
         padding: const EdgeInsets.only(bottom: 20, left: 10, right: 10),
         child: Column(
           children: [
-            _headerSection(header: 'ملخص الشهر'),
-            _monthlySummarySection(controller),
+             _headerSection(header: 'ملخص الشهر'),
+             _monthlySummarySection(controller),
+            const SizedBox(height: 16),
             _headerSection(header: 'آخر المعاملات', showMore: true),
-            _lastTransactionsSection(),
-            _headerSection(header: 'أعلى النفقات'),
-            _higherExpensesSection()
+             _lastTransactionsSection(controller),
+             const SizedBox(height: 16),
+             _headerSection(header: 'أعلى النفقات'),
+             _higherExpensesSection(controller)
           ],
         ),
       ),
@@ -129,58 +131,87 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _lastTransactionsSection(){
-    var latestFiveTransactions = [
-      my_transaction.Transaction(name: 'إيجار', amount: -600,note: null,createdAt: Timestamp.fromDate(DateTime(2020)),category: Category(icon:'assets/icons/expenses_icons/rent.png')),
-      my_transaction.Transaction(name:'كهرباء', amount:-50,note: null,createdAt:Timestamp.fromDate(DateTime(2020)),category: Category(icon: 'assets/icons/expenses_icons/electricity.png')),
-      my_transaction.Transaction(name: 'الراتب', amount: 1000,note: null,createdAt: Timestamp.fromDate(DateTime(2020)) , category: Category(icon:'assets/icons/salary.png')),
-      my_transaction.Transaction(name: 'انترنت', amount: -20,note: null,createdAt: Timestamp.fromDate(DateTime(2020)),category: Category(icon: 'assets/icons/expenses_icons/rent.png')),
-      my_transaction.Transaction(name: 'تسوق', amount: -30,note: null,createdAt: Timestamp.fromDate(DateTime(2020)),category: Category(icon: 'assets/icons/expenses_icons/electricity.png')),
-    ];
+  Widget _lastTransactionsSection(TransactionController controller){
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
           border: Border.all(color: darkGray),
           borderRadius: BorderRadius.circular(10)
       ),
-      child: Column(
-        children: [
-          lastTransactionsItem(transaction: latestFiveTransactions[0]),
-          const Divider(),
-          lastTransactionsItem(transaction: latestFiveTransactions[1]),
-          const Divider(),
-          lastTransactionsItem(transaction: latestFiveTransactions[2]),
-        ],
+      child: StreamBuilder(
+        stream: controller.getTransactions(),
+        builder: (context, snapshot) {
+          final transactions = snapshot.data;
+          if(snapshot.hasData && snapshot.hasError){
+            debugPrint(snapshot.error.toString());
+            return const Align(alignment: Alignment.center, child: Text('يوجد خطأ', style: AppTextTheme.headerTextStyle));
+          }
+          if(snapshot.connectionState == ConnectionState.waiting){
+            return const Align(alignment: Alignment.center, child: CircularProgressIndicator());
+          }
+          return Stack(
+            children: [
+              transactions!.isEmpty ?
+              const SizedBox(width: double.infinity, child: Text('لا يوجد بيانات', style: AppTextTheme.headerTextStyle, textAlign: TextAlign.center,))
+                  : ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: transactions.length,
+                itemBuilder: (_,index) {
+                  return Column(
+                    children: [
+                      lastTransactionsItem(transaction: transactions[index]),
+                      index != transactions.lastIndexOf(transactions.last)? const Divider(): Container()
+                    ],
+                  );
+                },
+              )
+            ]
+          );
+
+        }
       )
 
     );
   }
 
-  Widget _higherExpensesSection(){
-    var higherFiveTransactions = [
-      my_transaction.Transaction(name: 'إيجار', amount: -600,note: null,createdAt: Timestamp.fromDate(DateTime(2020)),category: Category(icon: 'assets/icons/expenses_icons/rent.png')),
-      my_transaction.Transaction(name:'كهرباء', amount:-50,note: null,createdAt:Timestamp.fromDate(DateTime(2020)),category: Category(icon: 'assets/icons/expenses_icons/electricity.png')),
-      my_transaction.Transaction(name: 'انترنت', amount: -20,note: null,createdAt: Timestamp.fromDate(DateTime(2020)),category:Category(icon: 'assets/icons/expenses_icons/rent.png')),
-      my_transaction.Transaction(name: 'تسوق', amount: -30,note: null,createdAt: Timestamp.fromDate(DateTime(2020)),category:Category(icon: 'assets/icons/expenses_icons/electricity.png')),
-    ];
-    final amounts = higherFiveTransactions.map((e) => e.amount).toList();
-    var totalAmounts = 0.0;
-    for (var amount in amounts) {
-      totalAmounts += amount!;
-    }
+  Widget _higherExpensesSection(TransactionController controller){
     return Container(
         padding: const EdgeInsets.all(10),
     decoration: BoxDecoration(
     border: Border.all(color: darkGray),
     borderRadius: BorderRadius.circular(10)
     ),
-    child: Column(
-      children: [
-        higherExpensesItem(expense: higherFiveTransactions[0], indicatorValue: higherFiveTransactions[0].amount!/totalAmounts),
-        higherExpensesItem(expense: higherFiveTransactions[1], indicatorValue: higherFiveTransactions[1].amount!/totalAmounts),
-        higherExpensesItem(expense: higherFiveTransactions[2], indicatorValue: higherFiveTransactions[2].amount!/totalAmounts),
-        higherExpensesItem(expense: higherFiveTransactions[3], indicatorValue: higherFiveTransactions[3].amount!/totalAmounts),
-      ],
+    child: StreamBuilder(
+      stream: controller.getFiveHighestExpense(),
+      builder: (context, snapshot) {
+        final transactions = snapshot.data;
+        if(snapshot.hasData && snapshot.hasError){
+          debugPrint(snapshot.error.toString());
+          return const Align(alignment: Alignment.center, child: Text('يوجد خطأ', style: AppTextTheme.headerTextStyle));
+        }
+        if(snapshot.connectionState == ConnectionState.waiting){
+          return const Align(alignment: Alignment.center, child: CircularProgressIndicator());
+        }
+        return Stack(
+          children: [
+            transactions!.isEmpty? const SizedBox(width: double.infinity, child: Text('لا يوجد بيانات', style: AppTextTheme.headerTextStyle, textAlign: TextAlign.center,))
+            : ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: transactions.length,
+              itemBuilder: (_,index) {
+                final amounts = transactions.map((e) => e.amount).toList();
+                var totalAmounts = 0.0;
+                for (var amount in amounts) {
+                  totalAmounts += amount!;
+                }
+                return higherExpensesItem(expense: transactions[index], totalExpense: totalAmounts);
+              }
+            )
+          ],
+        );
+      }
     )
     );
   }

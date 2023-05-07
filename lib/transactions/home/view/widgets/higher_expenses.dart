@@ -7,7 +7,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 
 Widget higherExpensesItem(
     {required Transaction expense,
-    required double indicatorValue,
+    required double totalExpense,
     String currency = 'ريال'}) {
   return Column(
     children: [
@@ -32,7 +32,7 @@ Widget higherExpensesItem(
       ),
       const SizedBox(height: 8),
       TweenAnimationBuilder(
-        tween: Tween<double>(begin: 0, end: indicatorValue),
+        tween: Tween<double>(begin: 0, end: expense.amount! / totalExpense),
         curve: Curves.easeInOut,
         duration: const Duration(seconds: 2),
         builder: (_, value, child) => LinearPercentIndicator(
