@@ -29,7 +29,7 @@ Widget lastTransactionsItem(
           )
         ],
       ),
-      Text(DateFormat.yMMMd().format(DateTime.fromMicrosecondsSinceEpoch(transaction.date!.microsecondsSinceEpoch)), style: const TextStyle(
+      Text(DateFormat.yMMMd().format(DateTime.fromMicrosecondsSinceEpoch(transaction.createdAt!.microsecondsSinceEpoch)), style: const TextStyle(
           fontFamily: 'Tajawal',
           fontSize: 11,
           color: darkGray

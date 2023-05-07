@@ -1,6 +1,6 @@
 class Category{
   String icon;
-  String label;
+  String category;
 
-  Category({this.icon = '', this.label = ''});
+  Category({this.icon = '', this.category = ''});
 }

@@ -42,7 +42,7 @@ class TransactionForm {
                 hasPrefix: true,
                 readOnly: false,
                 onSaved: (value) =>
-                transaction.amount = int.parse(value).toDouble()),
+                transaction.amount = -int.parse(value).toDouble()),
             const SizedBox(height: 20),
             Align(
                 alignment: Alignment.centerRight,
@@ -75,7 +75,7 @@ class TransactionForm {
             const SizedBox(height: 8),
             ClickableTextField(
               onClick: () => TransactionBottomSheet(context).showExpensesIconsBS(),
-              text: transactionController.selectedCategory.label,
+              text: transactionController.selectedCategory.category,
               image: transactionController.selectedCategory.icon,
             ),
             const SizedBox(height: 20),

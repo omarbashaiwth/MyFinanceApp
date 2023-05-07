@@ -3,9 +3,10 @@ import 'package:myfinance_app/core/ui/theme.dart';
 
 class AppBarWithTabs extends StatelessWidget {
   final TabController tabController;
+  final Function(int) onIndexChange;
   final Function onCloseClicked;
   final Function onSaveClicked;
-  const AppBarWithTabs({Key? key, required this.tabController, required this.onCloseClicked, required this.onSaveClicked}) : super(key: key);
+  const AppBarWithTabs({Key? key, required this.tabController, required this.onCloseClicked, required this.onSaveClicked, required this.onIndexChange}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +21,7 @@ class AppBarWithTabs extends StatelessWidget {
           onPressed: () => onSaveClicked(),
           child: const Text('حفظ',style: TextStyle(fontFamily: 'Tajawal', color: whiteColor))),
       bottom: TabBar(
+        onTap:(index) =>  onIndexChange(index),
         padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
         indicator: const BoxDecoration(color: lightRedColor),
         controller: tabController,

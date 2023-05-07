@@ -26,24 +26,30 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
 
   @override
   Widget build(BuildContext context) {
+    var currentIndex = 0;
     final tabController = TabController(length: 2, vsync: this);
     final currentUser = FirebaseAuth.instance.currentUser;
     final transactionController = Provider.of<TransactionController>(context);
     final walletController = Provider.of<WalletController>(context);
-
     final transaction = my_transaction.Transaction(
-      type: tabController.index == 0 ? 'expense' : 'income',
+      type: 'expense',
       userId: currentUser!.uid,
-      date: Timestamp.now(),
+      createdAt: Timestamp.now(),
       category: transactionController.selectedCategory,
       deductFrom: transactionController.selectedWallet.name,
     );
+
 
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight * 2),
         child: AppBarWithTabs(
           tabController: tabController,
+          onIndexChange: (index) {
+              currentIndex = index;
+              currentIndex == 0? transaction.type = 'expense' : transaction.type = 'income';
+              debugPrint('currentIndex: $currentIndex');
+          },
           onCloseClicked: () {
             transactionController.clearSelections();
             Get.back();
@@ -59,7 +65,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
                   ? _expenseFormKey.currentState!.save()
                   : _incomeFormKey.currentState!.save();
               // save transaction to the firebase
-              await provider.saveTransaction(transaction.toJson());
+              await provider.saveTransaction(transaction);
               // Fluttertoast.showToast(
               //     msg: "تتم الإضافة بنجاح",
               //

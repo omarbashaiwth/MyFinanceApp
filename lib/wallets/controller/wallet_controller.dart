@@ -14,7 +14,7 @@ class WalletController extends ChangeNotifier {
 
   WalletType get walletType => _walletType;
 
-  double getTotalBalance(List<Wallet> wallets) {
+  double calculateTotalBalance(List<Wallet> wallets) {
     var totalBalance = 0.0;
     final balances = wallets.map((wallet) => wallet.currentBalance).toList();
     for (var balance in balances) {

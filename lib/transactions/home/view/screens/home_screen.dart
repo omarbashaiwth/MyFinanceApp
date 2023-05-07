@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:myfinance_app/auth/controller/services/firebase_auth_services.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
+import 'package:myfinance_app/transactions/home/controller/transaction_controller.dart';
+import 'package:provider/provider.dart';
 
 import '../../model/category.dart';
 import '../../model/transaction.dart' as my_transaction;
@@ -16,6 +18,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Provider.of<TransactionController>(context);
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark));
@@ -31,7 +34,7 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           children: [
             _headerSection(header: 'ملخص الشهر'),
-            _monthlySummarySection(),
+            _monthlySummarySection(controller),
             _headerSection(header: 'آخر المعاملات', showMore: true),
             _lastTransactionsSection(),
             _headerSection(header: 'أعلى النفقات'),
@@ -58,7 +61,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _monthlySummarySection(){
+  Widget _monthlySummarySection(TransactionController controller) {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -67,7 +70,16 @@ class HomeScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          summaryCard(title: 'أداء الشهر الحالي', amount: -100, width: 300),
+          StreamBuilder(
+            stream: controller.getTransactions(),
+            builder: (context, snapshot) {
+              return summaryCard(
+                  title: 'أداء الشهر الحالي',
+                  amount: controller.calculateDifference(snapshot.data),
+                  width: 300,
+              );
+            }
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -78,7 +90,16 @@ class HomeScreen extends StatelessWidget {
                     width: 2,
                     color: normalGray,
                   ),
-                  summaryCard(title: 'النفقات', amount: -600, width: 150),
+                  StreamBuilder(
+                    stream: controller.getTransactions(),
+                    builder: (context, snapshot) {
+                      return summaryCard(
+                          title: 'النفقات',
+                          amount: controller.calculateTotalExpense(snapshot.data),
+                          width: 150
+                      );
+                    }
+                  ),
                 ],
               ),
               Column(
@@ -88,7 +109,16 @@ class HomeScreen extends StatelessWidget {
                     width: 2,
                     color: normalGray,
                   ),
-                  summaryCard(title: 'الدخل', amount: 500, width: 150),
+                  StreamBuilder(
+                    stream: controller.getTransactions(),
+                    builder: (context, snapshot) {
+                      return summaryCard(
+                          title: 'الدخل',
+                          amount: controller.calculateTotalIncome(snapshot.data),
+                          width: 150,
+                      );
+                    }
+                  ),
 
                 ],
               )
@@ -101,11 +131,11 @@ class HomeScreen extends StatelessWidget {
 
   Widget _lastTransactionsSection(){
     var latestFiveTransactions = [
-      my_transaction.Transaction(name: 'إيجار', amount: -600,note: null,date: Timestamp.fromDate(DateTime(2020)),category: Category(icon:'assets/icons/expenses_icons/rent.png')),
-      my_transaction.Transaction(name:'كهرباء', amount:-50,note: null,date:Timestamp.fromDate(DateTime(2020)),category: Category(icon: 'assets/icons/expenses_icons/electricity.png')),
-      my_transaction.Transaction(name: 'الراتب', amount: 1000,note: null,date: Timestamp.fromDate(DateTime(2020)) , category: Category(icon:'assets/icons/salary.png')),
-      my_transaction.Transaction(name: 'انترنت', amount: -20,note: null,date: Timestamp.fromDate(DateTime(2020)),category: Category(icon: 'assets/icons/expenses_icons/rent.png')),
-      my_transaction.Transaction(name: 'تسوق', amount: -30,note: null,date: Timestamp.fromDate(DateTime(2020)),category: Category(icon: 'assets/icons/expenses_icons/electricity.png')),
+      my_transaction.Transaction(name: 'إيجار', amount: -600,note: null,createdAt: Timestamp.fromDate(DateTime(2020)),category: Category(icon:'assets/icons/expenses_icons/rent.png')),
+      my_transaction.Transaction(name:'كهرباء', amount:-50,note: null,createdAt:Timestamp.fromDate(DateTime(2020)),category: Category(icon: 'assets/icons/expenses_icons/electricity.png')),
+      my_transaction.Transaction(name: 'الراتب', amount: 1000,note: null,createdAt: Timestamp.fromDate(DateTime(2020)) , category: Category(icon:'assets/icons/salary.png')),
+      my_transaction.Transaction(name: 'انترنت', amount: -20,note: null,createdAt: Timestamp.fromDate(DateTime(2020)),category: Category(icon: 'assets/icons/expenses_icons/rent.png')),
+      my_transaction.Transaction(name: 'تسوق', amount: -30,note: null,createdAt: Timestamp.fromDate(DateTime(2020)),category: Category(icon: 'assets/icons/expenses_icons/electricity.png')),
     ];
     return Container(
       padding: const EdgeInsets.all(10),
@@ -128,10 +158,10 @@ class HomeScreen extends StatelessWidget {
 
   Widget _higherExpensesSection(){
     var higherFiveTransactions = [
-      my_transaction.Transaction(name: 'إيجار', amount: -600,note: null,date: Timestamp.fromDate(DateTime(2020)),category: Category(icon: 'assets/icons/expenses_icons/rent.png')),
-      my_transaction.Transaction(name:'كهرباء', amount:-50,note: null,date:Timestamp.fromDate(DateTime(2020)),category: Category(icon: 'assets/icons/expenses_icons/electricity.png')),
-      my_transaction.Transaction(name: 'انترنت', amount: -20,note: null,date: Timestamp.fromDate(DateTime(2020)),category:Category(icon: 'assets/icons/expenses_icons/rent.png')),
-      my_transaction.Transaction(name: 'تسوق', amount: -30,note: null,date: Timestamp.fromDate(DateTime(2020)),category:Category(icon: 'assets/icons/expenses_icons/electricity.png')),
+      my_transaction.Transaction(name: 'إيجار', amount: -600,note: null,createdAt: Timestamp.fromDate(DateTime(2020)),category: Category(icon: 'assets/icons/expenses_icons/rent.png')),
+      my_transaction.Transaction(name:'كهرباء', amount:-50,note: null,createdAt:Timestamp.fromDate(DateTime(2020)),category: Category(icon: 'assets/icons/expenses_icons/electricity.png')),
+      my_transaction.Transaction(name: 'انترنت', amount: -20,note: null,createdAt: Timestamp.fromDate(DateTime(2020)),category:Category(icon: 'assets/icons/expenses_icons/rent.png')),
+      my_transaction.Transaction(name: 'تسوق', amount: -30,note: null,createdAt: Timestamp.fromDate(DateTime(2020)),category:Category(icon: 'assets/icons/expenses_icons/electricity.png')),
     ];
     final amounts = higherFiveTransactions.map((e) => e.amount).toList();
     var totalAmounts = 0.0;

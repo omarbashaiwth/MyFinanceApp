@@ -40,7 +40,7 @@ class WalletsScreen extends StatelessWidget {
                   if(snapshot.hasData) {
                     return WalletBalance(
                       balanceLabel: 'إجمالي الرصيد',
-                      balance: walletProvider.getTotalBalance(snapshot.data!),
+                      balance: walletProvider.calculateTotalBalance(snapshot.data!),
                       fontSize: 36,
                     );
                   } else {
