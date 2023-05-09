@@ -114,7 +114,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     Get.to(
                       Directionality(
                           textDirection: TextDirection.rtl,
-                          child: _selectedIndex == 0? const AddTransactionScreen() :  AddWalletScreen()
+                          child: _selectedIndex == 0? const AddTransactionScreen() :   AddWalletScreen()
                       )
                     );
                   },

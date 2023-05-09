@@ -25,17 +25,15 @@ class TransactionForm {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            customTextFormField(
-                context: context,
-                key: 'name',
+            CustomTextFormField(
+                textFormKey: 'name',
                 hint: 'الإسم',
                 leadingIcon: Icons.text_format,
                 readOnly: false,
                 onSaved: (value) => transaction.name = value),
             const SizedBox(height: 20),
-            customTextFormField(
-                context: context,
-                key: 'amount',
+            CustomTextFormField(
+                textFormKey: 'amount',
                 hint: 'المبلغ',
                 leadingIcon: Icons.attach_money,
                 keyboardType: TextInputType.number,
@@ -52,14 +50,14 @@ class TransactionForm {
             const SizedBox(height: 8),
             StreamBuilder(
               stream: walletController.getWallets(),
-              builder: (context, snapshot) {
+              builder: (_, snapshot) {
                 return ClickableTextField(
                   text: transactionController.selectedWallet.name ??
                       'لا يوجد',
                   image: transactionController
                       .selectedWallet.walletType?.icon ??
                       'assets/icons/question.png',
-                  onClick: () => TransactionBottomSheet(context).showWalletsBS(
+                  onClick: () => TransactionBottomSheet.showWalletsBS(
                     userId: currentUser.uid,
                     availableWallets: snapshot.data!,
                   ),
@@ -74,14 +72,13 @@ class TransactionForm {
                         .copyWith(color: normalGray))),
             const SizedBox(height: 8),
             ClickableTextField(
-              onClick: () => TransactionBottomSheet(context).showExpensesIconsBS(),
+              onClick: () => TransactionBottomSheet.showExpensesIconsBS(),
               text: transactionController.selectedCategory.category,
               image: transactionController.selectedCategory.icon,
             ),
             const SizedBox(height: 20),
-            customTextFormField(
-              context: context,
-              key: 'note',
+            CustomTextFormField(
+              textFormKey: 'note',
               hint: 'ملاحظة (اختياري)',
               maxLines: 3,
               isRequired: false,
@@ -109,9 +106,8 @@ class TransactionForm {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            customTextFormField(
-              context: context,
-              key: 'name',
+            CustomTextFormField(
+              textFormKey: 'name',
               hint: 'الإسم',
               leadingIcon: Icons.text_format,
               readOnly: false,
@@ -120,9 +116,8 @@ class TransactionForm {
               },
             ),
             const SizedBox(height: 20),
-            customTextFormField(
-              context: context,
-              key: 'amount',
+            CustomTextFormField(
+              textFormKey: 'amount',
               hint: 'المبلغ',
               leadingIcon: Icons.attach_money,
               keyboardType: TextInputType.number,
@@ -140,14 +135,14 @@ class TransactionForm {
             const SizedBox(height: 8),
             StreamBuilder(
               stream: walletController.getWallets(),
-              builder: (context, snapshot) {
+              builder: (_, snapshot) {
                 return ClickableTextField(
                   text: transactionController.selectedWallet.name ??
                       'لا يوجد',
                   image: transactionController
                       .selectedWallet.walletType?.icon ??
                       'assets/icons/question.png',
-                  onClick: () => TransactionBottomSheet(context).showWalletsBS(
+                  onClick: () => TransactionBottomSheet.showWalletsBS(
                     userId: currentUser.uid,
                     availableWallets: snapshot.data!,
                   ),
@@ -155,10 +150,9 @@ class TransactionForm {
               },
             ),
             const SizedBox(height: 20),
-            customTextFormField(
-              context: context,
+            CustomTextFormField(
               isRequired: false,
-              key: 'note',
+              textFormKey: 'note',
               hint: 'ملاحظة (اختياري)',
               leadingIcon: Icons.text_snippet_outlined,
               maxLines: 3,

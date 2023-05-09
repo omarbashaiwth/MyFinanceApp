@@ -1,21 +1,16 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/transactions/home/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/home/model/category.dart';
-import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../wallets/model/wallet.dart';
 
 
 class TransactionBottomSheet {
-  final BuildContext context;
 
-  TransactionBottomSheet(this.context);
-
-  void showExpensesIconsBS(){
+  static void showExpensesIconsBS(){
     final iconsList = [
       Category(icon: 'assets/icons/expenses_icons/rent.png',category: 'إيجار'),
       Category(icon: 'assets/icons/expenses_icons/electricity.png',category:  'كهرباء'),
@@ -57,7 +52,7 @@ class TransactionBottomSheet {
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 5,
                 ),
-                itemBuilder: (_, index) {
+                itemBuilder: (context, index) {
                   return _designIcon(
                     icon: iconsList[index].icon,
                     label: iconsList[index].category,
@@ -75,7 +70,7 @@ class TransactionBottomSheet {
     ));
   }
 
-  Future<void> showWalletsBS({required String userId, required List<Wallet> availableWallets})async {
+  static void showWalletsBS({required String userId, required List<Wallet> availableWallets}) {
     Get.bottomSheet(Container(
       padding: const EdgeInsets.only(top: 4),
       decoration: const BoxDecoration(
@@ -100,7 +95,7 @@ class TransactionBottomSheet {
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 5,
                 ),
-                itemBuilder: (_, index) {
+                itemBuilder: (context, index) {
                   return _designIcon(
                     icon: availableWallets[index].walletType!.icon,
                     label: availableWallets[index].name!,

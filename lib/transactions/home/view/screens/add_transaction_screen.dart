@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myfinance_app/transactions/home/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/home/model/transaction.dart'
     as my_transaction;
@@ -22,20 +23,33 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
     with TickerProviderStateMixin {
   final _expenseFormKey = GlobalKey<FormState>();
   final _incomeFormKey = GlobalKey<FormState>();
+  var _currentTabIndex = 0;
+  late final TabController _tabController;
+
+  @override
+  void initState() {
+    _tabController = TabController(length: 2, vsync: this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    var currentIndex = 0;
-    final tabController = TabController(length: 2, vsync: this);
+
     final currentUser = FirebaseAuth.instance.currentUser;
     final transactionController = Provider.of<TransactionController>(context);
     final walletController = Provider.of<WalletController>(context);
     final transaction = my_transaction.Transaction(
-      type: 'expense',
+      type: _currentTabIndex == 0? 'expense': 'income',
       userId: currentUser!.uid,
       createdAt: Timestamp.now(),
       category: transactionController.selectedCategory,
-      deductFrom: transactionController.selectedWallet.name,
+      walletId: transactionController.selectedWallet.id,
     );
 
 
@@ -43,11 +57,9 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight * 2),
         child: AppBarWithTabs(
-          tabController: tabController,
+          tabController: _tabController,
           onIndexChange: (index) {
-              currentIndex = index;
-              currentIndex == 0? transaction.type = 'expense' : transaction.type = 'income';
-              debugPrint('currentIndex: $currentIndex');
+              setState(() => _currentTabIndex = index);
           },
           onCloseClicked: () {
             transactionController.clearSelections();
@@ -56,21 +68,25 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
           onSaveClicked: () async {
             final provider =
                 Provider.of<TransactionController>(context, listen: false);
-            final isValid = tabController.index == 0
+            final isValid = _tabController.index == 0
                 ? _expenseFormKey.currentState!.validate()
                 : _incomeFormKey.currentState!.validate();
-            if (isValid) {
-              tabController.index == 0
+            if (isValid && transaction.walletId != null) {
+              _tabController.index == 0
                   ? _expenseFormKey.currentState!.save()
                   : _incomeFormKey.currentState!.save();
               // save transaction to the firebase
               await provider.saveTransaction(transaction);
-              // Fluttertoast.showToast(
-              //     msg: "تتم الإضافة بنجاح",
-              //
-              // );
+              await walletController.updateWallet(
+                  walletId: transaction.walletId! ,
+                  value: transaction.amount!,
+              );
               provider.clearSelections();
               Get.back();
+            } else if(transaction.walletId == null){
+              Fluttertoast.showToast(
+                msg: 'قم باختيار المحفظة',
+              );
             }
           },
         ),
@@ -79,7 +95,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: TabBarView(
           physics: const NeverScrollableScrollPhysics(),
-          controller: tabController,
+          controller: _tabController,
           children: [
             TransactionForm.expenseForm(
                 key: _expenseFormKey,

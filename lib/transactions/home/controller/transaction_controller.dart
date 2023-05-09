@@ -62,7 +62,21 @@ class TransactionController extends ChangeNotifier {
     return docs.map((event) => event.map((e) => e.data()).toList());
   }
 
-  Stream<List<my_transaction.Transaction>> getFiveHighestExpense() {
+  Stream<List<my_transaction.Transaction>> getLastFiveTransactions() {
+    final snapshots = _firestore
+        .collection('Transactions')
+        .where('userId', isEqualTo: _auth.currentUser!.uid)
+        .orderBy('createdAt')
+        .limit(5)
+        .withConverter(
+        fromFirestore: my_transaction.Transaction.fromFirestore,
+        toFirestore: (my_transaction.Transaction transaction, _) => transaction.toFirestore())
+        .snapshots();
+    final docs = snapshots.map((event) => event.docs);
+    return docs.map((event) => event.map((e) => e.data()).toList());
+  }
+
+  Stream<List<my_transaction.Transaction>> getFiveHighestExpenses() {
     final snapshots = _firestore
         .collection('Transactions')
         .where('userId', isEqualTo: _auth.currentUser!.uid)

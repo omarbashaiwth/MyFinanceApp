@@ -7,13 +7,12 @@ class Transaction{
   double? amount ;
   Category? category;
   Timestamp? createdAt;
-  String? deductFrom;
-  String? addTo;
+  String? walletId;
   String? note;
   String? userId;
   String? type;
 
-  Transaction({this.name, this.amount, this.addTo, this.category, this.createdAt, this.deductFrom, this.note, this.userId, this.type});
+  Transaction({this.name, this.amount, this.walletId, this.category, this.createdAt, this.note, this.userId, this.type});
 
 
   Map<String, dynamic> toFirestore() {
@@ -22,10 +21,9 @@ class Transaction{
       if (amount != null) 'amount': amount,
       if (category != null) 'category': category!.category,
       if (category != null) 'icon': category!.icon,
-      if (deductFrom != null) 'deductFrom':deductFrom,
-      if (addTo != null) 'addTo':addTo,
       if (note != null) 'note':note,
-      if (type != null) 'type':type,
+      if(walletId != null) 'walletId':walletId else 'walletId': null,
+      if(type != null) 'type': type,
       if (userId != null) 'userId': userId,
       if (createdAt != null) 'createdAt': createdAt,
     };
@@ -37,12 +35,11 @@ class Transaction{
     return Transaction(
         name: data?['name'],
         amount: data?['amount'],
+        walletId: data?['walletId'],
         category: Category(
           category: data?['category'],
           icon: data?['icon'],
         ),
-        deductFrom: data?['deductFrom'],
-        addTo: data?['addTo'],
         type: data?['type'],
         note: data?['note'],
         userId: data?['userId'],

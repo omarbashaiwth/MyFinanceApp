@@ -11,11 +11,11 @@ import 'package:get/get.dart';
 
 class AddWalletScreen extends StatelessWidget {
   final _walletFormKey = GlobalKey<FormState>();
+
   AddWalletScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     final walletProvider = Provider.of<WalletController>(context);
     final currentUser = FirebaseAuth.instance.currentUser;
     final wallet = Wallet(
@@ -51,23 +51,21 @@ class AddWalletScreen extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: 40),
-                customTextFormField(
-                    context: context,
+                CustomTextFormField(
                     readOnly: false,
-                    key: 'name',
+                    textFormKey: 'name',
                     hint: 'اسم المحفظة',
                     leadingIcon: Icons.text_format,
                     onSaved: (value) => wallet.name = value
                 ),
                 const SizedBox(height: 40),
-                customTextFormField(
-                    context: context,
+                CustomTextFormField(
                     readOnly: false,
-                    key: 'balance',
+                    textFormKey: 'balance',
                     hint: 'الرصيد الحالي',
                     leadingIcon: Icons.attach_money,
                     keyboardType: TextInputType.number,
-                    onSaved: (value) => wallet.currentBalance = int.parse(value).toDouble()
+                    onSaved: (value) => wallet.currentBalance = int.parse(value).toDouble(),
                 ),
                 const SizedBox(height: 40),
                 Align(alignment: Alignment.centerRight,child: Text('نوع المحفظة', style: AppTextTheme.headerTextStyle.copyWith(color: normalGray))),

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:myfinance_app/wallets/model/wallet_type.dart';
 
 class Wallet {
+  String? id;
   String? name;
   double? currentBalance;
   WalletType? walletType;
@@ -10,6 +11,7 @@ class Wallet {
 
   Wallet(
       {this.name,
+        this.id,
       this.currentBalance,
       this.walletType,
       this.userId,
@@ -18,6 +20,7 @@ class Wallet {
   Map<String, dynamic> toFirestore() {
     return {
       if (name != null) 'name': name,
+      if (id != null) 'id': id,
       if (currentBalance != null) 'balance': currentBalance,
       if (walletType != null) 'type': walletType!.type,
       if (walletType != null) 'icon': walletType!.icon,
@@ -30,6 +33,7 @@ class Wallet {
       SnapshotOptions? options) {
     final data = snapshot.data();
     return Wallet(
+        id: data?['id'],
         name: data?['name'],
         currentBalance: data?['balance'],
         walletType: WalletType(
@@ -37,7 +41,8 @@ class Wallet {
           icon: data?['icon'],
         ),
         userId: data?['userId'],
-        createdAt: data?['createdAt']);
+        createdAt: data?['createdAt'],
+    );
   }
 
 // Map<String, dynamic> toJson() {

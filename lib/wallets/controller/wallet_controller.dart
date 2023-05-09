@@ -14,6 +14,11 @@ class WalletController extends ChangeNotifier {
 
   WalletType get walletType => _walletType;
 
+  void onWalletTypeChange(WalletType value) {
+    _walletType = value;
+    notifyListeners();
+  }
+
   double calculateTotalBalance(List<Wallet> wallets) {
     var totalBalance = 0.0;
     final balances = wallets.map((wallet) => wallet.currentBalance).toList();
@@ -23,18 +28,26 @@ class WalletController extends ChangeNotifier {
     return totalBalance;
   }
 
-  void onWalletTypeChange(WalletType value) {
-    _walletType = value;
-    notifyListeners();
-  }
-
   Future<void> insertWallet(Wallet wallet) async {
-    _firestore
-        .collection('Wallets')
-        .withConverter(
+    final docRef = _firestore.collection('Wallets').doc();
+    final walletToInsert = Wallet(
+      id: docRef.id,
+      name: wallet.name,
+      currentBalance: wallet.currentBalance,
+      walletType: wallet.walletType,
+      userId: wallet.userId,
+      createdAt: wallet.createdAt
+    );
+    docRef.withConverter(
             fromFirestore: Wallet.fromFirestore,
             toFirestore: (Wallet wallet, _) => wallet.toFirestore())
-        .add(wallet);
+        .set(walletToInsert);
+
+  }
+  
+  Future<void> updateWallet({required double value,required String walletId}) async {
+   final docRef =  _firestore.collection('Wallets').doc(walletId);
+   docRef.update({'balance':FieldValue.increment(value)});
   }
 
   Stream<List<Wallet>> getWallets() {

@@ -139,7 +139,7 @@ class HomeScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(10)
       ),
       child: StreamBuilder(
-        stream: controller.getTransactions(),
+        stream: controller.getLastFiveTransactions(),
         builder: (context, snapshot) {
           final transactions = snapshot.data;
           if(snapshot.hasData && snapshot.hasError){
@@ -183,7 +183,7 @@ class HomeScreen extends StatelessWidget {
     borderRadius: BorderRadius.circular(10)
     ),
     child: StreamBuilder(
-      stream: controller.getFiveHighestExpense(),
+      stream: controller.getFiveHighestExpenses(),
       builder: (context, snapshot) {
         final transactions = snapshot.data;
         if(snapshot.hasData && snapshot.hasError){
