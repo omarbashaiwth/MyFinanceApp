@@ -1,14 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:myfinance_app/auth/controller/services/firebase_auth_services.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/transactions/home/controller/transaction_controller.dart';
+import 'package:myfinance_app/transactions/home/view/screens/transaction_history_screen.dart';
 import 'package:provider/provider.dart';
-
-import '../../model/category.dart';
-import '../../model/transaction.dart' as my_transaction;
+import 'package:get/get.dart';
 import '../widgets/custom_card.dart';
 import '../widgets/higher_expenses.dart';
 import '../widgets/last_transactions.dart';
@@ -55,7 +53,7 @@ class HomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(header, style: AppTextTheme.headerTextStyle),
-            showMore? TextButton(onPressed: (){}, child: Text('عرض المزيد', style: AppTextTheme.textButtonStyle.copyWith(color: redColor)),): Container()
+            showMore? TextButton(onPressed: () => Get.to(const Directionality(textDirection: TextDirection.rtl,child: TransactionHistoryScreen())), child: Text('عرض المزيد', style: AppTextTheme.textButtonStyle.copyWith(color: redColor)),): Container()
           ],
         ),
         showMore? Container(): const SizedBox(height: 8),
@@ -160,8 +158,8 @@ class HomeScreen extends StatelessWidget {
                 itemBuilder: (_,index) {
                   return Column(
                     children: [
-                      lastTransactionsItem(transaction: transactions[index]),
-                      index != transactions.lastIndexOf(transactions.last)? const Divider(): Container()
+                      TransactionHistoryItem(transaction: transactions[index]),
+                      index != transactions.indexOf(transactions.last)? const Divider(): Container()
                     ],
                   );
                 },
