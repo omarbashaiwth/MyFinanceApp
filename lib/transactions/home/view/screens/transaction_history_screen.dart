@@ -45,14 +45,16 @@ class TransactionHistoryScreen extends StatelessWidget {
             }
             return Stack(children: [
               transactions!.isEmpty
-                  ? const SizedBox(
-                      width: double.infinity,
-                      child: Text(
-                        'لا يوجد بيانات',
-                        style: AppTextTheme.headerTextStyle,
-                        textAlign: TextAlign.center,
+                  ? const Center(
+                    child: SizedBox(
+                        width: double.infinity,
+                        child: Text(
+                          'لا يوجد بيانات',
+                          style: AppTextTheme.headerTextStyle,
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    )
+                  )
                   : ListView.builder(
                       itemCount: transactions.length,
                       itemBuilder: (_, index) {

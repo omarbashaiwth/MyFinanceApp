@@ -19,7 +19,7 @@ class Transaction{
     return {
       if (name != null) 'name': name,
       if (amount != null) 'amount': amount,
-      if (category != null) 'category': category!.category,
+      if (category != null) 'category': category!.name,
       if (category != null) 'icon': category!.icon,
       if (note != null) 'note':note,
       if(walletId != null) 'walletId':walletId else 'walletId': null,
@@ -37,7 +37,7 @@ class Transaction{
         amount: data?['amount'],
         walletId: data?['walletId'],
         category: Category(
-          category: data?['category'],
+          name: data?['category'],
           icon: data?['icon'],
         ),
         type: data?['type'],

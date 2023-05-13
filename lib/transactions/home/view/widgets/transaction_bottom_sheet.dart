@@ -12,21 +12,21 @@ class TransactionBottomSheet {
 
   static void showExpensesIconsBS(){
     final iconsList = [
-      Category(icon: 'assets/icons/expenses_icons/rent.png',category: 'إيجار'),
-      Category(icon: 'assets/icons/expenses_icons/electricity.png',category:  'كهرباء'),
-      Category(icon: 'assets/icons/expenses_icons/drop.png',category:  'ماء'),
-      Category(icon: 'assets/icons/expenses_icons/wifi.png',category:  'إنترنت'),
-      Category(icon: 'assets/icons/expenses_icons/shopping-cart.png',category:  'تسوق'),
-      Category(icon: 'assets/icons/expenses_icons/bus.png',category:  'مواصلات'),
-      Category(icon: 'assets/icons/expenses_icons/airplane.png',category:  'سفر'),
-      Category(icon: 'assets/icons/expenses_icons/reading.png',category:  'تعليم'),
-      Category(icon: 'assets/icons/expenses_icons/electrocardiography.png',category:  'صحة'),
-      Category(icon: 'assets/icons/expenses_icons/gas-station.png',category:  'وقود'),
-      Category(icon: 'assets/icons/expenses_icons/hot-air-balloon.png',category:  'ترفيه'),
-      Category(icon: 'assets/icons/expenses_icons/shopping.png',category:  'مستلزمات البيت'),
-      Category(icon: 'assets/icons/expenses_icons/zakat.png', category: 'صدقة'),
-      Category(icon: 'assets/icons/expenses_icons/pending.png', category: 'كماليات'),
-      Category(icon: 'assets/icons/expenses_icons/other.png', category: 'أخرى'),
+      Category(icon: 'assets/icons/expenses_icons/rent.png',name: 'إيجار'),
+      Category(icon: 'assets/icons/expenses_icons/electricity.png',name:  'كهرباء'),
+      Category(icon: 'assets/icons/expenses_icons/drop.png',name:  'ماء'),
+      Category(icon: 'assets/icons/expenses_icons/wifi.png',name:  'إنترنت'),
+      Category(icon: 'assets/icons/expenses_icons/shopping-cart.png',name:  'تسوق'),
+      Category(icon: 'assets/icons/expenses_icons/bus.png',name:  'مواصلات'),
+      Category(icon: 'assets/icons/expenses_icons/airplane.png',name:  'سفر'),
+      Category(icon: 'assets/icons/expenses_icons/reading.png',name:  'تعليم'),
+      Category(icon: 'assets/icons/expenses_icons/electrocardiography.png',name:  'صحة'),
+      Category(icon: 'assets/icons/expenses_icons/gas-station.png',name:  'وقود'),
+      Category(icon: 'assets/icons/expenses_icons/hot-air-balloon.png',name:  'ترفيه'),
+      Category(icon: 'assets/icons/expenses_icons/shopping.png',name:  'مستلزمات البيت'),
+      Category(icon: 'assets/icons/expenses_icons/zakat.png', name: 'صدقة'),
+      Category(icon: 'assets/icons/expenses_icons/pending.png', name: 'كماليات'),
+      Category(icon: 'assets/icons/expenses_icons/other.png', name: 'أخرى'),
     ];
     Get.bottomSheet(Container(
       padding: const EdgeInsets.only(top: 4),
@@ -55,7 +55,7 @@ class TransactionBottomSheet {
                 itemBuilder: (context, index) {
                   return _designIcon(
                     icon: iconsList[index].icon,
-                    label: iconsList[index].category,
+                    label: iconsList[index].name,
                     color: Provider.of<TransactionController>(context).selectedIcon == index? redColor:lightGray,
                     onClick: (){
                       Provider.of<TransactionController>(context, listen: false).onChangeSelectedIcon(index);

@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +17,7 @@ class TransactionController extends ChangeNotifier {
   int get selectedIcon => _selectedIcon;
 
   Category _selectedCategory =
-      Category(category: 'أخرى', icon: 'assets/icons/expenses_icons/other.png');
+      Category(name: 'أخرى', icon: 'assets/icons/expenses_icons/other.png');
 
   Category get selectedCategory => _selectedCategory;
 
@@ -49,6 +51,20 @@ class TransactionController extends ChangeNotifier {
         .add(transaction);
   }
 
+  Map<String, double>groupExpenses(List<my_transaction.Transaction> transactions) {
+    final result = transactions.fold(SplayTreeMap<String, double>(), (map,transaction) =>
+        map..update(transaction.category!.name, (value) => value + transaction.amount!, ifAbsent: () => transaction.amount!)
+    );
+    final orderedResult = result.entries.toList()..sort((e1,e2){
+      var diff = e1.value.compareTo(e2.value);
+      if(diff == 0) diff = e1.key.compareTo(e2.key);
+      return diff;
+    });
+
+    return Map<String, double>.fromEntries(orderedResult);
+  }
+
+
   Stream<List<my_transaction.Transaction>> getTransactions() {
     final snapshots = _firestore
         .collection('Transactions')
@@ -56,33 +72,33 @@ class TransactionController extends ChangeNotifier {
         .orderBy('createdAt')
         .withConverter(
             fromFirestore: my_transaction.Transaction.fromFirestore,
-            toFirestore: (my_transaction.Transaction transaction, _) => transaction.toFirestore())
+            toFirestore: (my_transaction.Transaction transaction, _) => transaction.toFirestore()
+        )
         .snapshots();
     final docs = snapshots.map((event) => event.docs);
+    debugPrint('getTransactions');
     return docs.map((event) => event.map((e) => e.data()).toList());
   }
 
-  Stream<List<my_transaction.Transaction>> getLastFiveTransactions() {
-    final snapshots = _firestore
-        .collection('Transactions')
-        .where('userId', isEqualTo: _auth.currentUser!.uid)
-        .orderBy('createdAt')
-        .limit(5)
-        .withConverter(
-        fromFirestore: my_transaction.Transaction.fromFirestore,
-        toFirestore: (my_transaction.Transaction transaction, _) => transaction.toFirestore())
-        .snapshots();
-    final docs = snapshots.map((event) => event.docs);
-    return docs.map((event) => event.map((e) => e.data()).toList());
-  }
+  // Stream<List<my_transaction.Transaction>> getLastFiveTransactions() {
+  //   final snapshots = _firestore
+  //       .collection('Transactions')
+  //       .where('userId', isEqualTo: _auth.currentUser!.uid)
+  //       .orderBy('createdAt')
+  //       .limit(5)
+  //       .withConverter(
+  //       fromFirestore: my_transaction.Transaction.fromFirestore,
+  //       toFirestore: (my_transaction.Transaction transaction, _) => transaction.toFirestore())
+  //       .snapshots();
+  //   final docs = snapshots.map((event) => event.docs);
+  //   return docs.map((event) => event.map((e) => e.data()).toList());
+  // }
 
-  Stream<List<my_transaction.Transaction>> getFiveHighestExpenses() {
+  Stream<List<my_transaction.Transaction>> getAllExpenses() {
     final snapshots = _firestore
         .collection('Transactions')
         .where('userId', isEqualTo: _auth.currentUser!.uid)
         .where('type', isEqualTo: 'expense')
-        .orderBy('amount')
-        .limit(5)
         .withConverter(
         fromFirestore: my_transaction.Transaction.fromFirestore,
         toFirestore: (my_transaction.Transaction transaction, _) => transaction.toFirestore())
@@ -124,8 +140,7 @@ class TransactionController extends ChangeNotifier {
 
 
   void clearSelections() {
-    _selectedCategory = Category(
-        category: 'أخرى', icon: 'assets/icons/expenses_icons/other.png');
+    _selectedCategory = Category(name: 'أخرى', icon: 'assets/icons/expenses_icons/other.png');
     _selectedIcon = 14;
     _selectedWallet = Wallet();
     notifyListeners();

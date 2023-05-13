@@ -6,7 +6,9 @@ import '../../model/transaction.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 Widget higherExpensesItem(
-    {required Transaction expense,
+    { required String groupIcon,
+      required String groupName,
+      required double groupAmount,
     required double totalExpense,
     String currency = 'ريال'}) {
   return Column(
@@ -14,25 +16,25 @@ Widget higherExpensesItem(
       Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Image.asset(expense.category!.icon, height: 30),
+          Image.asset(groupIcon, height: 30),
           const SizedBox(width: 8),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                expense.name!,
+                groupName,
                 style: const TextStyle(
                     fontFamily: 'Tajawal', fontSize: 13, color: blackColor),
               ),
               priceWidget(
-                  amount: expense.amount!, currency: currency, fontSize: 13)
+                  amount: groupAmount, currency: currency, fontSize: 13)
             ],
           )
         ],
       ),
       const SizedBox(height: 8),
       TweenAnimationBuilder(
-        tween: Tween<double>(begin: 0, end: expense.amount! / totalExpense),
+        tween: Tween<double>(begin: 0, end: groupAmount / totalExpense),
         curve: Curves.easeInOut,
         duration: const Duration(seconds: 2),
         builder: (_, value, child) => LinearPercentIndicator(

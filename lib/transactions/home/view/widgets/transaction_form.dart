@@ -73,7 +73,7 @@ class TransactionForm {
             const SizedBox(height: 8),
             ClickableTextField(
               onClick: () => TransactionBottomSheet.showExpensesIconsBS(),
-              text: transactionController.selectedCategory.category,
+              text: transactionController.selectedCategory.name,
               image: transactionController.selectedCategory.icon,
             ),
             const SizedBox(height: 20),

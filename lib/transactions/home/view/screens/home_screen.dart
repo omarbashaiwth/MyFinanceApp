@@ -7,6 +7,7 @@ import 'package:myfinance_app/transactions/home/controller/transaction_controlle
 import 'package:myfinance_app/transactions/home/view/screens/transaction_history_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
+import '../../model/transaction.dart';
 import '../widgets/custom_card.dart';
 import '../widgets/higher_expenses.dart';
 import '../widgets/last_transactions.dart';
@@ -27,20 +28,26 @@ class HomeScreen extends StatelessWidget {
         title: const Text('المعاملات',style: AppTextTheme.appBarTitleTextStyle,),
         actions:[IconButton(onPressed: () async => await FirebaseAuthServices(FirebaseAuth.instance).logout(), icon: Image.asset('assets/icons/menu.png', height: 25,))],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.only(bottom: 20, left: 10, right: 10),
-        child: Column(
-          children: [
-             _headerSection(header: 'ملخص الشهر'),
-             _monthlySummarySection(controller),
-            const SizedBox(height: 16),
-            _headerSection(header: 'آخر المعاملات', showMore: true),
-             _lastTransactionsSection(controller),
-             const SizedBox(height: 16),
-             _headerSection(header: 'أعلى النفقات'),
-             _higherExpensesSection(controller)
-          ],
-        ),
+      body: StreamBuilder(
+        stream: controller.getTransactions(),
+        builder: (context, snapshot) {
+          return SingleChildScrollView(
+            padding: const EdgeInsets.only(bottom: 20, left: 10, right: 10),
+            child: Column(
+              children: [
+                 _headerSection(header: 'ملخص الشهر'),
+                 _monthlySummarySection(controller: controller, snapshot: snapshot),
+                const SizedBox(height: 16),
+                _headerSection(header: 'النفقات حسب التصنيف'),
+                _expensesCategorySection(controller: controller, snapshot: snapshot),
+                 const SizedBox(height: 16),
+                _headerSection(header: 'آخر المعاملات', showMore: true),
+                _lastTransactionsSection(controller: controller, snapshot: snapshot),
+
+              ],
+            ),
+          );
+        }
       ),
     );
   }
@@ -61,7 +68,15 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _monthlySummarySection(TransactionController controller) {
+  Widget _monthlySummarySection({required AsyncSnapshot<List<Transaction>> snapshot, required TransactionController controller}) {
+    final transactions = snapshot.data;
+    if(snapshot.hasData && snapshot.hasError){
+      debugPrint(snapshot.error.toString());
+      return const Align(alignment: Alignment.center, child: Text('يوجد خطأ', style: AppTextTheme.headerTextStyle));
+    }
+    if(snapshot.connectionState == ConnectionState.waiting){
+      return const Align(alignment: Alignment.center, child: CircularProgressIndicator());
+    }
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -70,15 +85,10 @@ class HomeScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          StreamBuilder(
-            stream: controller.getTransactions(),
-            builder: (context, snapshot) {
-              return summaryCard(
-                  title: 'أداء الشهر الحالي',
-                  amount: controller.calculateDifference(snapshot.data),
-                  width: 300,
-              );
-            }
+          summaryCard(
+              title: 'أداء الشهر الحالي',
+              amount: controller.calculateDifference(transactions),
+              width: 300,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -90,15 +100,10 @@ class HomeScreen extends StatelessWidget {
                     width: 2,
                     color: normalGray,
                   ),
-                  StreamBuilder(
-                    stream: controller.getTransactions(),
-                    builder: (context, snapshot) {
-                      return summaryCard(
-                          title: 'النفقات',
-                          amount: controller.calculateTotalExpense(snapshot.data),
-                          width: 150
-                      );
-                    }
+                  summaryCard(
+                      title: 'النفقات',
+                      amount: controller.calculateTotalExpense(transactions),
+                      width: 150
                   ),
                 ],
               ),
@@ -109,15 +114,10 @@ class HomeScreen extends StatelessWidget {
                     width: 2,
                     color: normalGray,
                   ),
-                  StreamBuilder(
-                    stream: controller.getTransactions(),
-                    builder: (context, snapshot) {
-                      return summaryCard(
-                          title: 'الدخل',
-                          amount: controller.calculateTotalIncome(snapshot.data),
-                          width: 150,
-                      );
-                    }
+                  summaryCard(
+                      title: 'الدخل',
+                      amount: controller.calculateTotalIncome(transactions),
+                      width: 150,
                   ),
 
                 ],
@@ -129,27 +129,24 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _lastTransactionsSection(TransactionController controller){
+  Widget _lastTransactionsSection({required TransactionController controller, required AsyncSnapshot<List<Transaction>> snapshot}){
+    final transactions = snapshot.data?.take(5).toList() ?? [];
+    if(snapshot.hasData && snapshot.hasError){
+      debugPrint(snapshot.error.toString());
+      return const Align(alignment: Alignment.center, child: Text('يوجد خطأ', style: AppTextTheme.headerTextStyle));
+    }
+    if(snapshot.connectionState == ConnectionState.waiting){
+      return const Align(alignment: Alignment.center, child: CircularProgressIndicator());
+    }
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
           border: Border.all(color: darkGray),
           borderRadius: BorderRadius.circular(10)
       ),
-      child: StreamBuilder(
-        stream: controller.getLastFiveTransactions(),
-        builder: (context, snapshot) {
-          final transactions = snapshot.data;
-          if(snapshot.hasData && snapshot.hasError){
-            debugPrint(snapshot.error.toString());
-            return const Align(alignment: Alignment.center, child: Text('يوجد خطأ', style: AppTextTheme.headerTextStyle));
-          }
-          if(snapshot.connectionState == ConnectionState.waiting){
-            return const Align(alignment: Alignment.center, child: CircularProgressIndicator());
-          }
-          return Stack(
+      child: Stack(
             children: [
-              transactions!.isEmpty ?
+              transactions.isEmpty ?
               const SizedBox(width: double.infinity, child: Text('لا يوجد بيانات', style: AppTextTheme.headerTextStyle, textAlign: TextAlign.center,))
                   : ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
@@ -165,52 +162,50 @@ class HomeScreen extends StatelessWidget {
                 },
               )
             ]
-          );
-
-        }
-      )
-
-    );
+          )
+      );
   }
 
-  Widget _higherExpensesSection(TransactionController controller){
+  Widget _expensesCategorySection({required TransactionController controller, required AsyncSnapshot<List<Transaction>> snapshot}){
+    final transactions = snapshot.data ?? [];
+    final grouped = controller.groupExpenses(transactions);
+    if(snapshot.hasData && snapshot.hasError){
+      debugPrint(snapshot.error.toString());
+      return const Align(alignment: Alignment.center, child: Text('يوجد خطأ', style: AppTextTheme.headerTextStyle));
+    }
+    if(snapshot.connectionState == ConnectionState.waiting){
+      return const Align(alignment: Alignment.center, child: CircularProgressIndicator());
+    }
     return Container(
         padding: const EdgeInsets.all(10),
     decoration: BoxDecoration(
     border: Border.all(color: darkGray),
     borderRadius: BorderRadius.circular(10)
     ),
-    child: StreamBuilder(
-      stream: controller.getFiveHighestExpenses(),
-      builder: (context, snapshot) {
-        final transactions = snapshot.data;
-        if(snapshot.hasData && snapshot.hasError){
-          debugPrint(snapshot.error.toString());
-          return const Align(alignment: Alignment.center, child: Text('يوجد خطأ', style: AppTextTheme.headerTextStyle));
-        }
-        if(snapshot.connectionState == ConnectionState.waiting){
-          return const Align(alignment: Alignment.center, child: CircularProgressIndicator());
-        }
-        return Stack(
+    child: Stack(
           children: [
-            transactions!.isEmpty? const SizedBox(width: double.infinity, child: Text('لا يوجد بيانات', style: AppTextTheme.headerTextStyle, textAlign: TextAlign.center,))
+            transactions.isEmpty? const SizedBox(width: double.infinity, child: Text('لا يوجد بيانات', style: AppTextTheme.headerTextStyle, textAlign: TextAlign.center,))
             : ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: transactions.length,
+              itemCount: grouped
+                  .length,
               itemBuilder: (_,index) {
                 final amounts = transactions.map((e) => e.amount).toList();
                 var totalAmounts = 0.0;
                 for (var amount in amounts) {
                   totalAmounts += amount!;
                 }
-                return higherExpensesItem(expense: transactions[index], totalExpense: totalAmounts);
+                return higherExpensesItem(
+                    groupName: grouped.keys.elementAt(index),
+                    groupIcon: 'assets/icons/cash.png',
+                    groupAmount: grouped.values.elementAt(index),
+                    totalExpense: totalAmounts
+                );
               }
             )
           ],
-        );
-      }
-    )
+        )
     );
   }
 }
