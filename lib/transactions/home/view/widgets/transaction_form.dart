@@ -60,6 +60,8 @@ class TransactionForm {
                   onClick: () => TransactionBottomSheet.showWalletsBS(
                     userId: currentUser.uid,
                     availableWallets: snapshot.data!,
+                    transactionType: 'expense',
+                    amount: transaction.category!.amount
                   ),
                 );
               },
@@ -145,6 +147,7 @@ class TransactionForm {
                   onClick: () => TransactionBottomSheet.showWalletsBS(
                     userId: currentUser.uid,
                     availableWallets: snapshot.data!,
+                    transactionType: 'income'
                   ),
                 );
               },

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/transactions/home/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/home/model/category.dart';
 import 'package:provider/provider.dart';
 
+import '../../../../core/widgets/price_widget.dart';
 import '../../../../wallets/model/wallet.dart';
 
 
@@ -53,7 +55,7 @@ class TransactionBottomSheet {
                   crossAxisCount: 5,
                 ),
                 itemBuilder: (context, index) {
-                  return _designIcon(
+                  return _expenseCategoryItem(
                     icon: iconsList[index].icon,
                     label: iconsList[index].name,
                     color: Provider.of<TransactionController>(context).selectedIcon == index? redColor:lightGray,
@@ -70,7 +72,7 @@ class TransactionBottomSheet {
     ));
   }
 
-  static void showWalletsBS({required String userId, required List<Wallet> availableWallets}) {
+  static void showWalletsBS({required String transactionType, required String userId, required List<Wallet> availableWallets, double? amount}) {
     Get.bottomSheet(Container(
       padding: const EdgeInsets.only(top: 4),
       decoration: const BoxDecoration(
@@ -82,30 +84,48 @@ class TransactionBottomSheet {
       ),
       child: Column(
         children: [
-          Container(
-            height: 6,
-            width: 80,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10), color: Colors.grey[300]),
-          ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 16),
+          const Text('المحفظات المتوفرة', style: TextStyle(fontFamily: 'Tajawal')),
+          const Divider(),
+          const SizedBox(height: 16),
           Expanded(
-            child: GridView.builder(
-                itemCount: availableWallets.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 5,
-                ),
-                itemBuilder: (context, index) {
-                  return _designIcon(
-                    icon: availableWallets[index].walletType!.icon,
-                    label: availableWallets[index].name!,
-                    color: lightGray,
-                    onClick: (){
-                      Provider.of<TransactionController>(context, listen: false).onWalletChange(availableWallets[index]);
-                      Get.back();
-                    },
-                  );
-                }),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Directionality(
+                textDirection: TextDirection.rtl,
+                child: ListView.builder(
+                    itemCount: availableWallets.length,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          _walletItem(
+                              wallet: availableWallets[index],
+                            onClick: () {
+                                if(transactionType == 'expense' && amount!.isLowerThan(availableWallets[index].currentBalance!)){
+                                     Fluttertoast.showToast(
+                                        msg: 'لا يوجد رصيد كافي'
+                                    );
+                                } else {
+                                  Provider.of<TransactionController>(context, listen: false).onWalletChange(availableWallets[index]);
+                                  Get.back();
+                                }
+                            }
+                          ),
+                          const SizedBox(height: 8)
+                        ],
+                      );
+                      // return _expenseCategoryItem(
+                      //   icon: availableWallets[index].walletType!.icon,
+                      //   label: availableWallets[index].name!,
+                      //   color: lightGray,
+                      //   onClick: (){
+                      //     Provider.of<TransactionController>(context, listen: false).onWalletChange(availableWallets[index]);
+                      //     Get.back();
+                      //   },
+                      // );
+                    }),
+              ),
+            ),
           )
         ],
       ),
@@ -113,8 +133,39 @@ class TransactionBottomSheet {
   }
 
 
+  static Widget _walletItem({
+    required Wallet wallet,
+    required Function() onClick,
+    String currency = 'ريال'
+}){
+    return GestureDetector(
+      onTap: onClick,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Image.asset(wallet.walletType!.icon, height: 35),
+          const SizedBox(width: 8),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                wallet.name!,
+                style: const TextStyle(
+                    fontFamily: 'Tajawal', fontSize: 13, color: blackColor),
+              ),
+              priceWidget(
+                  amount: wallet.currentBalance!,
+                  currency: currency,
+                  fontSize: 13
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
 
-  static Widget _designIcon(
+  static Widget _expenseCategoryItem(
       {required String icon,
         required String label,
         required Color color,
