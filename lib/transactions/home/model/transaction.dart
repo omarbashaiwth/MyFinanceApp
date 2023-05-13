@@ -4,7 +4,6 @@ import 'package:myfinance_app/transactions/home/model/category.dart';
 
 class Transaction{
   String? name;
-  double? amount ;
   Category? category;
   Timestamp? createdAt;
   String? walletId;
@@ -12,15 +11,15 @@ class Transaction{
   String? userId;
   String? type;
 
-  Transaction({this.name, this.amount, this.walletId, this.category, this.createdAt, this.note, this.userId, this.type});
+  Transaction({this.name, this.walletId, this.category, this.createdAt, this.note, this.userId, this.type});
 
 
   Map<String, dynamic> toFirestore() {
     return {
       if (name != null) 'name': name,
-      if (amount != null) 'amount': amount,
       if (category != null) 'category': category!.name,
       if (category != null) 'icon': category!.icon,
+      if (category != null) 'amount': category!.amount,
       if (note != null) 'note':note,
       if(walletId != null) 'walletId':walletId else 'walletId': null,
       if(type != null) 'type': type,
@@ -34,11 +33,11 @@ class Transaction{
     final data = snapshot.data();
     return Transaction(
         name: data?['name'],
-        amount: data?['amount'],
         walletId: data?['walletId'],
         category: Category(
           name: data?['category'],
           icon: data?['icon'],
+          amount: data?['amount'],
         ),
         type: data?['type'],
         note: data?['note'],

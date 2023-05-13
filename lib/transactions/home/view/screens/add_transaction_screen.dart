@@ -79,7 +79,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
               await provider.saveTransaction(transaction);
               await walletController.updateWallet(
                   walletId: transaction.walletId! ,
-                  value: transaction.amount!,
+                  value: transaction.category!.amount!,
               );
               provider.clearSelections();
               Get.back();

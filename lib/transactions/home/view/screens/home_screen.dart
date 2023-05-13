@@ -69,7 +69,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _monthlySummarySection({required AsyncSnapshot<List<Transaction>> snapshot, required TransactionController controller}) {
-    final transactions = snapshot.data;
+    final transactions = snapshot.data ?? [];
     if(snapshot.hasData && snapshot.hasError){
       debugPrint(snapshot.error.toString());
       return const Align(alignment: Alignment.center, child: Text('يوجد خطأ', style: AppTextTheme.headerTextStyle));
@@ -85,9 +85,9 @@ class HomeScreen extends StatelessWidget {
       ),
       child: Column(
         children: [
-          summaryCard(
+          SummaryCard(
               title: 'أداء الشهر الحالي',
-              amount: controller.calculateDifference(transactions),
+              amount: controller.calculateTotal(transactions: transactions),
               width: 300,
           ),
           Row(
@@ -100,9 +100,9 @@ class HomeScreen extends StatelessWidget {
                     width: 2,
                     color: normalGray,
                   ),
-                  summaryCard(
+                  SummaryCard(
                       title: 'النفقات',
-                      amount: controller.calculateTotalExpense(transactions),
+                      amount: controller.calculateTotal(transactions: transactions, type: 'expense'),
                       width: 150
                   ),
                 ],
@@ -114,9 +114,9 @@ class HomeScreen extends StatelessWidget {
                     width: 2,
                     color: normalGray,
                   ),
-                  summaryCard(
+                  SummaryCard(
                       title: 'الدخل',
-                      amount: controller.calculateTotalIncome(transactions),
+                      amount: controller.calculateTotal(transactions:transactions, type:'income'),
                       width: 150,
                   ),
 
@@ -167,7 +167,8 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _expensesCategorySection({required TransactionController controller, required AsyncSnapshot<List<Transaction>> snapshot}){
-    final transactions = snapshot.data ?? [];
+    final transactions = snapshot.data??[];
+    final expenses = controller.calculateTotal(transactions: transactions, type: 'expense');
     final grouped = controller.groupExpenses(transactions);
     if(snapshot.hasData && snapshot.hasError){
       debugPrint(snapshot.error.toString());
@@ -188,19 +189,18 @@ class HomeScreen extends StatelessWidget {
             : ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: grouped
-                  .length,
+              itemCount: grouped.length,
               itemBuilder: (_,index) {
-                final amounts = transactions.map((e) => e.amount).toList();
-                var totalAmounts = 0.0;
-                for (var amount in amounts) {
-                  totalAmounts += amount!;
-                }
-                return higherExpensesItem(
-                    groupName: grouped.keys.elementAt(index),
-                    groupIcon: 'assets/icons/cash.png',
-                    groupAmount: grouped.values.elementAt(index),
-                    totalExpense: totalAmounts
+                // final amounts = transactions.map((e) => e.category!.amount).toList();
+                // var totalAmounts = 0.0;
+                // for (var amount in amounts) {
+                //   totalAmounts += amount!;
+                // }
+                return ExpensesCategorize(
+                    categoryName: grouped[index]['name'],
+                    categoryIcon: grouped[index]['icon'],
+                    categoryAmount: grouped[index]['amount'],
+                    totalExpense: expenses
                 );
               }
             )

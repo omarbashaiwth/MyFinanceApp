@@ -30,7 +30,7 @@ class TransactionHistoryItem extends StatelessWidget {
                       fontFamily: 'Tajawal', fontSize: 13, color: blackColor),
                 ),
                 priceWidget(
-                    amount: transaction.amount!,
+                    amount: transaction.category!.amount!,
                     currency: currency,
                     fontSize: 13),
                 transaction.note!.isEmpty

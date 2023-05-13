@@ -40,7 +40,7 @@ class TransactionForm {
                 hasPrefix: true,
                 readOnly: false,
                 onSaved: (value) =>
-                transaction.amount = -int.parse(value).toDouble()),
+                transaction.category!.amount = -int.parse(value).toDouble()),
             const SizedBox(height: 20),
             Align(
                 alignment: Alignment.centerRight,
@@ -123,7 +123,7 @@ class TransactionForm {
               keyboardType: TextInputType.number,
               readOnly: false,
               onSaved: (newValue) {
-                transaction.amount = int.parse(newValue).toDouble();
+                transaction.category!.amount = int.parse(newValue).toDouble();
               },
             ),
             const SizedBox(height: 20),

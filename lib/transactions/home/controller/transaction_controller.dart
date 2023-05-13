@@ -1,4 +1,3 @@
-import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +6,7 @@ import 'package:myfinance_app/transactions/home/model/transaction.dart'
     as my_transaction;
 import 'package:myfinance_app/transactions/home/model/category.dart';
 import 'package:myfinance_app/wallets/model/wallet.dart';
+import 'package:collection/collection.dart';
 
 class TransactionController extends ChangeNotifier {
   final _firestore = FirebaseFirestore.instance;
@@ -51,17 +51,25 @@ class TransactionController extends ChangeNotifier {
         .add(transaction);
   }
 
-  Map<String, double>groupExpenses(List<my_transaction.Transaction> transactions) {
-    final result = transactions.fold(SplayTreeMap<String, double>(), (map,transaction) =>
-        map..update(transaction.category!.name, (value) => value + transaction.amount!, ifAbsent: () => transaction.amount!)
-    );
-    final orderedResult = result.entries.toList()..sort((e1,e2){
-      var diff = e1.value.compareTo(e2.value);
-      if(diff == 0) diff = e1.key.compareTo(e2.key);
-      return diff;
-    });
+  List<Map<String, dynamic>>groupExpenses(List<my_transaction.Transaction> transactions) {
 
-    return Map<String, double>.fromEntries(orderedResult);
+    final expenses = transactions.where((element) => element.type == 'expense').toList();
+    // group expenses by category name
+    final groupedExpenses = groupBy(expenses, (expense) =>
+        expense.category!.name
+    );
+
+    final categorySummary = groupedExpenses.entries.map((entry){
+      final categoryName = entry.key;
+      final transactions = entry.value;
+      final categoryTotalAmount = transactions.fold(0.0, (previousValue, transaction) => previousValue + transaction.category!.amount!);
+      final categoryIcon = transactions.first.category!.icon;
+      return {'name': categoryName, 'icon': categoryIcon, 'amount': categoryTotalAmount};
+    }).toList();
+    // Sort category summaries by amount
+    categorySummary.sort((a, b) => (a['amount'] as double).compareTo(b['amount'] as double));
+    return categorySummary;
+
   }
 
 
@@ -80,62 +88,13 @@ class TransactionController extends ChangeNotifier {
     return docs.map((event) => event.map((e) => e.data()).toList());
   }
 
-  // Stream<List<my_transaction.Transaction>> getLastFiveTransactions() {
-  //   final snapshots = _firestore
-  //       .collection('Transactions')
-  //       .where('userId', isEqualTo: _auth.currentUser!.uid)
-  //       .orderBy('createdAt')
-  //       .limit(5)
-  //       .withConverter(
-  //       fromFirestore: my_transaction.Transaction.fromFirestore,
-  //       toFirestore: (my_transaction.Transaction transaction, _) => transaction.toFirestore())
-  //       .snapshots();
-  //   final docs = snapshots.map((event) => event.docs);
-  //   return docs.map((event) => event.map((e) => e.data()).toList());
-  // }
-
-  Stream<List<my_transaction.Transaction>> getAllExpenses() {
-    final snapshots = _firestore
-        .collection('Transactions')
-        .where('userId', isEqualTo: _auth.currentUser!.uid)
-        .where('type', isEqualTo: 'expense')
-        .withConverter(
-        fromFirestore: my_transaction.Transaction.fromFirestore,
-        toFirestore: (my_transaction.Transaction transaction, _) => transaction.toFirestore())
-        .snapshots();
-    final docs = snapshots.map((event) => event.docs);
-    return docs.map((event) => event.map((e) => e.data()).toList());
-  }
-
-  double calculateTotalExpense(List<my_transaction.Transaction>? transactions){
-    var totalExpenses = 0.0;
-    if(transactions != null){
-      final expenses = transactions.where((element) => element.type == 'expense').toList();
-      final amounts = expenses.map((e) => e.amount).toList();
-      for(var amount in amounts){
-        totalExpenses += amount!;
-      }
+  double calculateTotal({required List<my_transaction.Transaction> transactions, String? type}){
+    if(type == null) {
+      return transactions.fold(0.0, (previousValue, transaction) => previousValue + transaction.category!.amount!);
+    } else {
+      final transactionsByType = transactions.where((element) => element.type == type).toList();
+      return transactionsByType.fold(0.0, (previousValue, transaction) => previousValue + transaction.category!.amount!);
     }
-    return totalExpenses;
-  }
-
-  double calculateTotalIncome(List<my_transaction.Transaction>? transactions){
-    var totalIncome = 0.0;
-    if(transactions != null){
-      final expenses = transactions.where((element) => element.type == 'income').toList();
-      final amounts = expenses.map((e) => e.amount).toList();
-      for(var amount in amounts){
-        totalIncome += amount!;
-      }
-    }
-    return totalIncome;
-  }
-
-  double calculateDifference(List<my_transaction.Transaction>? transactions){
-    final totalIncome = calculateTotalIncome(transactions);
-    final totalExpenses = calculateTotalExpense(transactions);
-
-    return totalIncome + totalExpenses;
   }
 
 

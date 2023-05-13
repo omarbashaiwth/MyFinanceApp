@@ -45,6 +45,7 @@ dependencies:
   intl: ^0.17.0
   fluttertoast: ^8.2.1
   custom_pop_up_menu: ^1.2.4
+  collection: ^1.17.0
 
 dev_dependencies:
   flutter_test:

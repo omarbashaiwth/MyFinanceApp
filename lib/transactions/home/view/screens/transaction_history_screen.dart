@@ -14,12 +14,6 @@ class TransactionHistoryScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
-        // actions: [
-        //   IconButton(
-        //       onPressed: () => Get.back(),
-        //       icon: const Icon(Icons.keyboard_backspace)
-        //   )
-        // ],
         centerTitle: true,
         title: const Text(
           'سجل المعاملات',
