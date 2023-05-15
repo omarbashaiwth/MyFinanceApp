@@ -13,6 +13,7 @@ class CustomTextFormField extends StatelessWidget {
   final Function? onClick;
   final bool hasPrefix;
   final TextInputType keyboardType;
+  final TextEditingController? controller;
   final Function(String) onSaved;
 
   const CustomTextFormField(
@@ -26,7 +27,7 @@ class CustomTextFormField extends StatelessWidget {
       this.isRequired = true,
       this.readOnly = false,
       this.hasPrefix = false,
-      this.keyboardType = TextInputType.text}
+      this.keyboardType = TextInputType.text, this.controller}
       )
       : super(key: key);
 
@@ -38,6 +39,7 @@ class CustomTextFormField extends StatelessWidget {
           color: Theme.of(context).colorScheme.secondaryContainer
       ),
       child: TextFormField(
+        controller: controller,
         key: ValueKey(key),
         onSaved: (newValue) => onSaved(newValue!),
         validator: (value) {

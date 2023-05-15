@@ -29,10 +29,12 @@ class TransactionHistoryItem extends StatelessWidget {
                   style: const TextStyle(
                       fontFamily: 'Tajawal', fontSize: 13, color: blackColor),
                 ),
-                priceWidget(
+                PriceWidget(
                     amount: transaction.category!.amount!,
                     currency: currency,
-                    fontSize: 13),
+                    fontSize: 13,
+                  color: transaction.category!.amount! < 0 ? Colors.red:Colors.green,
+                ),
                 transaction.note!.isEmpty
                     ? Container()
                     : const SizedBox(height: 5),

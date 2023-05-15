@@ -1,24 +1,25 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myfinance_app/transactions/home/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/home/model/transaction.dart';
 import 'package:myfinance_app/transactions/home/view/widgets/transaction_bottom_sheet.dart';
 import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
 
 import '../../../../core/ui/theme.dart';
+import '../../../../wallets/model/wallet.dart';
 import 'clickable_text_field.dart';
 import 'custom_text_form_field.dart';
 
 class TransactionForm {
-
-  static Widget expenseForm({
-    required User currentUser,
-    required TransactionController transactionController,
-    required WalletController walletController,
-    required Transaction transaction,
-    required BuildContext context,
-    required Key key
-}){
+  static Widget expenseForm(
+      {required User currentUser,
+      required TransactionController transactionController,
+      required WalletController walletController,
+      required Transaction transaction,
+      required TextEditingController textEditingController,
+      required BuildContext context,
+      required Key key}) {
     return Form(
       key: key,
       child: SingleChildScrollView(
@@ -35,12 +36,13 @@ class TransactionForm {
             CustomTextFormField(
                 textFormKey: 'amount',
                 hint: 'المبلغ',
+                controller: textEditingController,
                 leadingIcon: Icons.attach_money,
                 keyboardType: TextInputType.number,
                 hasPrefix: true,
                 readOnly: false,
-                onSaved: (value) =>
-                transaction.category!.amount = -int.parse(value).toDouble()),
+                onSaved: (value) => transaction.category!.amount =
+                    -int.parse(value).toDouble()),
             const SizedBox(height: 20),
             Align(
                 alignment: Alignment.centerRight,
@@ -52,17 +54,20 @@ class TransactionForm {
               stream: walletController.getWallets(),
               builder: (_, snapshot) {
                 return ClickableTextField(
-                  text: transactionController.selectedWallet.name ??
-                      'لا يوجد',
-                  image: transactionController
-                      .selectedWallet.walletType?.icon ??
-                      'assets/icons/question.png',
-                  onClick: () => TransactionBottomSheet.showWalletsBS(
-                    userId: currentUser.uid,
-                    availableWallets: snapshot.data!,
-                    transactionType: 'expense',
-                    amount: transaction.category!.amount
-                  ),
+                  text: transactionController.selectedWallet.name ?? 'لا يوجد',
+                  image:
+                      transactionController.selectedWallet.walletType?.icon ??
+                          'assets/icons/question.png',
+                  onClick: () {
+                    final expenseAmount = double.tryParse(textEditingController.text);
+                    expenseAmount != null
+                        ? TransactionBottomSheet.showWalletsBS(
+                        userId: currentUser.uid,
+                        availableWallets: snapshot.data!,
+                        expenseAmount: expenseAmount,
+                    )
+                        : Fluttertoast.showToast(msg: 'قم بإدخال المبلغ أولاً');
+                  },
                 );
               },
             ),
@@ -101,7 +106,7 @@ class TransactionForm {
     required WalletController walletController,
     required Transaction transaction,
     required BuildContext context,
-  }){
+  }) {
     return Form(
       key: key,
       child: SingleChildScrollView(
@@ -139,15 +144,14 @@ class TransactionForm {
               stream: walletController.getWallets(),
               builder: (_, snapshot) {
                 return ClickableTextField(
-                  text: transactionController.selectedWallet.name ??
-                      'لا يوجد',
-                  image: transactionController
-                      .selectedWallet.walletType?.icon ??
-                      'assets/icons/question.png',
+                  text: transactionController.selectedWallet.name ?? 'لا يوجد',
+                  image:
+                      transactionController.selectedWallet.walletType?.icon ??
+                          'assets/icons/question.png',
                   onClick: () => TransactionBottomSheet.showWalletsBS(
                     userId: currentUser.uid,
                     availableWallets: snapshot.data!,
-                    transactionType: 'income'
+                    expenseAmount: null,
                   ),
                 );
               },

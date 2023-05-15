@@ -15,7 +15,12 @@ class WalletBalance extends StatelessWidget {
       children: [
         Text(balanceLabel, style: AppTextTheme.headerTextStyle),
         const SizedBox(height: 8),
-        priceWidget(amount: balance, currency: 'ريال', fontSize: fontSize)
+        PriceWidget(
+            amount: balance,
+            currency: 'ريال',
+            fontSize: fontSize,
+          color: balance < 0 ? Colors.red: Colors.green,
+        )
       ],
     );
   }

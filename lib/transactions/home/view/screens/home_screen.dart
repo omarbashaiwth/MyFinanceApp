@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:get/get.dart';
 import '../../model/transaction.dart';
 import '../widgets/custom_card.dart';
-import '../widgets/higher_expenses.dart';
+import '../widgets/expense_categorize.dart';
 import '../widgets/last_transactions.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -17,7 +17,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Provider.of<TransactionController>(context);
+    final controller = Provider.of<TransactionController>(context, listen: false);
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark));

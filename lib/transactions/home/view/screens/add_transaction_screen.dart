@@ -11,6 +11,8 @@ import 'package:myfinance_app/transactions/home/view/widgets/transaction_form.da
 import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/transaction_bottom_sheet.dart';
+
 
 class AddTransactionScreen extends StatefulWidget {
   const AddTransactionScreen({Key? key}) : super(key: key);
@@ -25,16 +27,19 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
   final _incomeFormKey = GlobalKey<FormState>();
   var _currentTabIndex = 0;
   late final TabController _tabController;
+  late final TextEditingController _expenseTextEditingController;
 
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
+    _expenseTextEditingController = TextEditingController();
     super.initState();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
+    _expenseTextEditingController.dispose();
     super.dispose();
   }
 
@@ -83,7 +88,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
               );
               provider.clearSelections();
               Get.back();
-            } else if(transaction.walletId == null){
+            } else{
               Fluttertoast.showToast(
                 msg: 'قم باختيار المحفظة',
               );
@@ -99,6 +104,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
           children: [
             TransactionForm.expenseForm(
                 key: _expenseFormKey,
+                textEditingController: _expenseTextEditingController,
                 context: context,
                 transaction: transaction,
                 currentUser: currentUser,

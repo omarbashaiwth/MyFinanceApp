@@ -28,7 +28,7 @@ class SummaryCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 8),
-              priceWidget(amount: amount, currency: currency)
+              PriceWidget(amount: amount, currency: currency, color: amount < 0 ? Colors.red : Colors.green)
             ],
           ),
         ),

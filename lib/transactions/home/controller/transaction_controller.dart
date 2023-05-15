@@ -74,18 +74,15 @@ class TransactionController extends ChangeNotifier {
 
 
   Stream<List<my_transaction.Transaction>> getTransactions() {
-    final snapshots = _firestore
-        .collection('Transactions')
+    return _firestore.collection('Transactions')
         .where('userId', isEqualTo: _auth.currentUser!.uid)
         .orderBy('createdAt')
         .withConverter(
             fromFirestore: my_transaction.Transaction.fromFirestore,
             toFirestore: (my_transaction.Transaction transaction, _) => transaction.toFirestore()
         )
-        .snapshots();
-    final docs = snapshots.map((event) => event.docs);
-    debugPrint('getTransactions');
-    return docs.map((event) => event.map((e) => e.data()).toList());
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
   }
 
   double calculateTotal({required List<my_transaction.Transaction> transactions, String? type}){

@@ -35,7 +35,7 @@ class Wallet {
     return Wallet(
         id: data?['id'],
         name: data?['name'],
-        currentBalance: data?['balance'],
+        currentBalance: data?['balance'] as double,
         walletType: WalletType(
           type: data?['type'],
           icon: data?['icon'],

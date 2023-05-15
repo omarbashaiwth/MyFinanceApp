@@ -9,25 +9,33 @@ import 'package:provider/provider.dart';
 import '../../../../core/widgets/price_widget.dart';
 import '../../../../wallets/model/wallet.dart';
 
-
 class TransactionBottomSheet {
-
-  static void showExpensesIconsBS(){
+  static void showExpensesIconsBS() {
     final iconsList = [
-      Category(icon: 'assets/icons/expenses_icons/rent.png',name: 'إيجار'),
-      Category(icon: 'assets/icons/expenses_icons/electricity.png',name:  'كهرباء'),
-      Category(icon: 'assets/icons/expenses_icons/drop.png',name:  'ماء'),
-      Category(icon: 'assets/icons/expenses_icons/wifi.png',name:  'إنترنت'),
-      Category(icon: 'assets/icons/expenses_icons/shopping-cart.png',name:  'تسوق'),
-      Category(icon: 'assets/icons/expenses_icons/bus.png',name:  'مواصلات'),
-      Category(icon: 'assets/icons/expenses_icons/airplane.png',name:  'سفر'),
-      Category(icon: 'assets/icons/expenses_icons/reading.png',name:  'تعليم'),
-      Category(icon: 'assets/icons/expenses_icons/electrocardiography.png',name:  'صحة'),
-      Category(icon: 'assets/icons/expenses_icons/gas-station.png',name:  'وقود'),
-      Category(icon: 'assets/icons/expenses_icons/hot-air-balloon.png',name:  'ترفيه'),
-      Category(icon: 'assets/icons/expenses_icons/shopping.png',name:  'مستلزمات البيت'),
+      Category(icon: 'assets/icons/expenses_icons/rent.png', name: 'إيجار'),
+      Category(
+          icon: 'assets/icons/expenses_icons/electricity.png', name: 'كهرباء'),
+      Category(icon: 'assets/icons/expenses_icons/drop.png', name: 'ماء'),
+      Category(icon: 'assets/icons/expenses_icons/wifi.png', name: 'إنترنت'),
+      Category(
+          icon: 'assets/icons/expenses_icons/shopping-cart.png', name: 'تسوق'),
+      Category(icon: 'assets/icons/expenses_icons/bus.png', name: 'مواصلات'),
+      Category(icon: 'assets/icons/expenses_icons/airplane.png', name: 'سفر'),
+      Category(icon: 'assets/icons/expenses_icons/reading.png', name: 'تعليم'),
+      Category(
+          icon: 'assets/icons/expenses_icons/electrocardiography.png',
+          name: 'صحة'),
+      Category(
+          icon: 'assets/icons/expenses_icons/gas-station.png', name: 'وقود'),
+      Category(
+          icon: 'assets/icons/expenses_icons/hot-air-balloon.png',
+          name: 'ترفيه'),
+      Category(
+          icon: 'assets/icons/expenses_icons/shopping.png',
+          name: 'مستلزمات البيت'),
       Category(icon: 'assets/icons/expenses_icons/zakat.png', name: 'صدقة'),
-      Category(icon: 'assets/icons/expenses_icons/pending.png', name: 'كماليات'),
+      Category(
+          icon: 'assets/icons/expenses_icons/pending.png', name: 'كماليات'),
       Category(icon: 'assets/icons/expenses_icons/other.png', name: 'أخرى'),
     ];
     Get.bottomSheet(Container(
@@ -45,7 +53,8 @@ class TransactionBottomSheet {
             height: 6,
             width: 80,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10), color: Colors.grey[300]),
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.grey[300]),
           ),
           const SizedBox(height: 32),
           Expanded(
@@ -58,10 +67,16 @@ class TransactionBottomSheet {
                   return _expenseCategoryItem(
                     icon: iconsList[index].icon,
                     label: iconsList[index].name,
-                    color: Provider.of<TransactionController>(context).selectedIcon == index? redColor:lightGray,
-                    onClick: (){
-                      Provider.of<TransactionController>(context, listen: false).onChangeSelectedIcon(index);
-                      Provider.of<TransactionController>(context, listen: false).onCategoryChange(iconsList[index]);
+                    color: Provider.of<TransactionController>(context)
+                                .selectedIcon ==
+                            index
+                        ? redColor
+                        : lightGray,
+                    onClick: () {
+                      Provider.of<TransactionController>(context, listen: false)
+                          .onChangeSelectedIcon(index);
+                      Provider.of<TransactionController>(context, listen: false)
+                          .onCategoryChange(iconsList[index]);
                       Get.back();
                     },
                   );
@@ -72,7 +87,10 @@ class TransactionBottomSheet {
     ));
   }
 
-  static void showWalletsBS({required String transactionType, required String userId, required List<Wallet> availableWallets, double? amount}) {
+  static void showWalletsBS(
+      {required String userId,
+      required List<Wallet> availableWallets,
+      double? expenseAmount}) {
     Get.bottomSheet(Container(
       padding: const EdgeInsets.only(top: 4),
       decoration: const BoxDecoration(
@@ -85,7 +103,8 @@ class TransactionBottomSheet {
       child: Column(
         children: [
           const SizedBox(height: 16),
-          const Text('المحفظات المتوفرة', style: TextStyle(fontFamily: 'Tajawal')),
+          const Text('المحفظات المتوفرة',
+              style: TextStyle(fontFamily: 'Tajawal')),
           const Divider(),
           const SizedBox(height: 16),
           Expanded(
@@ -96,24 +115,18 @@ class TransactionBottomSheet {
                 child: ListView.builder(
                     itemCount: availableWallets.length,
                     itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          _walletItem(
-                              wallet: availableWallets[index],
+                      return Column(children: [
+                        _walletItem(
+                            expenseAmount: expenseAmount,
+                            wallet: availableWallets[index],
                             onClick: () {
-                                if(transactionType == 'expense' && amount!.isLowerThan(availableWallets[index].currentBalance!)){
-                                     Fluttertoast.showToast(
-                                        msg: 'لا يوجد رصيد كافي'
-                                    );
-                                } else {
-                                  Provider.of<TransactionController>(context, listen: false).onWalletChange(availableWallets[index]);
-                                  Get.back();
-                                }
-                            }
-                          ),
-                          const SizedBox(height: 8)
-                        ],
-                      );
+                              Provider.of<TransactionController>(context,
+                                      listen: false)
+                                  .onWalletChange(availableWallets[index]);
+                              Get.back();
+                            }),
+                        const SizedBox(height: 12)
+                      ]);
                       // return _expenseCategoryItem(
                       //   icon: availableWallets[index].walletType!.icon,
                       //   label: availableWallets[index].name!,
@@ -132,34 +145,56 @@ class TransactionBottomSheet {
     ));
   }
 
-
-  static Widget _walletItem({
-    required Wallet wallet,
-    required Function() onClick,
-    String currency = 'ريال'
-}){
+  static Widget _walletItem(
+      {required Wallet wallet,
+      required Function() onClick,
+      required double? expenseAmount,
+      String currency = 'ريال'}) {
+    final canChooseWallet =  (expenseAmount != null &&
+        expenseAmount.isLowerThan(wallet.currentBalance!)) || expenseAmount == null;
+    final colorFilter =
+        ColorFilter.mode(Colors.grey.withOpacity(0.2), BlendMode.dstATop);
     return GestureDetector(
-      onTap: onClick,
+      onTap: canChooseWallet ? onClick : null,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Image.asset(wallet.walletType!.icon, height: 35),
+          canChooseWallet
+              ? Image.asset(wallet.walletType!.icon, height: 35)
+              : ClipOval(
+                  child: ColorFiltered(
+                    colorFilter: colorFilter,
+                    child: Opacity(
+                      opacity: 0.5,
+                      child: Image.asset(wallet.walletType!.icon, height: 35),
+                    ),
+                  ),
+                ),
           const SizedBox(width: 8),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 wallet.name!,
-                style: const TextStyle(
-                    fontFamily: 'Tajawal', fontSize: 13, color: blackColor),
+                style: TextStyle(
+                    fontFamily: 'Tajawal',
+                    fontSize: 13,
+                    color: canChooseWallet
+                        ? blackColor
+                        : Colors.grey.withOpacity(0.2)),
               ),
-              priceWidget(
-                  amount: wallet.currentBalance!,
-                  currency: currency,
-                  fontSize: 13
+              PriceWidget(
+                amount: wallet.currentBalance!,
+                currency: currency,
+                fontSize: 13,
+                color: !canChooseWallet
+                    ? Colors.grey.withOpacity(0.2)
+                    : wallet.currentBalance! < 0
+                        ? Colors.red
+                        : Colors.green,
               ),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -167,10 +202,9 @@ class TransactionBottomSheet {
 
   static Widget _expenseCategoryItem(
       {required String icon,
-        required String label,
-        required Color color,
-        required Function onClick
-      }) {
+      required String label,
+      required Color color,
+      required Function onClick}) {
     return GestureDetector(
       onTap: () => onClick(),
       child: Column(
@@ -178,9 +212,7 @@ class TransactionBottomSheet {
           Container(
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                color: color
-            ),
+                borderRadius: BorderRadius.circular(20), color: color),
             child: Image.asset(icon, height: 35),
           ),
           const SizedBox(height: 2),
@@ -194,6 +226,3 @@ class TransactionBottomSheet {
     );
   }
 }
-
-
-

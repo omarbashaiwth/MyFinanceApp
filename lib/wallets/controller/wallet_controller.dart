@@ -50,17 +50,17 @@ class WalletController extends ChangeNotifier {
    docRef.update({'balance':FieldValue.increment(value)});
   }
 
-  Stream<List<Wallet>> getWallets() {
-    final snapshots = _firestore
-        .collection('Wallets')
+  Stream<List<Wallet>> getWallets()  {
+    return _firestore.collection('Wallets')
         .where('userId', isEqualTo: _auth.currentUser!.uid)
         .orderBy('createdAt')
-        .withConverter(
-            fromFirestore: Wallet.fromFirestore,
-            toFirestore: (Wallet wallet, _) => wallet.toFirestore())
-        .snapshots();
-    final docs = snapshots.map((event) => event.docs);
-    return docs.map((event) => event.map((e) => e.data()).toList());
+        .withConverter<Wallet>(
+          fromFirestore: Wallet.fromFirestore,
+          toFirestore: (Wallet wallet, _) => wallet.toFirestore()
+        )
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
+
   }
 
 }
