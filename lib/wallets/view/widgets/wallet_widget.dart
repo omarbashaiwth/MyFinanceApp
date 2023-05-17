@@ -1,12 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/wallets/model/wallet.dart';
+import 'package:myfinance_app/wallets/view/widgets/dialog_widget.dart';
 import 'package:myfinance_app/wallets/view/widgets/wallet_balance_widget.dart';
-
+import 'package:get/get.dart';
 
 class WalletWidget extends StatelessWidget {
   final Wallet wallet;
-  const WalletWidget({Key? key, required this.wallet}) : super(key: key);
+  final TextEditingController textEditingController;
+  final Function() onAddBalance;
+
+  const WalletWidget(
+      {Key? key,
+      required this.wallet,
+      required this.textEditingController,
+      required this.onAddBalance})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,19 +25,17 @@ class WalletWidget extends StatelessWidget {
         child: Card(
           elevation: 0,
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-              side: const BorderSide(color: normalGray),
+            borderRadius: BorderRadius.circular(20),
+            side: const BorderSide(color: normalGray),
           ),
           child: Column(
             children: [
               Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                    onPressed: (){},
-                    splashRadius: 18,
-                    icon: const Icon(Icons.more_vert, size: 18)
-                )
-              ),
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                      onPressed: () {},
+                      splashRadius: 18,
+                      icon: const Icon(Icons.more_vert, size: 18))),
               WalletBalance(
                 balanceLabel: wallet.name!,
                 balance: wallet.currentBalance!,
@@ -38,9 +45,27 @@ class WalletWidget extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _walletActions(label: 'إضافة', icon: Icons.add),
-                  _walletActions(label: 'سحب', icon: Icons.arrow_circle_down),
-                  _walletActions(label: 'تحويل', icon: Icons.currency_exchange),
+                  _walletActions(
+                    label: 'إضافة',
+                    icon: Icons.add,
+                    onClick: () {
+                      showDialog(
+                        context: context,
+                        builder: (_) => CustomDialog(
+                          textEditingController: textEditingController,
+                          onPositiveClick: onAddBalance ,
+                        ),
+                      );
+                    },
+                  ),
+                  _walletActions(
+                      label: 'سحب',
+                      icon: Icons.arrow_circle_down,
+                      onClick: () {}),
+                  _walletActions(
+                      label: 'تحويل',
+                      icon: Icons.currency_exchange,
+                      onClick: () {}),
                 ],
               ),
               const SizedBox(height: 16),
@@ -51,22 +76,23 @@ class WalletWidget extends StatelessWidget {
       Align(
         alignment: Alignment.topCenter,
         child: Container(
-            padding: const EdgeInsets.all(4),
-            decoration: BoxDecoration(
-                color: normalGray, borderRadius: BorderRadius.circular(30)),
-            child: Image.asset(wallet.walletType!.icon, height: 45)
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+              color: normalGray, borderRadius: BorderRadius.circular(30)),
+          child: Image.asset(wallet.walletType!.icon, height: 45),
         ),
       )
     ]);
   }
 
-
-
-  Widget _walletActions({required String label, required IconData icon}) {
+  Widget _walletActions(
+      {required String label,
+      required IconData icon,
+      required Function() onClick}) {
     return Column(
       children: [
         GestureDetector(
-          onTap: () {},
+          onTap: onClick,
           child: Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(

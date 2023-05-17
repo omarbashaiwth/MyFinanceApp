@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/transactions/home/controller/transaction_controller.dart';

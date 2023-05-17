@@ -191,11 +191,6 @@ class HomeScreen extends StatelessWidget {
               shrinkWrap: true,
               itemCount: grouped.length,
               itemBuilder: (_,index) {
-                // final amounts = transactions.map((e) => e.category!.amount).toList();
-                // var totalAmounts = 0.0;
-                // for (var amount in amounts) {
-                //   totalAmounts += amount!;
-                // }
                 return ExpensesCategorize(
                     categoryName: grouped[index]['name'],
                     categoryIcon: grouped[index]['icon'],

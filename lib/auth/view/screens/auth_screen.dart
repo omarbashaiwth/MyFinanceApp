@@ -23,113 +23,115 @@ class AuthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = Provider.of<AuthController>(context);
     final silentProvider = Provider.of<AuthController>(context, listen: false);
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          const SizedBox(height: 40),
-          buildAppLogo(logoImage: 'assets/images/Logo.png', name: 'MyFinance'),
-          const SizedBox(height: 24),
-          _buildForm(context),
-          const SizedBox(height: 2),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              TextButton(
-                onPressed: () {},
-                style: ButtonStyle(
-                    overlayColor:
-                    MaterialStateProperty.all(Colors.transparent)),
-                child: Text(
-                  'نسيت كلمة المرور؟',
-                  style: AppTextTheme.textButtonStyle
-                      .copyWith(decoration: TextDecoration.underline),
+    return Center(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 40),
+            const AppLogo(image: 'assets/images/Logo.png', name: 'مصاريفي'),
+            const SizedBox(height: 50),
+            _buildForm(context),
+            const SizedBox(height: 2),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                TextButton(
+                  onPressed: () {},
+                  style: ButtonStyle(
+                      overlayColor:
+                      MaterialStateProperty.all(Colors.transparent)),
+                  child: Text(
+                    'نسيت كلمة المرور؟',
+                    style: AppTextTheme.textButtonStyle
+                        .copyWith(decoration: TextDecoration.underline),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 50),
-              provider.isLoading ? const CircularProgressIndicator() : Container()
+                const SizedBox(width: 50),
+                provider.isLoading ? const CircularProgressIndicator() : Container()
 
-            ],
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              final isValid = _formKey.currentState?.validate();
-              FocusScope.of(context).unfocus();
-              if (isValid != null && isValid) {
-                _formKey.currentState?.save();
-                await FirebaseAuthServices(_auth).firebaseAuth(
-                  user: _user,
-                  isLogin: provider.isLogin,
-                  context: context,
-                  onLoading: (bool loading) {
-                    silentProvider.onLoadingStateChange(loading);
-                    // setState(() => _isLoading = loading);
-                  },
-                  onMessage: (String msg) async {
-                    FirebaseAuthServices.showMessageToUser(_auth, msg, context);
-                  },
-                );
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size(double.infinity, 50),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
+              ],
             ),
-            child: Text(
-              provider.isLogin ? 'تسجيل الدخول' : 'إنشاء حساب',
-              style: AppTextTheme.elevatedButtonTextStyle,
-            ),
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
+            ElevatedButton(
+              onPressed: () async {
+                final isValid = _formKey.currentState?.validate();
+                FocusScope.of(context).unfocus();
+                if (isValid != null && isValid) {
+                  _formKey.currentState?.save();
+                  await FirebaseAuthServices(_auth).firebaseAuth(
+                    user: _user,
+                    isLogin: provider.isLogin,
+                    context: context,
+                    onLoading: (bool loading) {
+                      silentProvider.onLoadingStateChange(loading);
+                      // setState(() => _isLoading = loading);
+                    },
+                    onMessage: (String msg) async {
+                      FirebaseAuthServices.showMessageToUser(_auth, msg, context);
+                    },
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 50),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15)),
-                backgroundColor:
-                Theme
-                    .of(context)
-                    .colorScheme
-                    .secondaryContainer),
-            child: Row(
+              ),
+              child: Text(
+                provider.isLogin ? 'تسجيل الدخول' : 'إنشاء حساب',
+                style: AppTextTheme.elevatedButtonTextStyle,
+              ),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                  minimumSize: const Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15)),
+                  backgroundColor:
+                  Theme
+                      .of(context)
+                      .colorScheme
+                      .secondaryContainer),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(width: 20),
+                  Text(
+                    provider.isLogin
+                        ? 'تسجيل الدخول من خلال حساب قوقل'
+                        : 'إنشاء حساب من خلال قوقل',
+                    style: AppTextTheme.normalTextStyle,
+                  ),
+                  const SizedBox(width: 20),
+                  Image.asset('assets/images/Google_logo.png'),
+                ],
+              ),
+            ),
+            const SizedBox(height: 50),
+            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const SizedBox(width: 20),
-                Text(
-                  provider.isLogin
-                      ? 'تسجيل الدخول من خلال حساب قوقل'
-                      : 'إنشاء حساب من خلال قوقل',
-                  style: AppTextTheme.normalTextStyle,
+                Text(provider.isLogin ? 'ليس لديك حساب؟ ' : 'لديك حساب؟ ',
+                    style: AppTextTheme.normalTextStyle),
+                GestureDetector(
+                  child: Text(
+                      provider.isLogin ? 'قم بإنشاء حساب جديد' : 'قم بتسجيل الدخول',
+                      style: AppTextTheme.normalTextStyle.copyWith(
+                          color: Theme
+                              .of(context)
+                              .colorScheme
+                              .primary,
+                          fontWeight: FontWeight.bold)),
+                  onTap: () {
+                    silentProvider.onLoginStateChange(!provider.isLogin);
+                    // setState(() => _isLogin = !_isLogin);
+                  },
                 ),
-                const SizedBox(width: 20),
-                Image.asset('assets/images/Google_logo.png'),
               ],
-            ),
-          ),
-          const SizedBox(height: 50),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(provider.isLogin ? 'ليس لديك حساب؟ ' : 'لديك حساب؟ ',
-                  style: AppTextTheme.normalTextStyle),
-              GestureDetector(
-                child: Text(
-                    provider.isLogin ? 'قم بإنشاء حساب جديد' : 'قم بتسجيل الدخول',
-                    style: AppTextTheme.normalTextStyle.copyWith(
-                        color: Theme
-                            .of(context)
-                            .colorScheme
-                            .primary,
-                        fontWeight: FontWeight.bold)),
-                onTap: () {
-                  silentProvider.onLoginStateChange(!provider.isLogin);
-                  // setState(() => _isLogin = !_isLogin);
-                },
-              ),
-            ],
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }

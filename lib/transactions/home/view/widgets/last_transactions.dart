@@ -35,10 +35,10 @@ class TransactionHistoryItem extends StatelessWidget {
                     fontSize: 13,
                   color: transaction.category!.amount! < 0 ? Colors.red:Colors.green,
                 ),
-                transaction.note!.isEmpty
+                transaction.note == null
                     ? Container()
                     : const SizedBox(height: 5),
-                transaction.note!.isEmpty
+                transaction.note == null
                     ? Container()
                     : Text(
                   transaction.note!,
