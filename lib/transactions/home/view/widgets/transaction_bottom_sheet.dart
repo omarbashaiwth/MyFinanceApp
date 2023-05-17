@@ -89,7 +89,8 @@ class TransactionBottomSheet {
   static void showWalletsBS(
       {required String userId,
       required List<Wallet> availableWallets,
-      double? expenseAmount}) {
+        required bool Function(Wallet) walletClickable,
+      }) {
     Get.bottomSheet(Container(
       padding: const EdgeInsets.only(top: 4),
       decoration: const BoxDecoration(
@@ -116,8 +117,8 @@ class TransactionBottomSheet {
                     itemBuilder: (context, index) {
                       return Column(children: [
                         _walletItem(
-                            expenseAmount: expenseAmount,
                             wallet: availableWallets[index],
+                            clickable: walletClickable,
                             onClick: () {
                               Provider.of<TransactionController>(context,
                                       listen: false)
@@ -126,15 +127,6 @@ class TransactionBottomSheet {
                             }),
                         const SizedBox(height: 12)
                       ]);
-                      // return _expenseCategoryItem(
-                      //   icon: availableWallets[index].walletType!.icon,
-                      //   label: availableWallets[index].name!,
-                      //   color: lightGray,
-                      //   onClick: (){
-                      //     Provider.of<TransactionController>(context, listen: false).onWalletChange(availableWallets[index]);
-                      //     Get.back();
-                      //   },
-                      // );
                     }),
               ),
             ),
@@ -147,18 +139,18 @@ class TransactionBottomSheet {
   static Widget _walletItem(
       {required Wallet wallet,
       required Function() onClick,
-      required double? expenseAmount,
+        required bool Function(Wallet) clickable,
       String currency = 'ريال'}) {
-    final canChooseWallet =  (expenseAmount != null &&
-        expenseAmount.isLowerThan(wallet.currentBalance!)) || expenseAmount == null;
+    // final canChooseWallet =  (expenseAmount != null &&
+    //     expenseAmount.isLowerThan(wallet.currentBalance!)) || expenseAmount == null;
     final colorFilter =
         ColorFilter.mode(Colors.grey.withOpacity(0.2), BlendMode.dstATop);
     return GestureDetector(
-      onTap: canChooseWallet ? onClick : null,
+      onTap: clickable(wallet) ? onClick : null,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          canChooseWallet
+          clickable(wallet)
               ? Image.asset(wallet.walletType!.icon, height: 35)
               : ClipOval(
                   child: ColorFiltered(
@@ -178,7 +170,7 @@ class TransactionBottomSheet {
                 style: TextStyle(
                     fontFamily: 'Tajawal',
                     fontSize: 13,
-                    color: canChooseWallet
+                    color: clickable(wallet)
                         ? blackColor
                         : Colors.grey.withOpacity(0.2)),
               ),
@@ -186,7 +178,7 @@ class TransactionBottomSheet {
                 amount: wallet.currentBalance!,
                 currency: currency,
                 fontSize: 13,
-                color: !canChooseWallet
+                color: !clickable(wallet)
                     ? Colors.grey.withOpacity(0.2)
                     : wallet.currentBalance! < 0
                         ? Colors.red

@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/transactions/home/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/home/model/category.dart';
 import 'package:myfinance_app/transactions/home/model/transaction.dart' as my_transaction;
@@ -8,6 +10,7 @@ import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
 import 'package:myfinance_app/wallets/model/wallet.dart';
 import 'package:myfinance_app/wallets/view/widgets/wallet_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 
 import '../../../core/ui/theme.dart';
 import '../widgets/wallet_balance_widget.dart';
@@ -88,10 +91,13 @@ class _WalletsScreenState extends State<WalletsScreen> {
                           fontSize: 36,
                         ),
                   const SizedBox(height: 50),
-                  const Align(
-                      alignment: Alignment.centerRight,
-                      child: Text('كل المحفظات',
-                          style: AppTextTheme.headerTextStyle)),
+                  const Padding(
+                    padding: EdgeInsets.only(right: 8),
+                    child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Text('كل المحفظات',
+                            style: AppTextTheme.headerTextStyle)),
+                  ),
                   const SizedBox(height: 16),
                   _allWallets(
                       snapshot: snapshot,
@@ -100,55 +106,65 @@ class _WalletsScreenState extends State<WalletsScreen> {
                       transferBalanceController: _transferBalanceController,
                       addBalanceController: _addBalanceController,
                       onAddBalance: (wallet)  async {
-                        final valueToAdd = double.tryParse(_addBalanceController.text) ?? 0.0;
-                        debugPrint('walletId: ${wallet.id}, value: ${_addBalanceController.text}');
-
-                        await walletProvider.updateWallet(
-                            value: valueToAdd,
-                            walletId: wallet.id!
-                        );
-                        await transactionProvider.saveTransaction(
-                           my_transaction.Transaction(
-                             name: 'إضافة رصيد',
-                             walletId: wallet.id!,
-                             createdAt: Timestamp.now(),
-                             type: 'income',
-                             note: '',
-                             userId: auth.currentUser!.uid,
-                             category: Category(
-                               icon: wallet.walletType!.icon,
-                               name: 'أخرى',
-                               amount: valueToAdd
-                             )
-                           )
-                         );
-
+                        final valueToAdd = double.tryParse(_addBalanceController.text);
+                        if(valueToAdd == null){
+                          Fluttertoast.showToast(msg:'قم بادخال مبلغ صحيح');
+                        } else {
+                          await walletProvider.updateWallet(
+                              value: valueToAdd,
+                              walletId: wallet.id!
+                          );
+                          await transactionProvider.saveTransaction(
+                              my_transaction.Transaction(
+                                  name: 'إضافة رصيد',
+                                  walletId: wallet.id!,
+                                  createdAt: Timestamp.now(),
+                                  type: 'income',
+                                  note: '',
+                                  userId: auth.currentUser!.uid,
+                                  category: Category(
+                                      icon: wallet.walletType!.icon,
+                                      name: 'أخرى',
+                                      amount: valueToAdd
+                                  )
+                              )
+                          );
+                          Get.back();
+                        }
                     },
                     onTransferBalance: (from, to) async {
-                        final transferAmount = double.tryParse(_transferBalanceController.text) ?? 0.0;
-                        await walletProvider.updateWallet(
-                          value: -transferAmount,
-                          walletId: from.id!
-                        );
-                        await walletProvider.updateWallet(
-                            value: transferAmount,
-                            walletId: to.id!
-                        );
-                        await transactionProvider.saveTransaction(
-                            my_transaction.Transaction(
-                                name: 'تحويل رصيد',
-                                walletId: from.id!,
-                                createdAt: Timestamp.now(),
-                                type: null,
-                                note: "تحويل من ${from.name} الى ${to.name}",
-                                userId: auth.currentUser!.uid,
-                                category: Category(
-                                    icon: 'assets/icons/transfer.png',
-                                    name: 'أخرى',
-                                    amount: transferAmount
-                                )
-                            )
-                        );
+                        final transferAmount = double.tryParse(_transferBalanceController.text);
+                        if(transferAmount == null) {
+                           Fluttertoast.showToast(msg:'قم بادخال مبلغ صحيح');
+                        } else if (to.id == null){
+                          Fluttertoast.showToast(msg: 'قم باختيار المحفظة المراد التحويل إليها');
+                        } else {
+                          await walletProvider.updateWallet(
+                              value: -transferAmount,
+                              walletId: from.id!
+                          );
+                          await walletProvider.updateWallet(
+                              value: transferAmount,
+                              walletId: to.id!
+                          );
+                          await transactionProvider.saveTransaction(
+                              my_transaction.Transaction(
+                                  name: 'تحويل رصيد',
+                                  walletId: from.id!,
+                                  createdAt: Timestamp.now(),
+                                  type: null,
+                                  note: "تحويل من ${from.name} الى ${to.name}",
+                                  userId: auth.currentUser!.uid,
+                                  category: Category(
+                                      icon: 'assets/icons/transfer.png',
+                                      name: 'أخرى',
+                                      amount: transferAmount
+                                  )
+                              )
+                          );
+                          Get.back();
+                        }
+
                     },
                     onDeleteWallet: (wallet) async {
                         await walletProvider.deleteWallet(walletId: wallet.id!);

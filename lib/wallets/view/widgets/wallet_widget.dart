@@ -21,7 +21,11 @@ class WalletWidget extends StatelessWidget {
       {Key? key,
       required this.wallet,
       required this.addBalanceController,
-      required this.onAddBalance, required this.transferBalanceController, required this.walletController, required this.onTransferBalance, required this.onDeleteWallet})
+      required this.onAddBalance,
+      required this.transferBalanceController,
+      required this.walletController,
+      required this.onTransferBalance,
+      required this.onDeleteWallet})
       : super(key: key);
 
   @override
@@ -37,18 +41,13 @@ class WalletWidget extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Align(
-                  alignment: Alignment.topRight,
-                  child: IconButton(
-                      onPressed: () {},
-                      splashRadius: 18,
-                      icon: const Icon(Icons.more_vert, size: 18))),
+              const SizedBox(height: 35),
               WalletBalance(
                 balanceLabel: wallet.name!,
                 balance: wallet.currentBalance!,
                 fontSize: 28,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -56,12 +55,12 @@ class WalletWidget extends StatelessWidget {
                     label: 'إضافة',
                     icon: Icons.add,
                     onClick: () => showDialog(
-                        context: context,
-                        builder: (_) => AddBalanceDialog(
-                          textEditingController: addBalanceController,
-                          onPositiveClick: onAddBalance ,
-                        ),
+                      context: context,
+                      builder: (_) => AddBalanceDialog(
+                        textEditingController: addBalanceController,
+                        onPositiveClick: onAddBalance,
                       ),
+                    ),
                   ),
                   _walletAction(
                       label: 'تحويل',
@@ -69,32 +68,29 @@ class WalletWidget extends StatelessWidget {
                       onClick: () => showDialog(
                           context: context,
                           builder: (_) => TransferBalanceDialog(
-                              textEditingController: transferBalanceController,
-                              walletController: walletController,
-                              transferFrom: wallet,
-                              onPositiveClick: onTransferBalance,
-                              userId: wallet.userId!,
-                          )
-                      )
-                  ),
+                                textEditingController:
+                                    transferBalanceController,
+                                walletController: walletController,
+                                transferFrom: wallet,
+                                onPositiveClick: onTransferBalance,
+                                userId: wallet.userId!,
+                              ))),
                   _walletAction(
                       label: 'حذف',
                       icon: Icons.delete_rounded,
-                      onClick: (){
+                      onClick: () {
                         Utils.showAlertDialog(
                             context: context,
                             positiveLabel: 'حذف',
                             negativeLabel: 'إغلاق',
                             title: 'تأكيد الحذف',
                             content: 'هل أنت متأكد من حذف هذه المحفظة؟ ',
-                            onPositiveClick:(_) {
+                            onPositiveClick: (_) {
                               Get.back();
                               return onDeleteWallet();
                             },
-                            onNegativeClick: (_) => Get.back()
-                        );
-                      }
-                  )
+                            onNegativeClick: (_) => Get.back());
+                      })
                 ],
               ),
               const SizedBox(height: 16),

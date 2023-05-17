@@ -51,8 +51,7 @@ class TransferBalanceDialog extends StatelessWidget {
               const Divider(),
               const SizedBox(height: 32),
               Row(
-                mainAxisAlignment:
-                MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
                     'ريال',
@@ -107,7 +106,8 @@ class TransferBalanceDialog extends StatelessWidget {
                           onClick: (){
                             TransactionBottomSheet.showWalletsBS(
                                 userId: userId,
-                                availableWallets: snapshot.data!
+                                availableWallets: snapshot.data!,
+                                walletClickable: (wallet ) => wallet.id != transferFrom.id
                             );
                           },
                           color: Colors.grey.shade100,
@@ -123,10 +123,7 @@ class TransferBalanceDialog extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: 20),
                 child: OutlinedButton(
-                  onPressed: (){
-                    onPositiveClick();
-                    Get.back();
-                  },
+                  onPressed: () => onPositiveClick(),
                   style: ElevatedButton.styleFrom(
                     side: const BorderSide(color: redColor),
                     minimumSize: const Size(100, 40),

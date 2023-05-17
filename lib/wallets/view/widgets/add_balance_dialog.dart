@@ -72,10 +72,7 @@ class AddBalanceDialog extends StatelessWidget {
             ),
             const SizedBox(height: 32),
             OutlinedButton(
-              onPressed: (){
-                onPositiveClick();
-                Get.back();
-              },
+              onPressed: ()=> onPositiveClick(),
               style: ElevatedButton.styleFrom(
                   side: const BorderSide(color: redColor),
                   minimumSize: const Size(100, 40),
