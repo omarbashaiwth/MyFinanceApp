@@ -22,6 +22,7 @@ class TransactionHistoryItem extends StatelessWidget {
             Image.asset(transaction.category!.icon, height: 30),
             const SizedBox(width: 8),
             Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -36,10 +37,7 @@ class TransactionHistoryItem extends StatelessWidget {
                   color: transaction.category!.amount! < 0 ? Colors.red:Colors.green,
                 ),
                 transaction.note == null
-                    ? Container()
-                    : const SizedBox(height: 5),
-                transaction.note == null
-                    ? Container()
+                    ? const SizedBox.shrink()
                     : Text(
                   transaction.note!,
                   style: const TextStyle(

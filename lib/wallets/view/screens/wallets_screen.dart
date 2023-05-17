@@ -21,16 +21,19 @@ class WalletsScreen extends StatefulWidget {
 
 class _WalletsScreenState extends State<WalletsScreen> {
   late final TextEditingController _addBalanceController;
+  late final TextEditingController _transferBalanceController;
 
   @override
   void initState() {
     _addBalanceController = TextEditingController();
+    _transferBalanceController = TextEditingController();
     super.initState();
   }
 
   @override
   void dispose() {
     _addBalanceController.dispose();
+    _transferBalanceController.dispose();
     super.dispose();
   }
 
@@ -38,7 +41,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
   Widget build(BuildContext context) {
     final auth = FirebaseAuth.instance;
     final walletProvider = Provider.of<WalletController>(context, listen: false);
-    final transactionProvider = Provider.of<TransactionController>(context, listen: false);
+    final transactionProvider = Provider.of<TransactionController>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: redColor.withOpacity(.90),
@@ -92,7 +95,10 @@ class _WalletsScreenState extends State<WalletsScreen> {
                   const SizedBox(height: 16),
                   _allWallets(
                       snapshot: snapshot,
-                      textEditingController: _addBalanceController,
+                      transactionController: transactionProvider,
+                      walletController: walletProvider,
+                      transferBalanceController: _transferBalanceController,
+                      addBalanceController: _addBalanceController,
                       onAddBalance: (wallet)  async {
                         final valueToAdd = double.tryParse(_addBalanceController.text) ?? 0.0;
                         debugPrint('walletId: ${wallet.id}, value: ${_addBalanceController.text}');
@@ -117,6 +123,32 @@ class _WalletsScreenState extends State<WalletsScreen> {
                            )
                          );
 
+                    },
+                    onTransferBalance: (from, to) async {
+                        final transferAmount = double.tryParse(_transferBalanceController.text) ?? 0.0;
+                        await walletProvider.updateWallet(
+                          value: -transferAmount,
+                          walletId: from.id!
+                        );
+                        await walletProvider.updateWallet(
+                            value: transferAmount,
+                            walletId: to.id!
+                        );
+                        await transactionProvider.saveTransaction(
+                            my_transaction.Transaction(
+                                name: 'تحويل رصيد',
+                                walletId: from.id!,
+                                createdAt: Timestamp.now(),
+                                type: 'transfer',
+                                note: "تحويل من ${from.name} الى ${to.name}",
+                                userId: auth.currentUser!.uid,
+                                category: Category(
+                                    icon: 'assets/icons/transfer.png',
+                                    name: 'أخرى',
+                                    amount: transferAmount
+                                )
+                            )
+                        );
                     }
                   )
                 ],
@@ -128,7 +160,11 @@ class _WalletsScreenState extends State<WalletsScreen> {
 
   Widget _allWallets(
       {required AsyncSnapshot<List<Wallet>> snapshot,
-      required TextEditingController textEditingController,
+      required TextEditingController addBalanceController,
+      required TextEditingController transferBalanceController,
+        required TransactionController transactionController,
+        required WalletController walletController,
+        required Function(Wallet from, Wallet to) onTransferBalance,
         required  Function(Wallet) onAddBalance
       }) {
     final wallets = snapshot.data;
@@ -156,17 +192,23 @@ class _WalletsScreenState extends State<WalletsScreen> {
                   style: AppTextTheme.headerTextStyle,
                   textAlign: TextAlign.center,
                 ))
-            : ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: wallets.length,
-                itemBuilder: (_, index) {
-                  return WalletWidget(
-                    wallet: wallets[index],
-                    textEditingController: textEditingController,
-                    onAddBalance: () => onAddBalance(wallets[index]),
-                  );
-                })
+            : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: ListView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: wallets.length,
+                  itemBuilder: (_, index) {
+                    return WalletWidget(
+                      wallet: wallets[index],
+                      addBalanceController: addBalanceController,
+                      transferBalanceController: transferBalanceController,
+                      onAddBalance: () => onAddBalance(wallets[index]),
+                      onTransferBalance: () => onTransferBalance(wallets[index], transactionController.selectedWallet),
+                      walletController: walletController,
+                    );
+                  }),
+            )
       ],
     );
   }

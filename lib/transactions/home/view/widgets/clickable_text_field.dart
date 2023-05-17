@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:myfinance_app/core/ui/theme.dart';
 
 
 class ClickableTextField extends StatelessWidget {
   final String text;
   final String image;
+  final Color color;
   final Function onClick;
 
   const ClickableTextField(
       {Key? key,
       required this.onClick,
       required this.text,
-      required this.image})
+      required this.image,
+        this.color = whiteColor})
       : super(key: key);
 
   @override
@@ -22,7 +25,7 @@ class ClickableTextField extends StatelessWidget {
           width: double.infinity,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
-              color: Theme.of(context).colorScheme.secondaryContainer),
+              color: color),
           child: Row(
             children: [
               Image.asset(image, width: 24),

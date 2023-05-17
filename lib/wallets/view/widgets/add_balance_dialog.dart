@@ -4,10 +4,10 @@ import 'package:get/get.dart';
 import '../../../core/ui/theme.dart';
 
 
-class CustomDialog extends StatelessWidget {
+class AddBalanceDialog extends StatelessWidget {
   final TextEditingController textEditingController;
   final Function onPositiveClick;
-  const CustomDialog({Key? key, required this.textEditingController, required this.onPositiveClick}) : super(key: key);
+  const AddBalanceDialog({Key? key, required this.textEditingController, required this.onPositiveClick}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

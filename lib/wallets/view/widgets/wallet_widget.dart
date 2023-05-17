@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
+import 'package:myfinance_app/transactions/home/controller/transaction_controller.dart';
+import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
 import 'package:myfinance_app/wallets/model/wallet.dart';
-import 'package:myfinance_app/wallets/view/widgets/dialog_widget.dart';
+import 'package:myfinance_app/wallets/view/widgets/add_balance_dialog.dart';
+import 'package:myfinance_app/wallets/view/widgets/transfer_balance_dialog.dart';
 import 'package:myfinance_app/wallets/view/widgets/wallet_balance_widget.dart';
 import 'package:get/get.dart';
 
 class WalletWidget extends StatelessWidget {
   final Wallet wallet;
-  final TextEditingController textEditingController;
+  final TextEditingController addBalanceController;
+  final TextEditingController transferBalanceController;
+  final WalletController walletController;
   final Function() onAddBalance;
+  final Function() onTransferBalance;
 
   const WalletWidget(
       {Key? key,
       required this.wallet,
-      required this.textEditingController,
-      required this.onAddBalance})
+      required this.addBalanceController,
+      required this.onAddBalance, required this.transferBalanceController, required this.walletController, required this.onTransferBalance})
       : super(key: key);
 
   @override
@@ -48,24 +54,28 @@ class WalletWidget extends StatelessWidget {
                   _walletActions(
                     label: 'إضافة',
                     icon: Icons.add,
-                    onClick: () {
-                      showDialog(
+                    onClick: () => showDialog(
                         context: context,
-                        builder: (_) => CustomDialog(
-                          textEditingController: textEditingController,
+                        builder: (_) => AddBalanceDialog(
+                          textEditingController: addBalanceController,
                           onPositiveClick: onAddBalance ,
                         ),
-                      );
-                    },
+                      ),
                   ),
-                  _walletActions(
-                      label: 'سحب',
-                      icon: Icons.arrow_circle_down,
-                      onClick: () {}),
                   _walletActions(
                       label: 'تحويل',
                       icon: Icons.currency_exchange,
-                      onClick: () {}),
+                      onClick: () => showDialog(
+                          context: context,
+                          builder: (_) => TransferBalanceDialog(
+                              textEditingController: transferBalanceController,
+                              walletController: walletController,
+                              transferFrom: wallet,
+                              onPositiveClick: onTransferBalance,
+                              userId: wallet.userId!,
+                          )
+                      )
+                  ),
                 ],
               ),
               const SizedBox(height: 16),
