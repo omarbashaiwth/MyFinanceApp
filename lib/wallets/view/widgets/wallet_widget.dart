@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
-import 'package:myfinance_app/transactions/home/controller/transaction_controller.dart';
+import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
 import 'package:myfinance_app/wallets/model/wallet.dart';
 import 'package:myfinance_app/wallets/view/widgets/add_balance_dialog.dart';
@@ -13,14 +13,15 @@ class WalletWidget extends StatelessWidget {
   final TextEditingController addBalanceController;
   final TextEditingController transferBalanceController;
   final WalletController walletController;
-  final Function() onAddBalance;
-  final Function() onTransferBalance;
+  final Function onAddBalance;
+  final Function onTransferBalance;
+  final Function onDeleteWallet;
 
   const WalletWidget(
       {Key? key,
       required this.wallet,
       required this.addBalanceController,
-      required this.onAddBalance, required this.transferBalanceController, required this.walletController, required this.onTransferBalance})
+      required this.onAddBalance, required this.transferBalanceController, required this.walletController, required this.onTransferBalance, required this.onDeleteWallet})
       : super(key: key);
 
   @override
@@ -51,7 +52,7 @@ class WalletWidget extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _walletActions(
+                  _walletAction(
                     label: 'إضافة',
                     icon: Icons.add,
                     onClick: () => showDialog(
@@ -62,7 +63,7 @@ class WalletWidget extends StatelessWidget {
                         ),
                       ),
                   ),
-                  _walletActions(
+                  _walletAction(
                       label: 'تحويل',
                       icon: Icons.currency_exchange,
                       onClick: () => showDialog(
@@ -76,6 +77,24 @@ class WalletWidget extends StatelessWidget {
                           )
                       )
                   ),
+                  _walletAction(
+                      label: 'حذف',
+                      icon: Icons.delete_rounded,
+                      onClick: (){
+                        Utils.showAlertDialog(
+                            context: context,
+                            positiveLabel: 'حذف',
+                            negativeLabel: 'إغلاق',
+                            title: 'تأكيد الحذف',
+                            content: 'هل أنت متأكد من حذف هذه المحفظة؟ ',
+                            onPositiveClick:(_) {
+                              Get.back();
+                              return onDeleteWallet();
+                            },
+                            onNegativeClick: (_) => Get.back()
+                        );
+                      }
+                  )
                 ],
               ),
               const SizedBox(height: 16),
@@ -95,7 +114,7 @@ class WalletWidget extends StatelessWidget {
     ]);
   }
 
-  Widget _walletActions(
+  Widget _walletAction(
       {required String label,
       required IconData icon,
       required Function() onClick}) {

@@ -87,7 +87,8 @@ class TransactionController extends ChangeNotifier {
 
   double calculateTotal({required List<my_transaction.Transaction> transactions, String? type}){
     if(type == null) {
-      return transactions.fold(0.0, (previousValue, transaction) => previousValue + transaction.category!.amount!);
+      final realTransactions = transactions.where((element) => element.type != null);
+      return realTransactions.fold(0.0, (previousValue, transaction) => previousValue + transaction.category!.amount!);
     } else {
       final transactionsByType = transactions.where((element) => element.type == type).toList();
       return transactionsByType.fold(0.0, (previousValue, transaction) => previousValue + transaction.category!.amount!);

@@ -85,6 +85,8 @@ class FirebaseAuthServices {
     if (msg == 'الرجاء تأكيد ملكية هذا الحساب') {
       Utils.showAlertDialog(
           context: context,
+          positiveLabel: 'إعادة الإرسال',
+          negativeLabel: 'إغلاق',
           title: 'تأكيد الحساب',
           content:
               'لم يتم تأكيد ملكية هذا الحساب بعد. الرجاء مراحعة بريدك الإلكتروني للتأكد من أنك قمت بالضغط على رابط التأكيد المرسل لك.',

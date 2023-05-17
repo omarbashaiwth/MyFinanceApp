@@ -139,7 +139,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
                                 name: 'تحويل رصيد',
                                 walletId: from.id!,
                                 createdAt: Timestamp.now(),
-                                type: 'transfer',
+                                type: null,
                                 note: "تحويل من ${from.name} الى ${to.name}",
                                 userId: auth.currentUser!.uid,
                                 category: Category(
@@ -149,6 +149,9 @@ class _WalletsScreenState extends State<WalletsScreen> {
                                 )
                             )
                         );
+                    },
+                    onDeleteWallet: (wallet) async {
+                        await walletProvider.deleteWallet(walletId: wallet.id!);
                     }
                   )
                 ],
@@ -165,7 +168,8 @@ class _WalletsScreenState extends State<WalletsScreen> {
         required TransactionController transactionController,
         required WalletController walletController,
         required Function(Wallet from, Wallet to) onTransferBalance,
-        required  Function(Wallet) onAddBalance
+        required  Function(Wallet) onAddBalance,
+        required Function(Wallet) onDeleteWallet
       }) {
     final wallets = snapshot.data;
     if (wallets == null) {
@@ -202,10 +206,11 @@ class _WalletsScreenState extends State<WalletsScreen> {
                     return WalletWidget(
                       wallet: wallets[index],
                       addBalanceController: addBalanceController,
+                      walletController: walletController,
                       transferBalanceController: transferBalanceController,
                       onAddBalance: () => onAddBalance(wallets[index]),
                       onTransferBalance: () => onTransferBalance(wallets[index], transactionController.selectedWallet),
-                      walletController: walletController,
+                      onDeleteWallet: () => onDeleteWallet(wallets[index]),
                     );
                   }),
             )

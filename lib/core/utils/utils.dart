@@ -12,6 +12,8 @@ class Utils {
       {required BuildContext context,
       required String title,
       required String content,
+        required String positiveLabel,
+        required String negativeLabel,
       required Function(BuildContext) onPositiveClick,
       required Function(BuildContext) onNegativeClick,
       }) {
@@ -30,11 +32,11 @@ class Utils {
               actions: [
                 TextButton(
                   onPressed: () => onNegativeClick(ctx),
-                  child: const Text('اغلاق', style: AppTextTheme.textButtonStyle,),
+                  child:  Text(negativeLabel, style: AppTextTheme.textButtonStyle,),
                 ),
                 TextButton(
                   onPressed: () => onPositiveClick(ctx),
-                  child:  Text('إعادة الإرسال', style: AppTextTheme.textButtonStyle.copyWith(color: Theme.of(context).colorScheme.primary)),
+                  child:  Text(positiveLabel, style: AppTextTheme.textButtonStyle.copyWith(color: Theme.of(context).colorScheme.primary)),
                 ),
               ],
             ),

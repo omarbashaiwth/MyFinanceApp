@@ -50,6 +50,11 @@ class WalletController extends ChangeNotifier {
    docRef.update({'balance':FieldValue.increment(value)});
   }
 
+  Future<void> deleteWallet({required String walletId}) async{
+    final docRef =  _firestore.collection('Wallets').doc(walletId);
+    docRef.delete();
+  }
+
   Stream<List<Wallet>> getWallets()  {
     return _firestore.collection('Wallets')
         .where('userId', isEqualTo: _auth.currentUser!.uid)
