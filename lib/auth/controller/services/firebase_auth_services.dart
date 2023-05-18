@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:myfinance_app/auth/controller/services/google_auth_service.dart';
 import 'package:myfinance_app/auth/model/my_user.dart';
 import 'package:myfinance_app/core/utils/utils.dart';
 
@@ -21,7 +22,6 @@ class FirebaseAuthServices {
     try {
       if (isLogin) {
         onLoading(true);
-        debugPrint('currentUser: ${auth.currentUser}');
         await auth.signInWithEmailAndPassword(
             email: user.email, password: user.password);
         if (auth.currentUser!.emailVerified) {
@@ -77,6 +77,7 @@ class FirebaseAuthServices {
   }
 
   Future<void> logout() async {
+    GoogleAuthService.signOut();
     auth.signOut();
   }
 
