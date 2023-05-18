@@ -68,8 +68,7 @@ class TransactionForm {
                         walletClickable: (wallet) => expenseAmount.isLowerThan(wallet.currentBalance!),
                         // expenseAmount: expenseAmount,
                       // clickedWallet: null
-                    )
-                        : Fluttertoast.showToast(msg: 'قم بإدخال المبلغ أولاً');
+                    ) : Fluttertoast.showToast(msg: 'قم بإدخال المبلغ أولاً');
                   },
                 );
               },

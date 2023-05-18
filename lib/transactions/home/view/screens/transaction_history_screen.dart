@@ -60,7 +60,7 @@ class TransactionHistoryScreen extends StatelessWidget {
                               TransactionHistoryItem(
                                 transaction: transactions[index],
                               ),
-                              index != transactions.indexOf(transactions.last)? const Divider():Container()
+                              index != transactions.indexOf(transactions.last)? const Divider():const SizedBox(height: 10,)
                             ],
                           ),
                         );

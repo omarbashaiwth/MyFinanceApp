@@ -9,7 +9,9 @@ class TransactionHistoryItem extends StatelessWidget {
   final String currency;
   final my_transaction.Transaction transaction;
 
-  const TransactionHistoryItem({Key? key, this.currency = 'ريال', required this.transaction}) : super(key: key);
+  const TransactionHistoryItem(
+      {Key? key, this.currency = 'ريال', required this.transaction})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,7 @@ class TransactionHistoryItem extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(transaction.category!.icon, height: 30),
             const SizedBox(width: 8),
@@ -30,28 +32,34 @@ class TransactionHistoryItem extends StatelessWidget {
                   style: const TextStyle(
                       fontFamily: 'Tajawal', fontSize: 13, color: blackColor),
                 ),
-                PriceWidget(
-                    amount: transaction.category!.amount!,
-                    currency: currency,
-                    fontSize: 13,
-                  color: transaction.category!.amount! < 0 ? Colors.red:Colors.green,
-                ),
-                transaction.note == null
-                    ? const SizedBox.shrink()
-                    : Text(
+                transaction.note == null || transaction.note!.isEmpty?
+                    const SizedBox.shrink():
+                Text(
                   transaction.note!,
                   style: const TextStyle(
                       fontFamily: 'Tajawal', fontSize: 11, color: darkGray),
                 )
               ],
-            )
+            ),
           ],
         ),
-        Text(
-          DateFormat.yMMMd().format(DateTime.fromMicrosecondsSinceEpoch(
-              transaction.createdAt!.microsecondsSinceEpoch)),
-          style: const TextStyle(
-              fontFamily: 'Tajawal', fontSize: 11, color: darkGray),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            PriceWidget(
+              amount: transaction.category!.amount!,
+              currency: currency,
+              fontSize: 13,
+              color:
+                  transaction.category!.amount! < 0 ? Colors.red : Colors.green,
+            ),
+            Text(
+              DateFormat.yMMMd().format(DateTime.fromMicrosecondsSinceEpoch(
+                  transaction.createdAt!.microsecondsSinceEpoch)),
+              style: const TextStyle(
+                  fontFamily: 'Tajawal', fontSize: 11, color: darkGray),
+            )
+          ],
         )
       ],
     );
