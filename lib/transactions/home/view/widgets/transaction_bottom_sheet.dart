@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
+import 'package:myfinance_app/core/widgets/empty_widget.dart';
 import 'package:myfinance_app/transactions/home/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/home/model/category.dart';
 import 'package:provider/provider.dart';
@@ -86,11 +87,11 @@ class TransactionBottomSheet {
     ));
   }
 
-  static void showWalletsBS(
-      {required String userId,
-      required List<Wallet> availableWallets,
-        required bool Function(Wallet) walletClickable,
-      }) {
+  static void showWalletsBS({
+    required String userId,
+    required List<Wallet> availableWallets,
+    required bool Function(Wallet) walletClickable,
+  }) {
     Get.bottomSheet(Container(
       padding: const EdgeInsets.only(top: 4),
       decoration: const BoxDecoration(
@@ -112,22 +113,27 @@ class TransactionBottomSheet {
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Directionality(
                 textDirection: TextDirection.rtl,
-                child: ListView.builder(
-                    itemCount: availableWallets.length,
-                    itemBuilder: (context, index) {
-                      return Column(children: [
-                        _walletItem(
-                            wallet: availableWallets[index],
-                            clickable: walletClickable,
-                            onClick: () {
-                              Provider.of<TransactionController>(context,
-                                      listen: false)
-                                  .onWalletChange(availableWallets[index]);
-                              Get.back();
-                            }),
-                        const SizedBox(height: 12)
-                      ]);
-                    }),
+                child: Stack(children: [
+                  availableWallets.isEmpty
+                      ? const EmptyWidget(message: 'لا يوجد محفظات')
+                      : ListView.builder(
+                          itemCount: availableWallets.length,
+                          itemBuilder: (context, index) {
+                            return Column(children: [
+                              _walletItem(
+                                  wallet: availableWallets[index],
+                                  clickable: walletClickable,
+                                  onClick: () {
+                                    Provider.of<TransactionController>(context,
+                                            listen: false)
+                                        .onWalletChange(
+                                            availableWallets[index]);
+                                    Get.back();
+                                  }),
+                              const SizedBox(height: 12)
+                            ]);
+                          }),
+                ]),
               ),
             ),
           )
@@ -139,7 +145,7 @@ class TransactionBottomSheet {
   static Widget _walletItem(
       {required Wallet wallet,
       required Function() onClick,
-        required bool Function(Wallet) clickable,
+      required bool Function(Wallet) clickable,
       String currency = 'ريال'}) {
     // final canChooseWallet =  (expenseAmount != null &&
     //     expenseAmount.isLowerThan(wallet.currentBalance!)) || expenseAmount == null;

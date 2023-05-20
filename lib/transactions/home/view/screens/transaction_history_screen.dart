@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
+import 'package:myfinance_app/core/widgets/empty_widget.dart';
 import 'package:myfinance_app/transactions/home/view/widgets/last_transactions.dart';
 import 'package:provider/provider.dart';
 
@@ -39,16 +40,7 @@ class TransactionHistoryScreen extends StatelessWidget {
             }
             return Stack(children: [
               transactions!.isEmpty
-                  ? const Center(
-                    child: SizedBox(
-                        width: double.infinity,
-                        child: Text(
-                          'لا يوجد بيانات',
-                          style: AppTextTheme.headerTextStyle,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                  )
+                  ? const EmptyWidget()
                   : ListView.builder(
                       itemCount: transactions.length,
                       itemBuilder: (_, index) {

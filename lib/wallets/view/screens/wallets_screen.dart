@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myfinance_app/core/utils/utils.dart';
+import 'package:myfinance_app/core/widgets/empty_widget.dart';
 import 'package:myfinance_app/transactions/home/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/home/model/category.dart';
 import 'package:myfinance_app/transactions/home/model/transaction.dart' as my_transaction;
@@ -70,108 +71,110 @@ class _WalletsScreenState extends State<WalletsScreen> {
             //   return  Align(alignment: Alignment.center, child: Text(snapshot.error.toString(), style: AppTextTheme.headerTextStyle));
             // }
             final data = snapshot.data;
-            if (data == null) {
-              return const Align(
-                  alignment: Alignment.center,
-                  child: Text('فارغ', style: AppTextTheme.headerTextStyle));
-            }
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  const SizedBox(height: 16),
-                  snapshot.hasData
-                      ? WalletBalance(
-                          balanceLabel: 'إجمالي الرصيد',
-                          balance: walletProvider.calculateTotalBalance(data),
-                          fontSize: 36,
+            // if (data == null) {
+            //   return const Align(
+            //       alignment: Alignment.center,
+            //       child: Text('فارغ', style: AppTextTheme.headerTextStyle));
+            // }
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 16),
+                snapshot.hasData
+                    ? WalletBalance(
+                        balanceLabel: 'إجمالي الرصيد',
+                        balance: walletProvider.calculateTotalBalance(data!),
+                        fontSize: 36,
+                      )
+                    : const WalletBalance(
+                        balanceLabel: 'إجمالي الرصيد',
+                        balance: 0.0,
+                        fontSize: 36,
+                      ),
+                const SizedBox(height: 50),
+                const Padding(
+                  padding: EdgeInsets.only(right: 8),
+                  child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Text('كل المحفظات',
+                          style: AppTextTheme.headerTextStyle)),
+                ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: _allWallets(
+                snapshot: snapshot,
+                transactionController: transactionProvider,
+                walletController: walletProvider,
+                transferBalanceController: _transferBalanceController,
+                addBalanceController: _addBalanceController,
+                onAddBalance: (wallet)  async {
+                  final valueToAdd = double.tryParse(_addBalanceController.text);
+                  if(valueToAdd == null){
+                    Fluttertoast.showToast(msg:'قم بادخال مبلغ صحيح');
+                  } else {
+                    await walletProvider.updateWallet(
+                        value: valueToAdd,
+                        walletId: wallet.id!
+                    );
+                    await transactionProvider.saveTransaction(
+                        my_transaction.Transaction(
+                            name: 'إضافة رصيد',
+                            walletId: wallet.id!,
+                            createdAt: Timestamp.now(),
+                            type: 'income',
+                            note: '',
+                            userId: auth.currentUser!.uid,
+                            category: Category(
+                                icon: wallet.walletType!.icon,
+                                name: 'أخرى',
+                                amount: valueToAdd
+                            )
                         )
-                      : const WalletBalance(
-                          balanceLabel: 'إجمالي الرصيد',
-                          balance: 0.0,
-                          fontSize: 36,
-                        ),
-                  const SizedBox(height: 50),
-                  const Padding(
-                    padding: EdgeInsets.only(right: 8),
-                    child: Align(
-                        alignment: Alignment.centerRight,
-                        child: Text('كل المحفظات',
-                            style: AppTextTheme.headerTextStyle)),
-                  ),
-                  const SizedBox(height: 16),
-                  _allWallets(
-                      snapshot: snapshot,
-                      transactionController: transactionProvider,
-                      walletController: walletProvider,
-                      transferBalanceController: _transferBalanceController,
-                      addBalanceController: _addBalanceController,
-                      onAddBalance: (wallet)  async {
-                        final valueToAdd = double.tryParse(_addBalanceController.text);
-                        if(valueToAdd == null){
-                          Fluttertoast.showToast(msg:'قم بادخال مبلغ صحيح');
-                        } else {
-                          await walletProvider.updateWallet(
-                              value: valueToAdd,
-                              walletId: wallet.id!
-                          );
-                          await transactionProvider.saveTransaction(
-                              my_transaction.Transaction(
-                                  name: 'إضافة رصيد',
-                                  walletId: wallet.id!,
-                                  createdAt: Timestamp.now(),
-                                  type: 'income',
-                                  note: '',
-                                  userId: auth.currentUser!.uid,
-                                  category: Category(
-                                      icon: wallet.walletType!.icon,
-                                      name: 'أخرى',
-                                      amount: valueToAdd
-                                  )
-                              )
-                          );
-                          Get.back();
-                        }
-                    },
-                    onTransferBalance: (from, to) async {
-                        final transferAmount = double.tryParse(_transferBalanceController.text);
-                        if(transferAmount == null) {
-                           Fluttertoast.showToast(msg:'قم بادخال مبلغ صحيح');
-                        } else if (to.id == null){
-                          Fluttertoast.showToast(msg: 'قم باختيار المحفظة المراد التحويل إليها');
-                        } else {
-                          await walletProvider.updateWallet(
-                              value: -transferAmount,
-                              walletId: from.id!
-                          );
-                          await walletProvider.updateWallet(
-                              value: transferAmount,
-                              walletId: to.id!
-                          );
-                          await transactionProvider.saveTransaction(
-                              my_transaction.Transaction(
-                                  name: 'تحويل رصيد',
-                                  walletId: from.id!,
-                                  createdAt: Timestamp.now(),
-                                  type: null,
-                                  note: "تحويل من ${from.name} الى ${to.name}",
-                                  userId: auth.currentUser!.uid,
-                                  category: Category(
-                                      icon: 'assets/icons/transfer.png',
-                                      name: 'أخرى',
-                                      amount: transferAmount
-                                  )
-                              )
-                          );
-                          Get.back();
-                        }
+                    );
+                    Get.back();
+                  }
+                },
+                onTransferBalance: (from, to) async {
+                  final transferAmount = double.tryParse(_transferBalanceController.text);
+                  if(transferAmount == null) {
+                    Fluttertoast.showToast(msg:'قم بادخال مبلغ صحيح');
+                  } else if (to.id == null){
+                    Fluttertoast.showToast(msg: 'قم باختيار المحفظة المراد التحويل إليها');
+                  } else {
+                    await walletProvider.updateWallet(
+                        value: -transferAmount,
+                        walletId: from.id!
+                    );
+                    await walletProvider.updateWallet(
+                        value: transferAmount,
+                        walletId: to.id!
+                    );
+                    await transactionProvider.saveTransaction(
+                        my_transaction.Transaction(
+                            name: 'تحويل رصيد',
+                            walletId: from.id!,
+                            createdAt: Timestamp.now(),
+                            type: null,
+                            note: "تحويل من ${from.name} الى ${to.name}",
+                            userId: auth.currentUser!.uid,
+                            category: Category(
+                                icon: 'assets/icons/transfer.png',
+                                name: 'أخرى',
+                                amount: transferAmount
+                            )
+                        )
+                    );
+                    Get.back();
+                  }
 
-                    },
-                    onDeleteWallet: (wallet) async {
-                        await walletProvider.deleteWallet(walletId: wallet.id!);
-                    }
-                  )
-                ],
-              ),
+                },
+                onDeleteWallet: (wallet) async {
+                  await walletProvider.deleteWallet(walletId: wallet.id!);
+                }
+            )
+                )
+                //
+              ],
             );
           }),
     );
@@ -188,11 +191,11 @@ class _WalletsScreenState extends State<WalletsScreen> {
         required Function(Wallet) onDeleteWallet
       }) {
     final wallets = snapshot.data;
-    if (wallets == null) {
-      return const Align(
-          alignment: Alignment.center,
-          child: Text('فارغ', style: AppTextTheme.headerTextStyle));
-    }
+    // if (wallets == null) {
+    //   return const Align(
+    //       alignment: Alignment.center,
+    //       child: Text('فارغ', style: AppTextTheme.headerTextStyle));
+    // }
     if (snapshot.hasData && snapshot.hasError) {
       return const Align(
           alignment: Alignment.center,
@@ -204,19 +207,11 @@ class _WalletsScreenState extends State<WalletsScreen> {
     }
     return Stack(
       children: [
-        wallets.isEmpty
-            ? const SizedBox(
-                width: double.infinity,
-                child: Text(
-                  'لا يوجد بيانات',
-                  style: AppTextTheme.headerTextStyle,
-                  textAlign: TextAlign.center,
-                ))
+        wallets!.isEmpty
+            ? const EmptyWidget(message: 'لا يوجد محفظات.. قم بإضافة محفظة جديدة',)
             : Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
                   itemCount: wallets.length,
                   itemBuilder: (_, index) {
                     return WalletWidget(

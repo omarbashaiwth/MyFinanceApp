@@ -79,6 +79,7 @@ flutter:
     - assets/icons/cash.png
     - assets/icons/bank.png
     - assets/icons/transfer.png
+    - assets/icons/empty.png
     #The expenses icons
     - assets/icons/expenses_icons/airplane.png
     - assets/icons/expenses_icons/bus.png
