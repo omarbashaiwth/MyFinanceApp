@@ -56,7 +56,7 @@ class FirebaseAuthServices {
       }
       onMessage(message);
       onLoading(false);
-      debugPrint('Firebase error: $message');
+      debugPrint('Firebase error: $message: ${e.message}');
     } catch (e) {
       onMessage('Error: ${e.toString()}');
       onLoading(false);

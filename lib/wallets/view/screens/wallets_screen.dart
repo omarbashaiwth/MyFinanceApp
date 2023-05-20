@@ -53,15 +53,16 @@ class _WalletsScreenState extends State<WalletsScreen> {
           'المحفظات',
           style: AppTextTheme.appBarTitleTextStyle,
         ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Image.asset(
-              'assets/icons/menu.png',
-              height: 25,
-            ),
-          )
-        ],
+        centerTitle: true
+        // actions: [
+        //   IconButton(
+        //     onPressed: () {},
+        //     icon: Image.asset(
+        //       'assets/icons/menu.png',
+        //       height: 25,
+        //     ),
+        //   )
+        // ],
       ),
       body: StreamBuilder(
           stream: walletProvider.getWallets(),

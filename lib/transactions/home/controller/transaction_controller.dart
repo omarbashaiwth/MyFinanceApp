@@ -20,12 +20,21 @@ class TransactionController extends ChangeNotifier {
 
   Category get selectedCategory => _selectedCategory;
 
+
+  Timestamp _selectedDate = Timestamp.now();
+  Timestamp get selectedDate => _selectedDate;
+
   Wallet _selectedWallet = Wallet();
 
   Wallet get selectedWallet => _selectedWallet;
 
   void onChangeSelectedIcon(int selectedIconIndex) {
     _selectedIcon = selectedIconIndex;
+    notifyListeners();
+  }
+
+  void onSelectedDateChange(Timestamp value) {
+    _selectedDate = value;
     notifyListeners();
   }
 
@@ -114,6 +123,7 @@ class TransactionController extends ChangeNotifier {
         Category(name: 'أخرى', icon: 'assets/icons/expenses_icons/other.png');
     _selectedIcon = 14;
     _selectedWallet = Wallet();
+    _selectedDate = Timestamp.now();
     notifyListeners();
   }
 }

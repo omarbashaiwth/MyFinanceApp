@@ -52,7 +52,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
     final transaction = my_transaction.Transaction(
       type: _currentTabIndex == 0? 'expense': 'income',
       userId: currentUser!.uid,
-      createdAt: Timestamp.now(),
+      createdAt: transactionController.selectedDate,
       category: transactionController.selectedCategory,
       walletId: transactionController.selectedWallet.id,
     );
@@ -96,31 +96,28 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
           },
         ),
       ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: TabBarView(
-          physics: const NeverScrollableScrollPhysics(),
-          controller: _tabController,
-          children: [
-            TransactionForm.expenseForm(
-                key: _expenseFormKey,
-                textEditingController: _expenseTextEditingController,
-                context: context,
-                transaction: transaction,
-                currentUser: currentUser,
-                transactionController: transactionController,
-                walletController: walletController,
-            ),
-            TransactionForm.incomeForm(
-                key: _incomeFormKey,
-                context: context,
-                currentUser: currentUser,
-                transaction: transaction,
-                transactionController: transactionController,
-                walletController: walletController,
-            )
-          ],
-        ),
+      body: TabBarView(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: _tabController,
+        children: [
+          TransactionForm.expenseForm(
+              key: _expenseFormKey,
+              textEditingController: _expenseTextEditingController,
+              context: context,
+              transaction: transaction,
+              currentUser: currentUser,
+              transactionController: transactionController,
+              walletController: walletController,
+          ),
+          TransactionForm.incomeForm(
+              key: _incomeFormKey,
+              context: context,
+              currentUser: currentUser,
+              transaction: transaction,
+              transactionController: transactionController,
+              walletController: walletController,
+          )
+        ],
       ),
     );
   }

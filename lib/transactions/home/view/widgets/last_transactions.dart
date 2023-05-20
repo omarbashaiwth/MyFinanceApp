@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
+import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/core/widgets/price_widget.dart';
 
 import '../../model/transaction.dart' as my_transaction;
@@ -54,8 +55,7 @@ class TransactionHistoryItem extends StatelessWidget {
                   transaction.category!.amount! < 0 ? Colors.red : Colors.green,
             ),
             Text(
-              DateFormat.yMMMd().format(DateTime.fromMicrosecondsSinceEpoch(
-                  transaction.createdAt!.microsecondsSinceEpoch)),
+              Utils.dateFormat(transaction.createdAt!),
               style: const TextStyle(
                   fontFamily: 'Tajawal', fontSize: 11, color: darkGray),
             )

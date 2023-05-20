@@ -31,14 +31,14 @@ class HomeScreen extends StatelessWidget {
           'المعاملات',
           style: AppTextTheme.appBarTitleTextStyle,
         ),
+        centerTitle: true,
+        leading: IconButton(onPressed: (){}, icon: Icon(Icons.account_circle_rounded)),
         actions: [
           IconButton(
               onPressed: () async =>
                   await FirebaseAuthServices(FirebaseAuth.instance).logout(),
-              icon: Image.asset(
-                'assets/icons/menu.png',
-                height: 25,
-              ))
+              icon: const Icon(Icons.logout)
+          )
         ],
       ),
       body: StreamBuilder(
