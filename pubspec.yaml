@@ -47,6 +47,8 @@ dependencies:
   custom_pop_up_menu: ^1.2.4
   collection: ^1.17.0
   google_sign_in: ^6.1.0
+  month_year_picker: ^0.2.0+4
+  simple_month_year_picker: ^1.0.5
 
 dev_dependencies:
   flutter_test:
@@ -81,6 +83,7 @@ flutter:
     - assets/icons/transfer.png
     - assets/icons/empty.png
     - assets/icons/calendar.png
+    - assets/icons/expense.png
     #The expenses icons
     - assets/icons/expenses_icons/airplane.png
     - assets/icons/expenses_icons/bus.png

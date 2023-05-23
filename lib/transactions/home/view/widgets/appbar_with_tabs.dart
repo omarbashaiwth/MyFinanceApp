@@ -26,8 +26,8 @@ class AppBarWithTabs extends StatelessWidget {
         indicator: const BoxDecoration(color: lightRedColor),
         controller: tabController,
         tabs: [
-          _buildTab(label: 'نـفـقــة', icon: Icons.file_upload_rounded),
-          _buildTab(label: 'دخـــــــل', icon: Icons.download ),
+          _buildTab(label: 'نـفـقــة', icon: Icons.arrow_downward_outlined),
+          _buildTab(label: 'دخـــــــل', icon: Icons.arrow_upward_outlined),
         ],
       ),
       titleTextStyle: AppTextTheme.appBarTitleTextStyle,

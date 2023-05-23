@@ -166,6 +166,11 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  flutter_localizations:
+    dependency: transitive
+    description: flutter
+    source: sdk
+    version: "0.0.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -304,6 +309,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.8.0"
+  month_year_picker:
+    dependency: "direct main"
+    description:
+      name: month_year_picker
+      sha256: "3ebddeef3b6e277e0a9d809c1568a35a523ecaf2cb519a8cd9cb1277c350107f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0+4"
   nested:
     dependency: transitive
     description:
@@ -352,6 +365,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.1"
+  simple_month_year_picker:
+    dependency: "direct main"
+    description:
+      name: simple_month_year_picker
+      sha256: "34ce256ccc39d50a10007a1f9484bea77b45641ebd2a1110b8819e45527f0af5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.5"
   sky_engine:
     dependency: transitive
     description: flutter

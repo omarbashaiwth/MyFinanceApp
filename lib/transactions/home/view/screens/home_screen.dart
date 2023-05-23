@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart'as intl;
+import 'package:month_year_picker/month_year_picker.dart';
 import 'package:myfinance_app/auth/controller/services/firebase_auth_services.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/widgets/empty_widget.dart';
@@ -8,6 +10,7 @@ import 'package:myfinance_app/transactions/home/controller/transaction_controlle
 import 'package:myfinance_app/transactions/home/view/screens/transaction_history_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
+import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 import '../../model/transaction.dart';
 import '../widgets/custom_card.dart';
 import '../widgets/expense_categorize.dart';
@@ -18,26 +21,27 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller =
-        Provider.of<TransactionController>(context, listen: false);
+    debugPrint('build');
+    final controller = Provider.of<TransactionController>(context);
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark));
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: redColor.withOpacity(.90),
-        title: const Text(
+        backgroundColor: Theme.of(context).colorScheme.background,
+        elevation: 0,
+        title:  Text(
           'المعاملات',
-          style: AppTextTheme.appBarTitleTextStyle,
+          style: AppTextTheme.appBarTitleTextStyle.copyWith(color: redColor),
         ),
         centerTitle: true,
-        leading: IconButton(onPressed: (){}, icon: Icon(Icons.account_circle_rounded)),
+        leading: IconButton(onPressed: (){}, icon: const Icon(Icons.account_circle_rounded, color: redColor,)),
         actions: [
           IconButton(
               onPressed: () async =>
                   await FirebaseAuthServices(FirebaseAuth.instance).logout(),
-              icon: const Icon(Icons.logout)
+              icon: const Icon(Icons.logout, color: redColor)
           )
         ],
       ),
@@ -45,7 +49,6 @@ class HomeScreen extends StatelessWidget {
           stream: controller.getTransactions(),
           builder: (context, snapshot) {
             if(snapshot.hasData && snapshot.hasError){
-              debugPrint(snapshot.error.toString());
               return const Align(alignment: Alignment.center, child: Text('يوجد خطأ', style: AppTextTheme.headerTextStyle));
             }
             if(snapshot.connectionState == ConnectionState.waiting){
@@ -55,13 +58,14 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 20, left: 10, right: 10),
               child: Column(
                 children: [
+                  _monthPicker(context: context, controller: controller),
+                  const SizedBox(height: 20),
                   _headerSection(header: 'ملخص الشهر'),
                   _monthlySummarySection(
                       controller: controller, snapshot: snapshot),
                   const SizedBox(height: 16),
                   _headerSection(header: 'النفقات حسب التصنيف'),
-                  _expensesCategorySection(
-                      controller: controller, snapshot: snapshot),
+                  _expensesCategorySection(controller: controller, snapshot: snapshot),
                   const SizedBox(height: 16),
                   _headerSection(header: 'آخر المعاملات', showMore: true),
                   _lastTransactionsSection(
@@ -98,10 +102,33 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  Widget _monthPicker({required BuildContext context, required TransactionController controller}){
+    return GestureDetector(
+      onTap: () async {
+        final pickedDate = await SimpleMonthYearPicker.showMonthYearPickerDialog(
+            context: context,
+          disableFuture: true,
+          selectionColor: redColor
+        );
+        controller.onChangePickedMonth(pickedDate);
+
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children:  [
+          Text(intl.DateFormat('MMMM yyyy','ar').format(controller.pickedDate), style: const TextStyle(fontFamily: 'Tajawal', fontSize: 16, fontWeight: FontWeight.w500),),
+          const SizedBox(width: 4),
+          const Icon(Icons.keyboard_arrow_down, color: redColor)
+        ],
+      ),
+    );
+  }
+
   Widget _monthlySummarySection(
       {required AsyncSnapshot<List<Transaction>> snapshot,
       required TransactionController controller}) {
-    final transactions = snapshot.data ?? [];
+    final transactionsByMonth = controller.transactionsByMonth(transactions: snapshot.data, pickedDate: controller.pickedDate) ?? [];
     // if(snapshot.hasData && snapshot.hasError){
     //   debugPrint(snapshot.error.toString());
     //   return const Align(alignment: Alignment.center, child: Text('يوجد خطأ', style: AppTextTheme.headerTextStyle));
@@ -109,54 +136,29 @@ class HomeScreen extends StatelessWidget {
     // if(snapshot.connectionState == ConnectionState.waiting){
     //   return const Align(alignment: Alignment.center, child: CircularProgressIndicator());
     // }
-    return Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-            border: Border.all(color: darkGray),
-            borderRadius: BorderRadius.circular(10)),
-        child: Column(
+    return Card(
+      color: redColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 15),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             SummaryCard(
-              title: 'أداء الشهر الحالي',
-              amount: controller.calculateTotal(transactions: transactions),
-              width: 300,
+                title: 'النفقات',
+                image: 'assets/icons/expense.png',
+                amount: controller.calculateTotal(transactions: transactionsByMonth, type: 'expense'),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Column(
-                  children: [
-                    Container(
-                      height: 15,
-                      width: 2,
-                      color: normalGray,
-                    ),
-                    SummaryCard(
-                        title: 'النفقات',
-                        amount: controller.calculateTotal(
-                            transactions: transactions, type: 'expense'),
-                        width: 150),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Container(
-                      height: 15,
-                      width: 2,
-                      color: normalGray,
-                    ),
-                    SummaryCard(
-                      title: 'الدخل',
-                      amount: controller.calculateTotal(
-                          transactions: transactions, type: 'income'),
-                      width: 150,
-                    ),
-                  ],
-                )
-              ],
+            SummaryCard(
+              title: 'الدخل',
+              image: 'assets/icons/expense.png',
+              amount: controller.calculateTotal(transactions: transactionsByMonth, type: 'income',),
+              quarterRotate: 2,
             )
           ],
-        ));
+        ),
+      ),
+    );
   }
 
   Widget _lastTransactionsSection(
@@ -200,10 +202,10 @@ class HomeScreen extends StatelessWidget {
   Widget _expensesCategorySection(
       {required TransactionController controller,
       required AsyncSnapshot<List<Transaction>> snapshot}) {
-    final transactions = snapshot.data ?? [];
+    final transactionsByMonth = controller.transactionsByMonth(transactions: snapshot.data, pickedDate: controller.pickedDate) ?? [];
     final expenses =
-        controller.calculateTotal(transactions: transactions, type: 'expense');
-    final grouped = controller.groupExpenses(transactions);
+        controller.calculateTotal(transactions: transactionsByMonth, type: 'expense');
+    final grouped = controller.groupExpenses(transactionsByMonth);
     // if(snapshot.hasData && snapshot.hasError){
     //   debugPrint(snapshot.error.toString());
     //   return const Align(alignment: Alignment.center, child: Text('يوجد خطأ', style: AppTextTheme.headerTextStyle));
@@ -218,7 +220,7 @@ class HomeScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(10)),
         child: Stack(
           children: [
-            transactions.isEmpty
+            transactionsByMonth.isEmpty
                 ? const EmptyWidget()
                 : ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),

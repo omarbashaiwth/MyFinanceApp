@@ -24,9 +24,17 @@ class TransactionController extends ChangeNotifier {
   Timestamp _selectedDate = Timestamp.now();
   Timestamp get selectedDate => _selectedDate;
 
+  DateTime _pickedDate = DateTime.now();
+  DateTime get pickedDate => _pickedDate;
+
   Wallet _selectedWallet = Wallet();
 
   Wallet get selectedWallet => _selectedWallet;
+
+  void onChangePickedMonth(DateTime value){
+    _pickedDate = value;
+    notifyListeners();
+  }
 
   void onChangeSelectedIcon(int selectedIconIndex) {
     _selectedIcon = selectedIconIndex;
@@ -84,6 +92,12 @@ class TransactionController extends ChangeNotifier {
     categorySummary.sort(
         (a, b) => (a['amount'] as double).compareTo(b['amount'] as double));
     return categorySummary;
+  }
+
+  List<my_transaction.Transaction>? transactionsByMonth({required List<my_transaction.Transaction>? transactions, required DateTime pickedDate}){
+    final startOfMonth = DateTime(pickedDate.year, pickedDate.month);
+    final endOfMonth = DateTime(pickedDate.year, pickedDate.month + 1).subtract(const Duration(milliseconds: 1));
+    return transactions?.where((transaction) => transaction.createdAt!.toDate().isAfter(startOfMonth) && transaction.createdAt!.toDate().isBefore(endOfMonth)).toList();
   }
 
   Stream<List<my_transaction.Transaction>> getTransactions() {

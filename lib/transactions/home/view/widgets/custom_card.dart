@@ -5,33 +5,68 @@ import 'package:myfinance_app/core/widgets/price_widget.dart';
 class SummaryCard extends StatelessWidget {
   final String title;
   final double amount;
+  final String image;
+  final int quarterRotate;
   final String currency;
-  final double? width;
-  const SummaryCard({Key? key, required this.title, required this.amount, this.currency = 'ريال', this.width}) : super(key: key);
+
+  const SummaryCard(
+      {Key? key,
+      required this.title,
+      required this.amount,
+      this.currency = 'ريال',
+      required this.image,
+         this.quarterRotate = 0})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: width,
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 18),
-          child: Column(
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontFamily: 'Tajawal',
-                  color: blackColor,
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontFamily: 'Tajawal',
+                    color: blackColor,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              PriceWidget(amount: amount, currency: currency, color: amount < 0 ? Colors.red : Colors.green)
-            ],
-          ),
+                const SizedBox(height: 8),
+                PriceWidget(
+                    amount: amount,
+                    currency: currency,
+                    color: amount < 0 ? Colors.red : Colors.green,
+                )
+              ],
+            ),
+            RotatedBox(
+                quarterTurns: quarterRotate,
+                child:Image.asset(image,height: 45,)
+            )
+          ],
         ),
+        // child: Column(
+        //   children: [
+        //     Text(
+        //       title,
+        //       style: const TextStyle(
+        //         fontSize: 18,
+        //         fontFamily: 'Tajawal',
+        //         color: blackColor,
+        //       ),
+        //     ),
+        //     const SizedBox(height: 8),
+        //     PriceWidget(amount: amount, currency: currency, color: amount < 0 ? Colors.red : Colors.green)
+        //   ],
+        // ),
       ),
     );
   }
