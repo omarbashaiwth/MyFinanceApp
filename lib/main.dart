@@ -42,6 +42,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
         debugShowCheckedModeBanner: false,
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+        ],
         theme: AppTheme.lightTheme,
         home: const Directionality(
           textDirection: TextDirection.rtl,

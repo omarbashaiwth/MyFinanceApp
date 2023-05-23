@@ -141,6 +141,8 @@ class _WalletsScreenState extends State<WalletsScreen> {
                     Fluttertoast.showToast(msg:'قم بادخال مبلغ صحيح');
                   } else if (to.id == null){
                     Fluttertoast.showToast(msg: 'قم باختيار المحفظة المراد التحويل إليها');
+                  } else if(transferAmount.isGreaterThan(from.currentBalance!)){
+                    Fluttertoast.showToast(msg: 'لا يوجد رصيد كافي للتحويل');
                   } else {
                     await walletProvider.updateWallet(
                         value: -transferAmount,
