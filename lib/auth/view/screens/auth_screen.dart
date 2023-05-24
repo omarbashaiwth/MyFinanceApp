@@ -7,7 +7,6 @@ import 'package:myfinance_app/auth/view/widgets/app_logo.dart';
 import 'package:myfinance_app/auth/view/widgets/auth_form.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/main.dart';
-import 'package:myfinance_app/transactions/home/view/screens/home_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
 

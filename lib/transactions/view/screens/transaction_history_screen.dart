@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/widgets/empty_widget.dart';
-import 'package:myfinance_app/transactions/home/view/widgets/last_transactions.dart';
+import 'package:myfinance_app/transactions/view/widgets/last_transactions.dart';
 import 'package:provider/provider.dart';
 
 import '../../controller/transaction_controller.dart';

@@ -30,7 +30,7 @@ class AppBarWithTabs extends StatelessWidget {
           _buildTab(label: 'دخـــــــل', icon: Icons.arrow_upward_outlined),
         ],
       ),
-      titleTextStyle: AppTextTheme.appBarTitleTextStyle,
+      titleTextStyle: AppTextTheme.appBarTitleTextStyle.copyWith(color: whiteColor),
       title: const Text('إضافة معاملة جديدة'),
     );
   }

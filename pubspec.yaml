@@ -47,8 +47,9 @@ dependencies:
   custom_pop_up_menu: ^1.2.4
   collection: ^1.17.0
   google_sign_in: ^6.1.0
-  month_year_picker: ^0.2.0+4
   simple_month_year_picker: ^1.0.5
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:

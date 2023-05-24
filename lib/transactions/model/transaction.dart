@@ -1,6 +1,6 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:myfinance_app/transactions/home/model/category.dart';
+import 'package:myfinance_app/transactions/model/category.dart';
 
 class Transaction{
   String? name;

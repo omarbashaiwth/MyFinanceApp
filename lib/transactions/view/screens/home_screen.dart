@@ -2,12 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:month_year_picker/month_year_picker.dart';
 import 'package:myfinance_app/auth/controller/services/firebase_auth_services.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/widgets/empty_widget.dart';
-import 'package:myfinance_app/transactions/home/controller/transaction_controller.dart';
-import 'package:myfinance_app/transactions/home/view/screens/transaction_history_screen.dart';
+import 'package:myfinance_app/profile/widget/profile_widget.dart';
+import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
+import 'package:myfinance_app/transactions/view/screens/transaction_history_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
 import 'package:simple_month_year_picker/simple_month_year_picker.dart';
@@ -23,6 +23,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     debugPrint('build');
     final controller = Provider.of<TransactionController>(context);
+    final auth = FirebaseAuth.instance;
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark));
@@ -33,24 +34,45 @@ class HomeScreen extends StatelessWidget {
               return [
                 SliverAppBar(
                   backgroundColor: Theme.of(context).colorScheme.background,
-                  title: Text('المعاملات',
-                    style: AppTextTheme.appBarTitleTextStyle.copyWith(color: redColor),
+                  title: const Text(
+                    'المعاملات',
+                    style: AppTextTheme.appBarTitleTextStyle,
                   ),
                   centerTitle: true,
                   leading: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.account_circle_rounded,
-                        color: redColor,
-                      )),
-                  actions: [
-                    IconButton(
-                        onPressed: () async =>
-                            await FirebaseAuthServices(FirebaseAuth.instance)
-                                .logout(),
-                        icon: const Icon(Icons.logout, color: redColor))
-                  ],
+                      onPressed: () {
+                        Get.bottomSheet(Container(
+                          padding: const EdgeInsets.only(top: 4),
+                          decoration: const BoxDecoration(
+                            color: whiteColor,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(25),
+                              topRight: Radius.circular(25),
+                            ),
+                          ),
+                          child: StreamBuilder(
+                              stream: controller.getTransactions(),
+                              builder: (context, snapshot) {
+                                return ProfileWidget(
+                                  currentUser: auth.currentUser!,
+                                  controller: controller,
+                                  snapshot: snapshot,
+                                  onLogout: () async {
+                                    await FirebaseAuthServices(auth).logout();
+                                    Get.back();
+                                  },
+                                );
+                              }),
+                        ));
+                      },
+                      icon: auth.currentUser!.photoURL == null
+                          ? const Icon(
+                              Icons.account_circle_rounded,
+                              color: Colors.red,
+                            )
+                          : ClipOval(child: Image.network(auth.currentUser!.photoURL!))),
                   floating: true,
+                  snap: true,
                 )
               ];
             },
@@ -58,22 +80,27 @@ class HomeScreen extends StatelessWidget {
               child: StreamBuilder(
                   stream: controller.getTransactions(),
                   builder: (context, snapshot) {
-                    return Column(
-                      children: [
-                        _monthPicker(context: context, controller: controller),
-                        const SizedBox(height: 20),
-                        _headerSection(header: 'ملخص الشهر'),
-                        _monthlySummarySection(
-                            controller: controller, snapshot: snapshot),
-                        const SizedBox(height: 16),
-                        _headerSection(header: 'النفقات حسب التصنيف'),
-                        _expensesCategorySection(
-                            controller: controller, snapshot: snapshot),
-                        const SizedBox(height: 16),
-                        _headerSection(header: 'آخر المعاملات', showMore: true),
-                        _lastTransactionsSection(
-                            controller: controller, snapshot: snapshot),
-                      ],
+                    return Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          _monthPicker(
+                              context: context, controller: controller),
+                          const SizedBox(height: 20),
+                          _headerSection(header: 'ملخص الشهر'),
+                          _monthlySummarySection(
+                              controller: controller, snapshot: snapshot),
+                          const SizedBox(height: 16),
+                          _headerSection(header: 'النفقات حسب التصنيف'),
+                          _expensesCategorySection(
+                              controller: controller, snapshot: snapshot),
+                          const SizedBox(height: 16),
+                          _headerSection(
+                              header: 'آخر المعاملات', showMore: true),
+                          _lastTransactionsSection(
+                              controller: controller, snapshot: snapshot),
+                        ],
+                      ),
                     );
                   }),
             )),

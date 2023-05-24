@@ -6,14 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:myfinance_app/transactions/home/controller/transaction_controller.dart';
-import 'package:myfinance_app/transactions/home/view/screens/add_transaction_screen.dart';
-import 'package:myfinance_app/transactions/home/view/screens/home_screen.dart';
+import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
+import 'package:myfinance_app/transactions/view/screens/add_transaction_screen.dart';
+import 'package:myfinance_app/transactions/view/screens/home_screen.dart';
 import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
 import 'package:myfinance_app/wallets/view/screens/add_wallet_screen.dart';
 import 'package:myfinance_app/wallets/view/screens/wallets_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:month_year_picker/month_year_picker.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'auth/controller/auth_controller.dart';
@@ -42,7 +41,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        localizationsDelegates: const [
+        localizationsDelegates:  const [
           GlobalMaterialLocalizations.delegate,
         ],
         theme: AppTheme.lightTheme,

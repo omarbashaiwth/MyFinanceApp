@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:myfinance_app/transactions/home/model/transaction.dart';
 
-import '../../../../core/ui/theme.dart';
+import '../../../core/ui/theme.dart';
 
 class CustomTextFormField extends StatelessWidget {
   final String hint;

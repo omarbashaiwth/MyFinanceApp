@@ -54,7 +54,7 @@ class Utils {
   }
 
   static String dateFormat(Timestamp timestamp) {
-    return intl.DateFormat.yMMMd().format(
+    return intl.DateFormat.yMMMd('ar').format(
         DateTime.fromMicrosecondsSinceEpoch(timestamp.microsecondsSinceEpoch),
     );
   }

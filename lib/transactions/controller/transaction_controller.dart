@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:myfinance_app/transactions/home/model/transaction.dart'
+import 'package:myfinance_app/transactions/model/transaction.dart'
     as my_transaction;
-import 'package:myfinance_app/transactions/home/model/category.dart';
+import 'package:myfinance_app/transactions/model/category.dart';
 import 'package:myfinance_app/wallets/model/wallet.dart';
 import 'package:collection/collection.dart';
 

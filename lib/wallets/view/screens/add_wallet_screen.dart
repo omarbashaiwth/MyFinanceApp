@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
-import 'package:myfinance_app/transactions/home/view/widgets/custom_text_form_field.dart';
+import 'package:myfinance_app/transactions/view/widgets/custom_text_form_field.dart';
 import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
 import 'package:myfinance_app/wallets/model/wallet.dart';
 import 'package:myfinance_app/wallets/view/widgets/wallet_bottom_sheet.dart';

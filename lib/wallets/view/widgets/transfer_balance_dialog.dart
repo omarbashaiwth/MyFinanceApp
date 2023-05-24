@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:myfinance_app/transactions/home/controller/transaction_controller.dart';
-import 'package:myfinance_app/transactions/home/view/widgets/clickable_text_field.dart';
-import 'package:myfinance_app/transactions/home/view/widgets/transaction_bottom_sheet.dart';
+import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
+import 'package:myfinance_app/transactions/view/widgets/clickable_text_field.dart';
+import 'package:myfinance_app/transactions/view/widgets/transaction_bottom_sheet.dart';
 import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
 import 'package:myfinance_app/wallets/model/wallet.dart';
 import 'package:provider/provider.dart';

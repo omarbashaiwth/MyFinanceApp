@@ -44,7 +44,7 @@ class AppTextTheme{
     fontSize: 20,
     fontFamily: 'Tajawal',
     fontWeight: FontWeight.bold,
-    color: whiteColor,
+    color: redColor,
   );
 
   static const textButtonStyle = TextStyle(

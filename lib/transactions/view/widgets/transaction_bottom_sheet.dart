@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/widgets/empty_widget.dart';
-import 'package:myfinance_app/transactions/home/controller/transaction_controller.dart';
-import 'package:myfinance_app/transactions/home/model/category.dart';
+import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
+import 'package:myfinance_app/transactions/model/category.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/widgets/price_widget.dart';

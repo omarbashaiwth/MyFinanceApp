@@ -6,13 +6,14 @@ class PriceWidget extends StatelessWidget {
   final String currency;
   final double fontSize;
   final Color color;
+  final FontWeight fontWeight;
 
   const PriceWidget(
       {Key? key,
       required this.amount,
       required this.currency,
       this.fontSize = 18,
-        required this.color}
+        required this.color, this.fontWeight = FontWeight.bold}
       )
       : super(key: key);
 
@@ -26,7 +27,7 @@ class PriceWidget extends StatelessWidget {
           style: TextStyle(
             fontSize: fontSize,
             fontFamily: 'Tajawal',
-            fontWeight: FontWeight.bold,
+            fontWeight: fontWeight,
             color: color,
           ),
         ),
@@ -36,7 +37,7 @@ class PriceWidget extends StatelessWidget {
           style: TextStyle(
             fontSize: fontSize,
             fontFamily: 'Tajawal',
-            fontWeight: FontWeight.bold,
+            fontWeight: fontWeight,
             color: color,
           ),
         )

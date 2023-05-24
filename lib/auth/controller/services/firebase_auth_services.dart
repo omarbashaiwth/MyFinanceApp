@@ -37,6 +37,7 @@ class FirebaseAuthServices {
             email: user.email, password: user.password);
         debugPrint('account created');
         await _sendEmailVerification(onMessage: (msg) => onMessage(msg));
+        auth.currentUser!.updateDisplayName(user.username);
         firestore
             .collection('Users')
             .doc(authResult.user?.uid.toString())

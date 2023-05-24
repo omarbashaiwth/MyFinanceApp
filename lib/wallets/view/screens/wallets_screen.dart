@@ -2,11 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/core/widgets/empty_widget.dart';
-import 'package:myfinance_app/transactions/home/controller/transaction_controller.dart';
-import 'package:myfinance_app/transactions/home/model/category.dart';
-import 'package:myfinance_app/transactions/home/model/transaction.dart' as my_transaction;
+import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
+import 'package:myfinance_app/transactions/model/category.dart';
+import 'package:myfinance_app/transactions/model/transaction.dart' as my_transaction;
 import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
 import 'package:myfinance_app/wallets/model/wallet.dart';
 import 'package:myfinance_app/wallets/view/widgets/wallet_widget.dart';
@@ -48,21 +47,13 @@ class _WalletsScreenState extends State<WalletsScreen> {
     final transactionProvider = Provider.of<TransactionController>(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: redColor.withOpacity(.90),
+        backgroundColor: Theme.of(context).colorScheme.background,
+        elevation: 0,
         title: const Text(
           'المحفظات',
           style: AppTextTheme.appBarTitleTextStyle,
         ),
         centerTitle: true
-        // actions: [
-        //   IconButton(
-        //     onPressed: () {},
-        //     icon: Image.asset(
-        //       'assets/icons/menu.png',
-        //       height: 25,
-        //     ),
-        //   )
-        // ],
       ),
       body: StreamBuilder(
           stream: walletProvider.getWallets(),

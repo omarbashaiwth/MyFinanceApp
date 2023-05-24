@@ -1,17 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:myfinance_app/transactions/home/controller/transaction_controller.dart';
-import 'package:myfinance_app/transactions/home/model/transaction.dart'
+import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
+import 'package:myfinance_app/transactions/model/transaction.dart'
     as my_transaction;
-import 'package:myfinance_app/transactions/home/view/widgets/appbar_with_tabs.dart';
+import 'package:myfinance_app/transactions/view/widgets/appbar_with_tabs.dart';
 import 'package:get/get.dart';
-import 'package:myfinance_app/transactions/home/view/widgets/transaction_form.dart';
+import 'package:myfinance_app/transactions/view/widgets/transaction_form.dart';
 import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/transaction_bottom_sheet.dart';
 
 
 class AddTransactionScreen extends StatefulWidget {
