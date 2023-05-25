@@ -4,7 +4,7 @@ import 'package:myfinance_app/core/ui/theme.dart';
 
 class ClickableTextField extends StatelessWidget {
   final String text;
-  final String image;
+  final String icon;
   final Color color;
   final Function onClick;
 
@@ -12,7 +12,7 @@ class ClickableTextField extends StatelessWidget {
       {Key? key,
       required this.onClick,
       required this.text,
-      required this.image,
+      required this.icon,
         this.color = whiteColor})
       : super(key: key);
 
@@ -28,9 +28,9 @@ class ClickableTextField extends StatelessWidget {
               color: color),
           child: Row(
             children: [
-              Image.asset(image, width: 24),
+              Image.asset(icon, width: 24),
               const SizedBox(width: 8),
-              Text(text, style: const TextStyle(fontFamily: 'Tajawal')),
+              Text(text, style: AppTextTheme.hintTextStyle),
             ],
           )),
     );

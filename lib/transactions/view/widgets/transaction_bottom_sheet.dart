@@ -49,13 +49,10 @@ class TransactionBottomSheet {
       ),
       child: Column(
         children: [
-          Container(
-            height: 6,
-            width: 80,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.grey[300]),
-          ),
+          const SizedBox(height: 16),
+          const Text('أختر نوع النفقة',
+              style: TextStyle(fontFamily: 'Tajawal')),
+          const Divider(),
           const SizedBox(height: 32),
           Expanded(
             child: GridView.builder(
@@ -65,8 +62,8 @@ class TransactionBottomSheet {
                 ),
                 itemBuilder: (context, index) {
                   return _expenseCategoryItem(
-                    icon: iconsList[index].icon,
-                    label: iconsList[index].name,
+                    icon: iconsList[index].icon!,
+                    label: iconsList[index].name!,
                     color: Provider.of<TransactionController>(context)
                                 .selectedIcon ==
                             index
@@ -89,6 +86,7 @@ class TransactionBottomSheet {
 
   static void showWalletsBS({
     required String userId,
+    required String title,
     required List<Wallet> availableWallets,
     required bool Function(Wallet) walletClickable,
   }) {
@@ -104,8 +102,8 @@ class TransactionBottomSheet {
       child: Column(
         children: [
           const SizedBox(height: 16),
-          const Text('المحفظات المتوفرة',
-              style: TextStyle(fontFamily: 'Tajawal')),
+          Text(title,
+              style: const TextStyle(fontFamily: 'Tajawal')),
           const Divider(),
           const SizedBox(height: 16),
           Expanded(

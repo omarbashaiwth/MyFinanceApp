@@ -27,103 +27,88 @@ class TransactionForm {
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              CustomTextFormField(
-                  textFormKey: 'name',
-                  hint: 'الإسم',
-                  leadingIcon: Icons.text_format,
-                  readOnly: false,
-                  onSaved: (value) => transaction.name = value),
-              const SizedBox(height: 20),
-              CustomTextFormField(
-                  textFormKey: 'amount',
-                  hint: 'المبلغ',
-                  controller: textEditingController,
-                  leadingIcon: Icons.attach_money,
-                  keyboardType: TextInputType.number,
-                  hasPrefix: true,
-                  readOnly: false,
-                  onSaved: (value) => transaction.category!.amount =
-                      -int.parse(value).toDouble()),
-              const SizedBox(height: 20),
-              Align(
-                  alignment: Alignment.centerRight,
-                  child: Text('خصم المبلغ من',
-                      style: AppTextTheme.headerTextStyle
-                          .copyWith(color: normalGray))),
-              const SizedBox(height: 8),
-              StreamBuilder(
-                stream: walletController.getWallets(),
-                builder: (_, snapshot) {
-                  return ClickableTextField(
-                    text: transactionController.selectedWallet.name ?? 'لا يوجد',
-                    image:
-                        transactionController.selectedWallet.walletType?.icon ??
-                            'assets/icons/question.png',
-                    onClick: () {
-                      final expenseAmount =
-                          double.tryParse(textEditingController.text);
-                      expenseAmount != null
-                          ? TransactionBottomSheet.showWalletsBS(
-                              userId: currentUser.uid,
-                              availableWallets: snapshot.data!,
-                              walletClickable: (wallet) => expenseAmount
-                                  .isLowerThan(wallet.currentBalance!),
-                              // expenseAmount: expenseAmount,
-                              // clickedWallet: null
-                            )
-                          : Fluttertoast.showToast(msg: 'قم بإدخال المبلغ أولاً');
-                    },
-                  );
-                },
-              ),
-              const SizedBox(height: 20),
-              Align(
-                  alignment: Alignment.centerRight,
-                  child: Text('نوع النفقة',
-                      style: AppTextTheme.headerTextStyle
-                          .copyWith(color: normalGray))),
-              const SizedBox(height: 8),
-              ClickableTextField(
-                onClick: () => TransactionBottomSheet.showExpensesIconsBS(),
-                text: transactionController.selectedCategory.name,
-                image: transactionController.selectedCategory.icon,
-              ),
-              const SizedBox(height: 20),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  'التاريخ',
-                  style: AppTextTheme.headerTextStyle.copyWith(color: normalGray),
+          child: Container(
+            margin: const EdgeInsets.only(top: 30),
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: normalGray)
+            ),
+            child: Column(
+              children: [
+                SizedBox(
+                  width: 150,
+                  child: CustomTextFormField(
+                      textFormKey: 'amount',
+                      textSize: 24,
+                      textAlign: TextAlign.center,
+                      hint: '0.0',
+                      hintStyle: AppTextTheme.hintTextStyle.copyWith(fontSize: 24),
+                      controller: textEditingController,
+                      keyboardType: TextInputType.number,
+                      readOnly: false,
+                      onSaved: (value) => transaction.category!.amount =
+                          -int.parse(value).toDouble(),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              ClickableTextField(
-                  onClick: () async {
-                    final pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(DateTime.now().year - 1),
-                        lastDate: DateTime(DateTime.now().year + 12)
+                const SizedBox(height: 20),
+                StreamBuilder(
+                  stream: walletController.getWallets(),
+                  builder: (_, snapshot) {
+                    return ClickableTextField(
+                      text: transactionController.selectedWallet?.name ?? 'خصم المبلغ من',
+                      icon:
+                      transactionController.selectedWallet?.walletType?.icon ??
+                          'assets/icons/wallet.png',
+                      onClick: () {
+                        final expenseAmount =
+                        double.tryParse(textEditingController.text);
+                        expenseAmount != null
+                            ? TransactionBottomSheet.showWalletsBS(
+                          title: 'خصم المبلغ من',
+                          userId: currentUser.uid,
+                          availableWallets: snapshot.data!,
+                          walletClickable: (wallet) => expenseAmount
+                              .isLowerThan(wallet.currentBalance!),
+                          // expenseAmount: expenseAmount,
+                          // clickedWallet: null
+                        )
+                            : Fluttertoast.showToast(msg: 'قم بإدخال المبلغ أولاً');
+                      },
                     );
-                    transactionController.onSelectedDateChange(Timestamp.fromDate(pickedDate!));
                   },
-                  text: Utils.dateFormat(transaction.createdAt!),
-                  image: 'assets/icons/calendar.png'
-              ),
-              const SizedBox(height: 20),
-              CustomTextFormField(
-                textFormKey: 'note',
-                hint: 'ملاحظة (اختياري)',
-                maxLines: 3,
-                isRequired: false,
-                readOnly: false,
-                leadingIcon: Icons.text_snippet_outlined,
-                onSaved: (value) => transaction.note = value,
-              ),
-            ],
+                ),
+                const SizedBox(height: 20),
+                ClickableTextField(
+                  onClick: () => TransactionBottomSheet.showExpensesIconsBS(),
+                  text: transactionController.selectedCategory?.name ?? 'نوع النفقة',
+                  icon: transactionController.selectedCategory?.icon ?? 'assets/icons/category.png',
+                ),
+                const SizedBox(height: 20),
+                ClickableTextField(
+                    onClick: () async {
+                      final pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(DateTime.now().year - 1),
+                          lastDate: DateTime(DateTime.now().year + 12)
+                      );
+                      transactionController.onSelectedDateChange(Timestamp.fromDate(pickedDate!));
+                    },
+                    text: Utils.dateFormat(transaction.createdAt!),
+                    icon: 'assets/icons/calendar.png'
+                ),
+                const SizedBox(height: 20),
+                CustomTextFormField(
+                  textFormKey: 'note',
+                  hint: 'ملاحظة (اختياري)',
+                  isRequired: false,
+                  readOnly: false,
+                  leadingIcon: Icons.text_snippet_outlined,
+                  onSaved: (value) => transaction.note = value,
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -143,89 +128,77 @@ class TransactionForm {
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              CustomTextFormField(
-                textFormKey: 'name',
-                hint: 'الإسم',
-                leadingIcon: Icons.text_format,
-                readOnly: false,
-                onSaved: (newValue) {
-                  transaction.name = newValue;
-                },
-              ),
-              const SizedBox(height: 20),
-              CustomTextFormField(
-                textFormKey: 'amount',
-                hint: 'المبلغ',
-                leadingIcon: Icons.attach_money,
-                keyboardType: TextInputType.number,
-                readOnly: false,
-                onSaved: (newValue) {
-                  transaction.category!.amount = int.parse(newValue).toDouble();
-                },
-              ),
-              const SizedBox(height: 20),
-              Align(
-                  alignment: Alignment.centerRight,
-                  child: Text('إضافة المبلغ إلى',
-                      style: AppTextTheme.headerTextStyle
-                          .copyWith(color: normalGray))),
-              const SizedBox(height: 8),
-              StreamBuilder(
-                stream: walletController.getWallets(),
-                builder: (_, snapshot) {
-                  return ClickableTextField(
-                    text: transactionController.selectedWallet.name ?? 'لا يوجد',
-                    image:
-                        transactionController.selectedWallet.walletType?.icon ??
-                            'assets/icons/question.png',
-                    onClick: () => TransactionBottomSheet.showWalletsBS(
-                      userId: currentUser.uid,
-                      availableWallets: snapshot.data!,
-                      walletClickable: (_) => true,
-                      // expenseAmount: null,
-                      // clickedWallet: null
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 20),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  'التاريخ',
-                  style: AppTextTheme.headerTextStyle.copyWith(color: normalGray),
+          child: Container(
+            margin: const EdgeInsets.only(top: 30),
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: normalGray)
+            ),
+            child: Column(
+              children: [
+                SizedBox(
+                  width: 150,
+                  child: CustomTextFormField(
+                    textFormKey: 'amount',
+                    hint: '0.0',
+                    textAlign: TextAlign.center,
+                    textSize: 24,
+                    hintStyle: AppTextTheme.hintTextStyle.copyWith(fontSize: 24),
+                    keyboardType: TextInputType.number,
+                    readOnly: false,
+                    onSaved: (newValue) {
+                      transaction.category!.amount = int.parse(newValue).toDouble();
+                    },
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              ClickableTextField(
-                  onClick: () async {
-                    final pickedDate = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(DateTime.now().year - 1),
-                        lastDate: DateTime(DateTime.now().year + 12)
+                const SizedBox(height: 20),
+                StreamBuilder(
+                  stream: walletController.getWallets(),
+                  builder: (_, snapshot) {
+                    return ClickableTextField(
+                      text: transactionController.selectedWallet?.name ?? 'إضافة المبلغ إلى',
+                      icon:
+                          transactionController.selectedWallet?.walletType?.icon ??
+                              'assets/icons/wallet.png',
+                      onClick: () => TransactionBottomSheet.showWalletsBS(
+                        title: 'إضافة المبلغ إلى',
+                        userId: currentUser.uid,
+                        availableWallets: snapshot.data!,
+                        walletClickable: (_) => true,
+                        // expenseAmount: null,
+                        // clickedWallet: null
+                      ),
                     );
-                    transactionController.onSelectedDateChange(Timestamp.fromDate(pickedDate!));
                   },
-                  text: Utils.dateFormat(transaction.createdAt!),
-                  image: 'assets/icons/calendar.png'
-              ),
-              const SizedBox(height: 20),
-              CustomTextFormField(
-                isRequired: false,
-                textFormKey: 'note',
-                hint: 'ملاحظة (اختياري)',
-                leadingIcon: Icons.text_snippet_outlined,
-                maxLines: 3,
-                readOnly: false,
-                onSaved: (newValue) {
-                  transaction.note = newValue;
-                },
-              ),
-            ],
+                ),
+                const SizedBox(height: 20),
+                ClickableTextField(
+                    onClick: () async {
+                      final pickedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(DateTime.now().year - 1),
+                          lastDate: DateTime(DateTime.now().year + 12)
+                      );
+                      transactionController.onSelectedDateChange(Timestamp.fromDate(pickedDate!));
+                    },
+                    text: Utils.dateFormat(transaction.createdAt!),
+                    icon: 'assets/icons/calendar.png'
+                ),
+                const SizedBox(height: 20),
+                CustomTextFormField(
+                  isRequired: false,
+                  textFormKey: 'note',
+                  hint: 'ملاحظة (اختياري)',
+                  leadingIcon: Icons.text_snippet_outlined,
+                  readOnly: false,
+                  onSaved: (newValue) {
+                    transaction.note = newValue;
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

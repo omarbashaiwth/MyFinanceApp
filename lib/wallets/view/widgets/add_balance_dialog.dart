@@ -71,18 +71,21 @@ class AddBalanceDialog extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 32),
-            OutlinedButton(
-              onPressed: ()=> onPositiveClick(),
-              style: ElevatedButton.styleFrom(
-                  side: const BorderSide(color: redColor),
-                  minimumSize: const Size(100, 40),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50),
-                  ),
-              ),
-              child:  Text(
-                'إضافة',
-                style: AppTextTheme
-                    .elevatedButtonTextStyle.copyWith(color: blackColor, fontWeight: FontWeight.normal),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              width: double.maxFinite,
+              child: OutlinedButton(
+                onPressed: ()=> onPositiveClick(),
+                style: ElevatedButton.styleFrom(
+                    side: const BorderSide(color: redColor),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50),
+                    ),
+                ),
+                child:  Text(
+                  'إضافة',
+                  style: AppTextTheme
+                      .elevatedButtonTextStyle.copyWith(color: blackColor, fontWeight: FontWeight.normal),
+                ),
               ),
             )
           ],

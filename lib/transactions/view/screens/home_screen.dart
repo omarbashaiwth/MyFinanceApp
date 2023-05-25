@@ -14,7 +14,7 @@ import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 import '../../model/transaction.dart';
 import '../widgets/custom_card.dart';
 import '../widgets/expense_categorize.dart';
-import '../widgets/last_transactions.dart';
+import '../widgets/transaction_history_item.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);

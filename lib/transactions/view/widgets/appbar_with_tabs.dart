@@ -13,41 +13,46 @@ class AppBarWithTabs extends StatelessWidget {
     return  AppBar(
       automaticallyImplyLeading: false,
       centerTitle: true,
+      backgroundColor: Theme.of(context).colorScheme.background,
       elevation: 0,
       actions: [
-        IconButton(onPressed: () => onCloseClicked(), icon: const Icon(Icons.close, color: whiteColor,))
+        IconButton(onPressed: () => onCloseClicked(), icon: const Icon(Icons.close, color: redColor,))
       ],
-      leading: TextButton(
+      leading: IconButton(
           onPressed: () => onSaveClicked(),
-          child: const Text('حفظ',style: TextStyle(fontFamily: 'Tajawal', color: whiteColor))),
-      bottom: TabBar(
-        onTap:(index) =>  onIndexChange(index),
-        padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-        indicator: const BoxDecoration(color: lightRedColor),
-        controller: tabController,
-        tabs: [
-          _buildTab(label: 'نـفـقــة', icon: Icons.arrow_downward_outlined),
-          _buildTab(label: 'دخـــــــل', icon: Icons.arrow_upward_outlined),
-        ],
+          icon: const Icon(Icons.check, color: redColor)
       ),
-      titleTextStyle: AppTextTheme.appBarTitleTextStyle.copyWith(color: whiteColor),
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight * 0.5),
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.only(bottom: 8, left: 4, right: 4),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: whiteColor
+          ),
+          child: TabBar(
+            onTap:(index) =>  onIndexChange(index),
+            padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+            indicator:  BoxDecoration(color: redColor, borderRadius: BorderRadius.circular(20)),
+            controller: tabController,
+            tabs: [
+              _buildTab(label: 'نـفـقــة', labelColor: tabController.index == 0? whiteColor: normalGray),
+              _buildTab(label: 'دخـــــــل', labelColor: tabController.index == 1? whiteColor: normalGray),
+            ],
+          ),
+        ),
+      ),
+      titleTextStyle: AppTextTheme.appBarTitleTextStyle,
       title: const Text('إضافة معاملة جديدة'),
     );
   }
 
-  Tab _buildTab({required String label, required IconData icon}) {
-    return Tab(child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(label,
-          style: AppTextTheme.elevatedButtonTextStyle
-              .copyWith(fontSize: 16),),
-        const SizedBox(
-          width: 10,
-        ),
-        Icon(icon)
-      ],
-    ),
+  Widget _buildTab({required String label, required Color labelColor}) {
+    return Tab(
+      child: Text(label,
+      style: AppTextTheme.elevatedButtonTextStyle
+          .copyWith(fontSize: 16, color: labelColor),),
     );
   }
 }

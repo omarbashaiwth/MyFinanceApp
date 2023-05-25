@@ -11,12 +11,13 @@ import '../../../core/ui/theme.dart';
 
 class TransferBalanceDialog extends StatelessWidget {
   final TextEditingController textEditingController;
-  final Function onPositiveClick;
+  final Function() onPositiveClick;
+  final Function() onClose;
   final WalletController walletController;
   final Wallet transferFrom;
   final String userId;
 
-  const TransferBalanceDialog({Key? key, required this.textEditingController, required this.onPositiveClick, required this.userId, required this.walletController, required this.transferFrom}) : super(key: key);
+  const TransferBalanceDialog({Key? key, required this.textEditingController, required this.onPositiveClick, required this.userId, required this.walletController, required this.transferFrom, required this.onClose}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +39,7 @@ class TransferBalanceDialog extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                    onPressed: () => Get.back(),
+                    onPressed: onClose,
                     icon: const Icon(
                       Icons.close,
                       size: 20,
@@ -88,7 +89,7 @@ class TransferBalanceDialog extends StatelessWidget {
                       onClick: (){},
                       color: Colors.grey.shade100,
                       text: transferFrom.name!,
-                      image: transferFrom.walletType!.icon
+                      icon: transferFrom.walletType!.icon
                   ),
                 ),
               ),
@@ -105,28 +106,30 @@ class TransferBalanceDialog extends StatelessWidget {
                       child: ClickableTextField(
                           onClick: (){
                             TransactionBottomSheet.showWalletsBS(
+                                title: 'تحويل المبلغ إلى',
                                 userId: userId,
                                 availableWallets: snapshot.data!,
                                 walletClickable: (wallet ) => wallet.id != transferFrom.id
                             );
                           },
                           color: Colors.grey.shade100,
-                          text: transactionProvider.selectedWallet.name ?? 'لا يوجد',
-                          image: transactionProvider.selectedWallet.walletType?.icon ??
-                              'assets/icons/question.png',
+                          text: transactionProvider.selectedWallet?.name ?? 'اختر المحفظة',
+                          icon: transactionProvider.selectedWallet?.walletType?.icon ??
+                              'assets/icons/wallet.png',
                       ),
                     ),
                   );
                 }
               ),
               const SizedBox(height: 18),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20),
+              Container(
+                width: double.maxFinite,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                margin: const EdgeInsets.only(bottom: 20),
                 child: OutlinedButton(
-                  onPressed: () => onPositiveClick(),
+                  onPressed:  onPositiveClick,
                   style: ElevatedButton.styleFrom(
                     side: const BorderSide(color: redColor),
-                    minimumSize: const Size(100, 40),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50),
                     ),
                   ),

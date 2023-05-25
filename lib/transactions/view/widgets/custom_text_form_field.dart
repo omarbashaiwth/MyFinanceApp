@@ -4,13 +4,15 @@ import '../../../core/ui/theme.dart';
 
 class CustomTextFormField extends StatelessWidget {
   final String hint;
-  final IconData leadingIcon;
+  final IconData? leadingIcon;
   final String textFormKey;
   final int maxLines;
   final bool isRequired;
   final bool readOnly;
   final Function? onClick;
-  final bool hasPrefix;
+  final TextStyle hintStyle;
+  final double textSize;
+  final TextAlign textAlign;
   final TextInputType keyboardType;
   final TextEditingController? controller;
   final Function(String) onSaved;
@@ -18,16 +20,17 @@ class CustomTextFormField extends StatelessWidget {
   const CustomTextFormField(
       {Key? key,
       required this.hint,
-      required this.leadingIcon,
       required this.onSaved,
       required this.textFormKey,
+      this.leadingIcon,
       this.onClick,
       this.maxLines = 1,
       this.isRequired = true,
       this.readOnly = false,
-      this.hasPrefix = false,
-      this.keyboardType = TextInputType.text, this.controller}
-      )
+      this.keyboardType = TextInputType.text,
+      this.controller,
+      this.hintStyle = AppTextTheme.hintTextStyle,
+       this.textSize = 15, this.textAlign = TextAlign.start})
       : super(key: key);
 
   @override
@@ -35,8 +38,7 @@ class CustomTextFormField extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color: Theme.of(context).colorScheme.secondaryContainer
-      ),
+          color: Theme.of(context).colorScheme.secondaryContainer),
       child: TextFormField(
         controller: controller,
         key: ValueKey(key),
@@ -49,20 +51,17 @@ class CustomTextFormField extends StatelessWidget {
         },
         readOnly: readOnly,
         maxLines: maxLines,
-        style: const TextStyle(fontFamily: 'Tajawal'),
+        textAlign: textAlign,
+        style:  TextStyle(fontFamily: 'Tajawal', fontSize: textSize),
         onTap: () => readOnly ? onClick!() : null,
         keyboardType: keyboardType,
         decoration: InputDecoration(
-          prefix: hasPrefix
-              ? const Text('- ',
-                  style:
-                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold))
-              : null,
           border: InputBorder.none,
           hintText: hint,
-          hintStyle: AppTextTheme.hintTextStyle,
-          prefixIcon: Icon(leadingIcon,
-              color: Theme.of(context).colorScheme.onSecondaryContainer),
+          hintTextDirection: TextDirection.rtl,
+          hintStyle: hintStyle,
+          prefixIcon: leadingIcon != null ? Icon(leadingIcon,
+              color: Theme.of(context).colorScheme.onSecondaryContainer): null,
         ),
       ),
     );

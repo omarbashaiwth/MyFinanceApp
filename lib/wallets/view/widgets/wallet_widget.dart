@@ -13,9 +13,10 @@ class WalletWidget extends StatelessWidget {
   final TextEditingController addBalanceController;
   final TextEditingController transferBalanceController;
   final WalletController walletController;
-  final Function onAddBalance;
-  final Function onTransferBalance;
-  final Function onDeleteWallet;
+  final Function() onAddBalance;
+  final Function() onTransferBalance;
+  final Function() onDeleteWallet;
+  final Function() onClose;
 
   const WalletWidget(
       {Key? key,
@@ -25,7 +26,7 @@ class WalletWidget extends StatelessWidget {
       required this.transferBalanceController,
       required this.walletController,
       required this.onTransferBalance,
-      required this.onDeleteWallet})
+      required this.onDeleteWallet, required this.onClose})
       : super(key: key);
 
   @override
@@ -72,6 +73,7 @@ class WalletWidget extends StatelessWidget {
                                     transferBalanceController,
                                 walletController: walletController,
                                 transferFrom: wallet,
+                                onClose: onClose,
                                 onPositiveClick: onTransferBalance,
                                 userId: wallet.userId!,
                               ))),

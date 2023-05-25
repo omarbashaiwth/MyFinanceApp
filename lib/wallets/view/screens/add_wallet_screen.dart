@@ -26,12 +26,14 @@ class AddWalletScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        backgroundColor: Theme.of(context).colorScheme.background,
         title: const Text('إضافة محفظة جديدة', style: AppTextTheme.appBarTitleTextStyle),
         centerTitle: true,
+        elevation: 0,
         actions: [
-          IconButton(onPressed: () => Get.back(), icon: const Icon(Icons.close, color: whiteColor,))
+          IconButton(onPressed: () => Get.back(), icon: const Icon(Icons.close, color: redColor,))
         ],
-        leading: TextButton(
+        leading: IconButton(
             onPressed: () async {
               final isValid = _walletFormKey.currentState!.validate();
               if(isValid) {
@@ -40,9 +42,9 @@ class AddWalletScreen extends StatelessWidget {
                 Get.back();
               }
             },
-            child: const Text('حفظ', style: TextStyle(fontFamily: 'Tajawal', color: whiteColor),)
+            icon: const Icon(Icons.check, color: Colors.red,))
         ),
-      ),
+
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Form(

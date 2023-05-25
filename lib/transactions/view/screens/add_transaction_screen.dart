@@ -52,7 +52,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
       userId: currentUser!.uid,
       createdAt: transactionController.selectedDate,
       category: transactionController.selectedCategory,
-      walletId: transactionController.selectedWallet.id,
+      walletId: transactionController.selectedWallet?.id,
     );
 
 
@@ -74,7 +74,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
             final isValid = _tabController.index == 0
                 ? _expenseFormKey.currentState!.validate()
                 : _incomeFormKey.currentState!.validate();
-            if (isValid && transaction.walletId != null) {
+            if (isValid && transaction.walletId != null && transaction.category != null) {
               _tabController.index == 0
                   ? _expenseFormKey.currentState!.save()
                   : _incomeFormKey.currentState!.save();
@@ -86,9 +86,13 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
               );
               provider.clearSelections();
               Get.back();
-            } else{
+            } else if(transaction.walletId == null){
               Fluttertoast.showToast(
                 msg: 'قم باختيار المحفظة',
+              );
+            } else if(transaction.category == null) {
+              Fluttertoast.showToast(
+                msg: 'قم باختيار نوع النفقة',
               );
             }
           },

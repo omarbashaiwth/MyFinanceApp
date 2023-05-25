@@ -78,13 +78,14 @@ flutter:
     - assets/images/Google_logo.png
     - assets/icons/menu.png
     - assets/icons/salary.png
-    - assets/icons/question.png
+    - assets/icons/wallet.png
     - assets/icons/cash.png
     - assets/icons/bank.png
     - assets/icons/transfer.png
     - assets/icons/empty.png
     - assets/icons/calendar.png
     - assets/icons/expense.png
+    - assets/icons/category.png
     #The expenses icons
     - assets/icons/expenses_icons/airplane.png
     - assets/icons/expenses_icons/bus.png

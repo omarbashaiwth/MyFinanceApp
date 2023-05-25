@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/widgets/empty_widget.dart';
-import 'package:myfinance_app/transactions/view/widgets/last_transactions.dart';
+import 'package:myfinance_app/transactions/view/widgets/transaction_history_item.dart';
 import 'package:provider/provider.dart';
-
+import 'package:get/get.dart';
 import '../../controller/transaction_controller.dart';
 
 class TransactionHistoryScreen extends StatelessWidget {
@@ -13,8 +13,14 @@ class TransactionHistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: true,
+        automaticallyImplyLeading: false,
+        elevation: 0,
+        leading: IconButton(
+          onPressed: () => Get.back(),
+          icon: const Icon(Icons.arrow_back, color: redColor,),
+        ),
         centerTitle: true,
+        backgroundColor: Theme.of(context).colorScheme.background,
         title: const Text(
           'سجل المعاملات',
           style: AppTextTheme.appBarTitleTextStyle,

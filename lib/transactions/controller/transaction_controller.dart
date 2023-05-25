@@ -11,14 +11,13 @@ class TransactionController extends ChangeNotifier {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
 
-  int _selectedIcon = 14;
+  int _selectedIcon = 0;
 
   int get selectedIcon => _selectedIcon;
 
-  Category _selectedCategory =
-      Category(name: 'أخرى', icon: 'assets/icons/expenses_icons/other.png');
+  Category? _selectedCategory;
 
-  Category get selectedCategory => _selectedCategory;
+  Category? get selectedCategory => _selectedCategory;
 
 
   Timestamp _selectedDate = Timestamp.now();
@@ -27,9 +26,9 @@ class TransactionController extends ChangeNotifier {
   DateTime _pickedDate = DateTime.now();
   DateTime get pickedDate => _pickedDate;
 
-  Wallet _selectedWallet = Wallet();
+  Wallet? _selectedWallet;
 
-  Wallet get selectedWallet => _selectedWallet;
+  Wallet? get selectedWallet => _selectedWallet;
 
   void onChangePickedMonth(DateTime value){
     _pickedDate = value;
@@ -133,10 +132,9 @@ class TransactionController extends ChangeNotifier {
   }
 
   void clearSelections() {
-    _selectedCategory =
-        Category(name: 'أخرى', icon: 'assets/icons/expenses_icons/other.png');
-    _selectedIcon = 14;
-    _selectedWallet = Wallet();
+    _selectedCategory = null;
+    _selectedIcon = 0;
+    _selectedWallet = null;
     _selectedDate = Timestamp.now();
     notifyListeners();
   }

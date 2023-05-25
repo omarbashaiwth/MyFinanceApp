@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/core/widgets/price_widget.dart';
@@ -22,14 +21,14 @@ class TransactionHistoryItem extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(transaction.category!.icon, height: 30),
+            Image.asset(transaction.category!.icon!, height: 30),
             const SizedBox(width: 8),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  transaction.name!,
+                  transaction.category!.name!,
                   style: const TextStyle(
                       fontFamily: 'Tajawal', fontSize: 13, color: blackColor),
                 ),
