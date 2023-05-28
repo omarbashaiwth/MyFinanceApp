@@ -141,6 +141,7 @@ class TransactionsScreen extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         final pickedDate = await showMonthPicker(
+          lastDate: DateTime.now(),
           context: context,
           locale: const Locale('ar'),
           roundedCornersRadius: 20,

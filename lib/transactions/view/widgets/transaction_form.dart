@@ -88,8 +88,8 @@ class TransactionForm {
                       final pickedDate = await showDatePicker(
                           context: context,
                           initialDate: DateTime.now(),
-                          firstDate: DateTime(DateTime.now().year - 1),
-                          lastDate: DateTime(DateTime.now().year + 12)
+                          firstDate: DateTime(DateTime.now().year - 10),
+                          lastDate: DateTime.now()
                       );
                       transactionController.onSelectedDateChange(Timestamp.fromDate(pickedDate!));
                     },
