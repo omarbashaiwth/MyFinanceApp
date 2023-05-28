@@ -11,7 +11,6 @@ import 'package:myfinance_app/transactions/controller/transaction_controller.dar
 import 'package:myfinance_app/transactions/view/screens/transaction_history_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
-import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 import '../../model/transaction.dart';
 import '../widgets/custom_card.dart';
 import '../widgets/expense_categorize.dart';
