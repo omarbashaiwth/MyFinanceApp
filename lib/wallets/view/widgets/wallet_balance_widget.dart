@@ -17,7 +17,6 @@ class WalletBalance extends StatelessWidget {
         const SizedBox(height: 8),
         PriceWidget(
             amount: balance,
-            currency: 'ريال',
             fontSize: fontSize,
           color: balance < 0 ? Colors.red: Colors.green,
         )

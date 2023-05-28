@@ -10,8 +10,7 @@ class ExpensesCategorize extends StatelessWidget {
   final String categoryName;
   final double categoryAmount;
   final double totalExpense;
-  final String currency;
-  const ExpensesCategorize({Key? key, required this.categoryIcon, required this.categoryName, required this.categoryAmount, required this.totalExpense,this.currency = 'ريال'}) : super(key: key);
+  const ExpensesCategorize({Key? key, required this.categoryIcon, required this.categoryName, required this.categoryAmount, required this.totalExpense}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +30,7 @@ class ExpensesCategorize extends StatelessWidget {
                       fontFamily: 'Tajawal', fontSize: 13, color: blackColor),
                 ),
                 PriceWidget(
-                    amount: categoryAmount, currency: currency, fontSize: 13, color: categoryAmount < 0 ? Colors.red : Colors.green)
+                    amount: categoryAmount, fontSize: 13, color: categoryAmount < 0 ? Colors.red : Colors.green)
               ],
             )
           ],

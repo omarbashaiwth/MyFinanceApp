@@ -6,11 +6,10 @@ import 'package:myfinance_app/core/widgets/price_widget.dart';
 import '../../model/transaction.dart' as my_transaction;
 
 class TransactionHistoryItem extends StatelessWidget {
-  final String currency;
   final my_transaction.Transaction transaction;
 
   const TransactionHistoryItem(
-      {Key? key, this.currency = 'ريال', required this.transaction})
+      {Key? key, required this.transaction})
       : super(key: key);
 
   @override
@@ -48,7 +47,6 @@ class TransactionHistoryItem extends StatelessWidget {
           children: [
             PriceWidget(
               amount: transaction.category!.amount!,
-              currency: currency,
               fontSize: 13,
               color:
                   transaction.category!.amount! < 0 ? Colors.red : Colors.green,

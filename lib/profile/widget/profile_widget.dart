@@ -81,7 +81,6 @@ class ProfileWidget extends StatelessWidget {
                   PriceWidget(
                     amount: controller.calculateTotal(
                         transactions: transactions, type: 'expense'),
-                    currency: 'ريال',
                     color: blackColor,
                     fontWeight: FontWeight.normal,
                   )
@@ -102,7 +101,6 @@ class ProfileWidget extends StatelessWidget {
                   PriceWidget(
                     amount: controller.calculateTotal(
                         transactions: transactions, type: 'income'),
-                    currency: 'ريال',
                     color: blackColor,
                     fontWeight: FontWeight.normal,
                   )

@@ -7,13 +7,11 @@ class SummaryCard extends StatelessWidget {
   final double amount;
   final String image;
   final int quarterRotate;
-  final String currency;
 
   const SummaryCard(
       {Key? key,
       required this.title,
       required this.amount,
-      this.currency = 'ريال',
       required this.image,
          this.quarterRotate = 0})
       : super(key: key);
@@ -42,7 +40,6 @@ class SummaryCard extends StatelessWidget {
                 const SizedBox(height: 8),
                 PriceWidget(
                     amount: amount,
-                    currency: currency,
                     color: amount < 0 ? Colors.red : Colors.green,
                 )
               ],

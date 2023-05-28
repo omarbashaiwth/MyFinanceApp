@@ -6,7 +6,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:myfinance_app/onboarding/controller/onboarding_controller.dart';
-import 'package:myfinance_app/onboarding/model/currency.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/view/screens/add_transaction_screen.dart';
 import 'package:myfinance_app/transactions/view/screens/transactions_screen.dart';
@@ -20,7 +19,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'auth/controller/auth_controller.dart';
 import 'auth/view/screens/auth_screen.dart';
 import 'core/ui/theme.dart';
-import 'core/utils/preferences_utils.dart';
 import 'onboarding/view/on_boarding_screen.dart';
 
 void main() async {
@@ -31,19 +29,18 @@ void main() async {
     ChangeNotifierProvider<TransactionController>(create: (_) => TransactionController()),
     ChangeNotifierProvider<WalletController>(create: (_) => WalletController()),
     ChangeNotifierProvider<AuthController>(create: (_) => AuthController()),
-    ChangeNotifierProvider<OnBoardingController>(create: (_) => OnBoardingController())
-  ], child:  MyApp(prefs: prefs))
+    ChangeNotifierProvider<OnBoardingController>(create: (_) => OnBoardingController(prefs))
+  ], child: const MyApp())
   );
 }
 
 class MyApp extends StatelessWidget {
-  final SharedPreferences? prefs;
-  const MyApp({super.key, this.prefs});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final selectedCurrency = Provider.of<OnBoardingController>(context).selectedCurrency;
-    final savedCurrency = prefs?.getString('currency');
+    final controller = Provider.of<OnBoardingController>(context, listen: false);
+    final savedCurrency = controller.getCurrency();
     return GetMaterialApp(
         debugShowCheckedModeBanner: false,
         localizationsDelegates: const [
@@ -51,10 +48,9 @@ class MyApp extends StatelessWidget {
         ],
         theme: AppTheme.lightTheme,
         home: savedCurrency == null
-            ? OnBoardingScreen(onBoardingEnd: () {
-                prefs?.setString(
-                    'currency', selectedCurrency?.code ?? 'null');
-                Get.to(const MyHomePage());
+            ? OnBoardingScreen(onBoardingEnd: (ctx) {
+                controller.setCurrency(controller.selectedCurrency?.symbol ?? 'null');
+                Navigator.pushReplacement(ctx, MaterialPageRoute(builder: (_) => const MyHomePage()));
               })
             : const MyHomePage()
     );

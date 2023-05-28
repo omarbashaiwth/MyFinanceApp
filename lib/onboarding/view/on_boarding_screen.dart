@@ -1,10 +1,8 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
-import 'package:myfinance_app/core/utils/currencies.dart' as all_currencies;
 import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/onboarding/controller/onboarding_controller.dart';
 import 'package:myfinance_app/onboarding/model/on_boarding.dart';
@@ -12,7 +10,7 @@ import 'package:myfinance_app/onboarding/view/widget/currency_item.dart';
 import 'package:provider/provider.dart';
 
 class OnBoardingScreen extends StatelessWidget {
-  final Function onBoardingEnd;
+  final Function(BuildContext) onBoardingEnd;
 
   OnBoardingScreen({Key? key, required this.onBoardingEnd})
       : super(key: key);
@@ -98,10 +96,10 @@ class OnBoardingScreen extends StatelessWidget {
                                     ?.code ==
                                 currency.code,
                             onSelectCurrency: () {
-                              Fluttertoast.showToast(msg: currency.code!);
                               Provider.of<OnBoardingController>(context,
                                       listen: false)
-                                  .onSelectedCurrencyChange(currency);
+                                  .onSelectedCurrencyChange(currency
+                              );
                             },
                           ),
                           const SizedBox(height: 4)
@@ -125,7 +123,7 @@ class OnBoardingScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         onPressed: (){
           Provider.of<OnBoardingController>(context, listen: false)
-              .selectedCurrency == null ?  Fluttertoast.showToast(msg: 'اختر عملة'): onBoardingEnd();
+              .selectedCurrency == null ?  Fluttertoast.showToast(msg: 'اختر عملة'): onBoardingEnd(context);
         },
         child: const Icon(
           Icons.done,
