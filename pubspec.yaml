@@ -50,6 +50,8 @@ dependencies:
   simple_month_year_picker: ^1.0.5
   flutter_localizations:
     sdk: flutter
+  introduction_screen: ^3.1.8
+  shared_preferences: ^2.1.1
 
 dev_dependencies:
   flutter_test:
@@ -76,6 +78,9 @@ flutter:
   assets:
     - assets/images/Logo.png
     - assets/images/Google_logo.png
+    - assets/images/onboarding1.png
+    - assets/images/onboarding2.png
+    - assets/images/onboarding3.png
     - assets/icons/menu.png
     - assets/icons/salary.png
     - assets/icons/wallet.png
@@ -86,6 +91,8 @@ flutter:
     - assets/icons/calendar.png
     - assets/icons/expense.png
     - assets/icons/category.png
+    - assets/icons/xof.png
+    - assets/icons/no_flag.png
     #The expenses icons
     - assets/icons/expenses_icons/airplane.png
     - assets/icons/expenses_icons/bus.png

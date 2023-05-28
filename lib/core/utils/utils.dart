@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:myfinance_app/core/utils/currencies.dart' as all_currencies;
 
+
+import '../../onboarding/model/currency.dart';
 import '../ui/theme.dart';
 
 class Utils {
@@ -58,4 +61,23 @@ class Utils {
         DateTime.fromMicrosecondsSinceEpoch(timestamp.microsecondsSinceEpoch),
     );
   }
+
+  static String emojiFlag(String flag){
+    // 0x41 is Letter A
+    // 0x1F1E6 is Regional Indicator Symbol Letter A
+    // Example :
+    // firstLetter U => 20 + 0x1F1E6
+    // secondLetter S => 18 + 0x1F1E6
+    // See: https://en.wikipedia.org/wiki/Regional_Indicator_Symbol
+    final firstLetter = flag.codeUnitAt(0) - 0x41 + 0x1F1E6;
+    final secondLetter = flag.codeUnitAt(1) - 0x41 + 0x1F1E6;
+    return String.fromCharCode(firstLetter) + String.fromCharCode(secondLetter);
+  }
+
+  static List<Currency> currencies(){
+    final rowData = all_currencies.currencies;
+    rowData.sort((a, b) => a['name'].compareTo(b['name']));
+    return rowData.map((currency) => Currency.fromJson(json: currency)).toList();
+  }
+
 }

@@ -1,54 +1,63 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:myfinance_app/onboarding/controller/onboarding_controller.dart';
+import 'package:myfinance_app/onboarding/model/currency.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/view/screens/add_transaction_screen.dart';
-import 'package:myfinance_app/transactions/view/screens/home_screen.dart';
+import 'package:myfinance_app/transactions/view/screens/transactions_screen.dart';
 import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
 import 'package:myfinance_app/wallets/view/screens/add_wallet_screen.dart';
 import 'package:myfinance_app/wallets/view/screens/wallets_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'auth/controller/auth_controller.dart';
 import 'auth/view/screens/auth_screen.dart';
 import 'core/ui/theme.dart';
+import 'core/utils/preferences_utils.dart';
+import 'onboarding/view/on_boarding_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(
-      MultiProvider(
-        providers: [
-          ChangeNotifierProvider<TransactionController>(create: (_) => TransactionController()),
-          ChangeNotifierProvider<WalletController>(create: (_) => WalletController()),
-          ChangeNotifierProvider<AuthController>(create: (_) => AuthController()),
-        ],
-          child: const MyApp()
-      )
+  final  prefs = await SharedPreferences.getInstance();
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider<TransactionController>(create: (_) => TransactionController()),
+    ChangeNotifierProvider<WalletController>(create: (_) => WalletController()),
+    ChangeNotifierProvider<AuthController>(create: (_) => AuthController()),
+    ChangeNotifierProvider<OnBoardingController>(create: (_) => OnBoardingController())
+  ], child:  MyApp(prefs: prefs))
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final SharedPreferences? prefs;
+  const MyApp({super.key, this.prefs});
 
   @override
   Widget build(BuildContext context) {
+    final selectedCurrency = Provider.of<OnBoardingController>(context).selectedCurrency;
+    final savedCurrency = prefs?.getString('currency');
     return GetMaterialApp(
         debugShowCheckedModeBanner: false,
-        localizationsDelegates:  const [
+        localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
         ],
         theme: AppTheme.lightTheme,
-        home: const Directionality(
-          textDirection: TextDirection.rtl,
-          child: MyHomePage(),
-        ));
+        home: savedCurrency == null
+            ? OnBoardingScreen(onBoardingEnd: () {
+                prefs?.setString(
+                    'currency', selectedCurrency?.code ?? 'null');
+                Get.to(const MyHomePage());
+              })
+            : const MyHomePage()
+    );
   }
 }
 
@@ -63,6 +72,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   var _selectedIndex = 0;
   var _isFabVisible = true;
   late AnimationController _hideBottomBarAnimationController;
+
   bool onScrollNotification(ScrollNotification notification) {
     if (notification is UserScrollNotification &&
         notification.metrics.axis == Axis.vertical) {
@@ -103,92 +113,96 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark));
 
-    final bottomNanScreens = [const HomeScreen(), const WalletsScreen()];
-    return Scaffold(
+    final bottomNanScreens = [
+      const TransactionsScreen(),
+      const WalletsScreen()
+    ];
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         floatingActionButton: StreamBuilder(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context, snapshot) {
-            if(snapshot.hasData  && snapshot.data!.emailVerified) {
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 500),
-                height: _isFabVisible ? 60.0 : 0.0,
-                child: FloatingActionButton(
-                  onPressed: () {
-                    Get.to(
-                      Directionality(
-                          textDirection: TextDirection.rtl,
-                          child: _selectedIndex == 0? const AddTransactionScreen() :   AddWalletScreen()
-                      )
-                    );
-                  },
-                  child: const Icon(Icons.add, color: Colors.white),
-                )
-              );
-            } else {
-             return const SizedBox.shrink();
-            }
-          }
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data!.emailVerified) {
+                return AnimatedContainer(
+                    duration: const Duration(milliseconds: 500),
+                    height: _isFabVisible ? 60.0 : 0.0,
+                    child: FloatingActionButton(
+                      onPressed: () {
+                        Get.to(Directionality(
+                            textDirection: TextDirection.rtl,
+                            child: _selectedIndex == 0
+                                ? const AddTransactionScreen()
+                                : AddWalletScreen()));
+                      },
+                      child: const Icon(Icons.add, color: Colors.white),
+                    ));
+              } else {
+                return const SizedBox.shrink();
+              }
+            }),
+        floatingActionButtonLocation:
+            FloatingActionButtonLocation.miniCenterDocked,
         bottomNavigationBar: StreamBuilder(
-          stream: FirebaseAuth.instance.authStateChanges(),
-          builder: (context, snapshot) {
-            if(snapshot.hasData  && snapshot.data!.emailVerified) {
-              return AnimatedBottomNavigationBar.builder(
-                itemCount: 2,
-                tabBuilder: (index, isActive) {
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data!.emailVerified) {
+                return AnimatedBottomNavigationBar.builder(
+                  itemCount: 2,
+                  tabBuilder: (index, isActive) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
                           index == 0
                               ? Icons.cached_sharp
                               : Icons.account_balance_wallet_outlined,
                           size: 24,
                           color: isActive ? redColor : darkGray,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        index == 0 ? 'المعاملات' : 'المحفظات',
-                        style: TextStyle(
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          index == 0 ? 'المعاملات' : 'المحفظات',
+                          style: TextStyle(
                             fontFamily: 'Tajawal',
                             color: isActive ? redColor : darkGray,
-                        ),
-                      )
-                    ],
-                  );
-                },
-                hideAnimationController: _hideBottomBarAnimationController,
-                gapLocation: GapLocation.center,
-                notchSmoothness: NotchSmoothness.smoothEdge,
-                leftCornerRadius: 32,
-                rightCornerRadius: 32,
-                activeIndex: _selectedIndex,
-                onTap: (index){setState(() => _selectedIndex = index);}
-                ,
-              );
-            } else {return const SizedBox.shrink();}
-          }
-        ),
+                          ),
+                        )
+                      ],
+                    );
+                  },
+                  hideAnimationController: _hideBottomBarAnimationController,
+                  gapLocation: GapLocation.center,
+                  notchSmoothness: NotchSmoothness.smoothEdge,
+                  leftCornerRadius: 32,
+                  rightCornerRadius: 32,
+                  activeIndex: _selectedIndex,
+                  onTap: (index) {
+                    setState(() => _selectedIndex = index);
+                  },
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
+            }),
         body: NotificationListener<ScrollNotification>(
-            onNotification: onScrollNotification,
-            child: StreamBuilder(
-              stream: FirebaseAuth.instance.authStateChanges(),
-              builder: (context,snapshot){
-                if(snapshot.hasData && snapshot.data!.emailVerified){
-                    return  bottomNanScreens.elementAt(_selectedIndex);
-                } else {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: AuthScreen(),
-                  );
-                }
-              },
-            ),
+          onNotification: onScrollNotification,
+          child: StreamBuilder(
+            stream: FirebaseAuth.instance.authStateChanges(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data!.emailVerified) {
+                return bottomNanScreens.elementAt(_selectedIndex);
+              } else {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: AuthScreen(),
+                );
+              }
+            },
           ),
+        ),
+      ),
     );
   }
 }
-
-

@@ -16,8 +16,8 @@ import '../widgets/custom_card.dart';
 import '../widgets/expense_categorize.dart';
 import '../widgets/transaction_history_item.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class TransactionsScreen extends StatelessWidget {
+  const TransactionsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
