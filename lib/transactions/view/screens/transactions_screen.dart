@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:myfinance_app/auth/controller/services/firebase_auth_services.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/widgets/empty_widget.dart';
@@ -70,7 +71,9 @@ class TransactionsScreen extends StatelessWidget {
                               Icons.account_circle_rounded,
                               color: Colors.red,
                             )
-                          : ClipOval(child: Image.network(auth.currentUser!.photoURL!))),
+                          : ClipOval(
+                              child:
+                                  Image.network(auth.currentUser!.photoURL!))),
                   floating: true,
                   snap: true,
                 )
@@ -138,12 +141,18 @@ class TransactionsScreen extends StatelessWidget {
       required TransactionController controller}) {
     return GestureDetector(
       onTap: () async {
-        final pickedDate =
-            await SimpleMonthYearPicker.showMonthYearPickerDialog(
-                context: context,
-                disableFuture: true,
-                selectionColor: redColor);
-        controller.onChangePickedMonth(pickedDate);
+        final pickedDate = await showMonthPicker(
+          context: context,
+          locale: const Locale('ar'),
+          roundedCornersRadius: 20,
+          headerColor: Theme.of(context).colorScheme.primary,
+          selectedMonthTextColor: whiteColor,
+          unselectedMonthTextColor: blackColor,
+          dismissible: true,
+          cancelWidget: const Text('اغلاق', style: TextStyle(fontFamily: 'Tajawal', fontWeight: FontWeight.bold),),
+          confirmWidget: const Text('تم', style: TextStyle(fontFamily: 'Tajawal', fontWeight: FontWeight.bold),)
+        );
+        controller.onChangePickedMonth(pickedDate!);
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
