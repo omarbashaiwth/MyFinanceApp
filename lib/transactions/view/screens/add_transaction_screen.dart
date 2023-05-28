@@ -63,6 +63,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
           tabController: _tabController,
           onIndexChange: (index) {
               setState(() => _currentTabIndex = index);
+              transactionController.clearSelections();
           },
           onCloseClicked: () {
             transactionController.clearSelections();
@@ -74,7 +75,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
             final isValid = _tabController.index == 0
                 ? _expenseFormKey.currentState!.validate()
                 : _incomeFormKey.currentState!.validate();
-            if (isValid && transaction.walletId != null && transaction.category != null) {
+            if (isValid && transaction.walletId != null && (transaction.category != null || _tabController.index == 1) ){
               _tabController.index == 0
                   ? _expenseFormKey.currentState!.save()
                   : _incomeFormKey.currentState!.save();
@@ -82,7 +83,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
               await provider.saveTransaction(transaction);
               await walletController.updateWallet(
                   walletId: transaction.walletId! ,
-                  value: transaction.category!.amount!,
+                  value: transaction.amount!,
               );
               provider.clearSelections();
               Get.back();
@@ -93,6 +94,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
             } else if(transaction.category == null) {
               Fluttertoast.showToast(
                 msg: 'قم باختيار نوع النفقة',
+              );
+            } else{
+              Fluttertoast.showToast(
+                msg: 'something wrong',
               );
             }
           },

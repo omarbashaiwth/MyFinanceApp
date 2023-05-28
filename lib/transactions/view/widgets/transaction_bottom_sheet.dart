@@ -210,10 +210,12 @@ class TransactionBottomSheet {
             child: Image.asset(icon, height: 35),
           ),
           const SizedBox(height: 2),
-          Text(
-            label,
-            style: const TextStyle(fontFamily: 'Tajawal'),
-            textAlign: TextAlign.center,
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(fontFamily: 'Tajawal'),
+              textAlign: TextAlign.center,
+            ),
           )
         ],
       ),

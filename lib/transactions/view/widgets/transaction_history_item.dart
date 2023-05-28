@@ -20,16 +20,17 @@ class TransactionHistoryItem extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(transaction.category!.icon!, height: 30),
+            Image.asset(transaction.category?.icon ?? 'assets/icons/salary.png', height: 30),
             const SizedBox(width: 8),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  transaction.category!.name!,
+                  transaction.category?.name ?? 'دخل',
                   style: const TextStyle(
-                      fontFamily: 'Tajawal', fontSize: 13, color: blackColor),
+                      fontFamily: 'Tajawal', fontSize: 13, color: blackColor,
+                  ),
                 ),
                 transaction.note == null || transaction.note!.isEmpty?
                     const SizedBox.shrink():
@@ -46,10 +47,10 @@ class TransactionHistoryItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             PriceWidget(
-              amount: transaction.category!.amount!,
+              amount: transaction.amount!,
               fontSize: 13,
               color:
-                  transaction.category!.amount! < 0 ? Colors.red : Colors.green,
+                  transaction.amount! < 0 ? Colors.red : Colors.green,
             ),
             Text(
               Utils.dateFormat(transaction.createdAt!),

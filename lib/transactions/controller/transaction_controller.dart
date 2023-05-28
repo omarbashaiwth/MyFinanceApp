@@ -79,7 +79,7 @@ class TransactionController extends ChangeNotifier {
       final categoryTotalAmount = transactions.fold(
           0.0,
           (previousValue, transaction) =>
-              previousValue + transaction.category!.amount!);
+              previousValue + transaction.amount!);
       final categoryIcon = transactions.first.category!.icon;
       return {
         'name': categoryName,
@@ -120,14 +120,15 @@ class TransactionController extends ChangeNotifier {
       return realTransactions.fold(
           0.0,
           (previousValue, transaction) =>
-              previousValue + transaction.category!.amount!);
+              previousValue + transaction.amount!);
     } else {
       final transactionsByType =
           transactions.where((element) => element.type == type).toList();
       return transactionsByType.fold(
           0.0,
           (previousValue, transaction) =>
-              previousValue + transaction.category!.amount!);
+              previousValue + transaction.amount!
+      );
     }
   }
 

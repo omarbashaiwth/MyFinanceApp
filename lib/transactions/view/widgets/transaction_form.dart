@@ -47,7 +47,7 @@ class TransactionForm {
                       controller: textEditingController,
                       keyboardType: TextInputType.number,
                       readOnly: false,
-                      onSaved: (value) => transaction.category!.amount =
+                      onSaved: (value) => transaction.amount =
                           -int.parse(value).toDouble(),
                   ),
                 ),
@@ -70,8 +70,6 @@ class TransactionForm {
                           availableWallets: snapshot.data!,
                           walletClickable: (wallet) => expenseAmount
                               .isLowerThan(wallet.currentBalance!),
-                          // expenseAmount: expenseAmount,
-                          // clickedWallet: null
                         )
                             : Fluttertoast.showToast(msg: 'قم بإدخال المبلغ أولاً');
                       },
@@ -148,7 +146,7 @@ class TransactionForm {
                     keyboardType: TextInputType.number,
                     readOnly: false,
                     onSaved: (newValue) {
-                      transaction.category!.amount = int.parse(newValue).toDouble();
+                      transaction.amount = int.parse(newValue).toDouble();
                     },
                   ),
                 ),
@@ -166,8 +164,6 @@ class TransactionForm {
                         userId: currentUser.uid,
                         availableWallets: snapshot.data!,
                         walletClickable: (_) => true,
-                        // expenseAmount: null,
-                        // clickedWallet: null
                       ),
                     );
                   },

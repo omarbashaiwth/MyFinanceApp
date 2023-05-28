@@ -119,6 +119,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
                             );
                             await transactionProvider.saveTransaction(
                                 my_transaction.Transaction(
+                                    amount: valueToAdd,
                                     walletId: wallet.id!,
                                     createdAt: Timestamp.now(),
                                     type: 'income',
@@ -127,7 +128,6 @@ class _WalletsScreenState extends State<WalletsScreen> {
                                     category: Category(
                                         icon: wallet.walletType!.icon,
                                         name: 'إضافة رصيد',
-                                        amount: valueToAdd
                                     )
                                 )
                             );
@@ -150,6 +150,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
                             );
                             await transactionProvider.saveTransaction(
                                 my_transaction.Transaction(
+                                    amount: transferAmount,
                                     walletId: from.id!,
                                     createdAt: Timestamp.now(),
                                     type: null,
@@ -159,7 +160,6 @@ class _WalletsScreenState extends State<WalletsScreen> {
                                     category: Category(
                                         icon: 'assets/icons/transfer.png',
                                         name: 'تحويل رصيد',
-                                        amount: transferAmount
                                     )
                                 )
                             );
@@ -217,7 +217,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
     }
     return Stack(
       children: [
-        wallets!.isEmpty
+        wallets == null || wallets.isEmpty
             ? const EmptyWidget(
           message: 'لا يوجد محفظات.. قم بإضافة محفظة جديدة',)
             : Padding(
