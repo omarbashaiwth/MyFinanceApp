@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/utils/utils.dart';
@@ -19,6 +17,7 @@ class OnBoardingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final selectedCurrency = Provider.of<OnBoardingController>(context, listen: false).selectedCurrency;
     final onBoardingPages = [
       OnBoarding(
           'سجّل نفقاتك',
@@ -119,17 +118,16 @@ class OnBoardingScreen extends StatelessWidget {
       ),
       nextFlex: 0,
       dotsFlex: 3,
-      done: FloatingActionButton(
+      done: selectedCurrency != null ? FloatingActionButton(
         backgroundColor: Colors.white,
         onPressed: (){
-          Provider.of<OnBoardingController>(context, listen: false)
-              .selectedCurrency == null ?  Fluttertoast.showToast(msg: 'اختر عملة'): onBoardingEnd(context);
+          onBoardingEnd(context);
         },
         child: const Icon(
           Icons.done,
           color: redColor,
         ),
-      ),
+      ): Container(),
       onDone: (){},
       dotsDecorator:
           const DotsDecorator(size: Size(10, 10), activeColor: whiteColor),
