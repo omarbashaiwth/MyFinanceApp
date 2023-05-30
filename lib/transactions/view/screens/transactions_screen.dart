@@ -7,6 +7,7 @@ import 'package:myfinance_app/auth/controller/services/firebase_auth_services.da
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/widgets/empty_widget.dart';
 import 'package:myfinance_app/profile/widget/profile_widget.dart';
+import 'package:myfinance_app/reports/view/reports_screen.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/view/screens/transaction_history_screen.dart';
 import 'package:provider/provider.dart';
@@ -39,6 +40,12 @@ class TransactionsScreen extends StatelessWidget {
                     style: AppTextTheme.appBarTitleTextStyle,
                   ),
                   centerTitle: true,
+                  actions: [
+                    IconButton(
+                        onPressed:() => Get.to(const ReportsScreen()),
+                        icon: const Icon(Icons.insert_chart_outlined_rounded, color: redColor),
+                    )
+                  ],
                   leading: IconButton(
                       onPressed: () {
                         Get.bottomSheet(Container(
