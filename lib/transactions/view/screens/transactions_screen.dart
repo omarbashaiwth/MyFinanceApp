@@ -290,9 +290,9 @@ class TransactionsScreen extends StatelessWidget {
                     itemCount: grouped.length,
                     itemBuilder: (_, index) {
                       return ExpensesCategorize(
-                          categoryName: grouped[index]['name'],
-                          categoryIcon: grouped[index]['icon'],
-                          categoryAmount: grouped[index]['amount'],
+                          categoryName: grouped[index].name,
+                          categoryIcon: grouped[index].icon!,
+                          categoryAmount: grouped[index].value,
                           totalExpense: expenses);
                     })
           ],

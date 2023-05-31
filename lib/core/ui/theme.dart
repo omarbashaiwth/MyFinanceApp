@@ -24,6 +24,24 @@ class AppTheme{
         onSecondaryContainer: normalGray,
       )
   );
+
+  static final pieChartColors = [
+    const Color(0xFF2B6373),
+    const Color(0xFF5388D8),
+    const Color(0xFFFF9F40),
+    const Color(0xFFE8978E),
+    const Color(0xFF91E88E),
+    const Color(0xFFD58EE8),
+    const Color(0xFF8EDBE8),
+    const Color(0xFFD715C3),
+    const Color(0xFFFC505E),
+    const Color(0xFFBFE51D),
+    const Color(0xFF04A850),
+    const Color(0xFF04A88A),
+    const Color(0xFF725F5F),
+    const Color(0xFFDED86C),
+    const Color(0xFF857219)
+  ];
 }
 
 class AppTextTheme{

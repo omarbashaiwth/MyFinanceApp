@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:myfinance_app/core/ui/theme.dart';
+import 'package:myfinance_app/transactions/model/expense_summray.dart';
 import 'package:myfinance_app/transactions/model/transaction.dart'
     as my_transaction;
 import 'package:myfinance_app/transactions/model/category.dart';
@@ -65,7 +67,7 @@ class TransactionController extends ChangeNotifier {
         .add(transaction);
   }
 
-  List<Map<String, dynamic>> groupExpenses(
+  List<ExpenseSummary> groupExpenses(
       List<my_transaction.Transaction> transactions) {
     final expenses =
         transactions.where((element) => element.type == 'expense').toList();
@@ -81,15 +83,15 @@ class TransactionController extends ChangeNotifier {
           (previousValue, transaction) =>
               previousValue + transaction.amount!);
       final categoryIcon = transactions.first.category!.icon;
-      return {
-        'name': categoryName,
-        'icon': categoryIcon,
-        'amount': categoryTotalAmount
-      };
+
+      return ExpenseSummary(
+          name: categoryName!,
+          value: categoryTotalAmount,
+          icon: categoryIcon,
+      );
     }).toList();
     // Sort category summaries by amount
-    categorySummary.sort(
-        (a, b) => (a['amount'] as double).compareTo(b['amount'] as double));
+    categorySummary.sort((a, b) => (a.value).compareTo(b.value));
     return categorySummary;
   }
 
