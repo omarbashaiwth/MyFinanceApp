@@ -40,11 +40,9 @@ dependencies:
   cloud_firestore: ^4.5.0
   provider:
   get:
-  percent_indicator: ^4.2.3
   animated_bottom_navigation_bar: ^1.2.0
   intl: ^0.17.0
   fluttertoast: ^8.2.1
-  custom_pop_up_menu: ^1.2.4
   collection: ^1.17.0
   google_sign_in: ^6.1.0
   flutter_localizations:

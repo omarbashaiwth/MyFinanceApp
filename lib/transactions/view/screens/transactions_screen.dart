@@ -15,7 +15,6 @@ import 'package:provider/provider.dart';
 import 'package:get/get.dart';
 import '../../model/transaction.dart';
 import '../widgets/custom_card.dart';
-import '../widgets/expense_categorize.dart';
 import '../widgets/transaction_history_item.dart';
 
 class TransactionsScreen extends StatelessWidget {
