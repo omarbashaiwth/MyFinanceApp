@@ -134,6 +134,15 @@ class TransactionController extends ChangeNotifier {
     }
   }
 
+  List<DateTime> getLastFiveMonths(){
+    List<DateTime> months = [];
+    for(int i = 0; i < 5; i++){
+      final date = DateTime.now().subtract(Duration(days: 31 * i));
+      months.add(date);
+    }
+    return months;
+  }
+
   void clearSelections() {
     _selectedCategory = null;
     _selectedIcon = 0;

@@ -1,8 +1,10 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
+import '../../model/monthly_report_model.dart';
+
 class DrawBarChart extends StatelessWidget {
-  final List<Map<String, dynamic>> data;
+  final List<MonthlyReportModel> data;
   const DrawBarChart({Key? key, required this.data}) : super(key: key);
 
   @override
@@ -14,33 +16,33 @@ class DrawBarChart extends StatelessWidget {
           bottomTitles: AxisTitles(
             sideTitles: SideTitles(
               showTitles: true,
-              getTitlesWidget:(value, _) => Text(data[value.toInt()]['month'], style: const TextStyle(fontFamily: 'Tajawal', fontSize: 11),),
+              getTitlesWidget:(value, _) => Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(data[value.toInt()].month, style: const TextStyle(fontFamily: 'Tajawal', fontSize: 11),),
+                ),
             )
           )
       ),
       borderData: FlBorderData(show: false),
         gridData: FlGridData(drawVerticalLine: false),
-        barGroups: _buildBars(
-            incomes: data.map((e) => e['income']).toList(),
-            expenses: data.map((e) => e['expense']).toList()
-        )
+        barGroups: _buildBars(data: data)
     )
     );
 
   }
 
-  List<BarChartGroupData> _buildBars({required List<dynamic> incomes, required List<dynamic> expenses, double? width = 12}){
+  List<BarChartGroupData> _buildBars({required List<MonthlyReportModel> data,double width = 12}){
     return List.generate(5, (index) =>
         BarChartGroupData(
           x: index,
           barRods: [
             BarChartRodData(
-              toY: incomes[index],
+              toY: data[index].incomes,
               color: const Color(0xFFF7ADA7),
               width: width
             ),
             BarChartRodData(
-                toY: expenses[index],
+                toY: -data[index].expenses,
                 color: const Color(0xFFEF4A37),
                 width: width
             ),
