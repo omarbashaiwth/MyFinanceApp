@@ -48,7 +48,6 @@ class TransactionHistoryItem extends StatelessWidget {
           children: [
             PriceWidget(
               amount: transaction.amount!,
-              fontSize: 13,
               color:
                   transaction.amount! < 0 ? Colors.red : Colors.green,
             ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/widgets/empty_widget.dart';
+import 'package:myfinance_app/reports/controller/reports_controller.dart';
 import 'package:myfinance_app/reports/view/widgets/chart_header.dart';
 import 'package:myfinance_app/reports/view/widgets/info_widget.dart';
 import 'package:myfinance_app/reports/view/widgets/pie_chart.dart.dart';
@@ -13,13 +14,14 @@ class ExpensesReport extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final transactionController = Provider.of<TransactionController>(context, listen: false);
+    final reportsController = Provider.of<ReportsController>(context, listen: false);
     debugPrint('buildReport');
     return StreamBuilder(
       stream: transactionController.getTransactions(),
       builder: (context, snapshot) {
         final transactions = snapshot.data;
         final monthlyTransactions = transactionController.transactionsByMonth(transactions: transactions, pickedDate: DateTime.now()) ?? [];
-        final groupedExpenses = transactionController.groupExpenses(monthlyTransactions);
+        final groupedExpenses = reportsController.groupExpenses(monthlyTransactions);
         final total  = transactionController.calculateTotal(transactions: monthlyTransactions, type: 'expense');
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

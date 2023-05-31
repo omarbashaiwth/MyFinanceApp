@@ -40,6 +40,8 @@ class SummaryCard extends StatelessWidget {
                 const SizedBox(height: 8),
                 PriceWidget(
                     amount: amount,
+                    amountFontSize: 20,
+                    currencyFontSize: 18,
                     color: amount < 0 ? Colors.red : Colors.green,
                 )
               ],

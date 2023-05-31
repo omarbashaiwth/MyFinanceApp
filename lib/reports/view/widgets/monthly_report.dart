@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:myfinance_app/core/widgets/empty_widget.dart';
+import 'package:myfinance_app/reports/controller/reports_controller.dart';
 import 'package:myfinance_app/reports/model/monthly_report_model.dart';
 import 'package:myfinance_app/reports/view/widgets/chart_header.dart';
 import 'package:myfinance_app/reports/view/widgets/info_widget.dart';
@@ -17,12 +18,14 @@ class MonthlyReport extends StatelessWidget {
   Widget build(BuildContext context) {
     final transactionController =
         Provider.of<TransactionController>(context, listen: false);
+    final reportsController =
+    Provider.of<ReportsController>(context, listen: false);
     return StreamBuilder(
         stream: transactionController.getTransactions(),
         builder: (context, snapshot) {
           final data = List.generate(5, (index) {
             final transactions = snapshot.data;
-            final months = transactionController.getLastFiveMonths();
+            final months = reportsController.getLastFiveMonths();
             final monthlyTransactions =
                 transactionController.transactionsByMonth(
                         transactions: transactions,

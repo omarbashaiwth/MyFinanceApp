@@ -6,6 +6,7 @@ import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:myfinance_app/auth/controller/services/firebase_auth_services.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/widgets/empty_widget.dart';
+import 'package:myfinance_app/core/widgets/price_widget.dart';
 import 'package:myfinance_app/profile/widget/profile_widget.dart';
 import 'package:myfinance_app/reports/view/reports_screen.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
@@ -93,15 +94,17 @@ class TransactionsScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(10),
                       child: Column(
                         children: [
-                          _monthPicker(
-                              context: context, controller: controller),
+                          const SizedBox(height: 16),
+                          Text(
+                            intl.DateFormat('MMMM yyyy', 'ar').format(controller.pickedDate),
+                            style: const TextStyle(
+                                fontFamily: 'Tajawal',
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500),
+                          ),
                           const SizedBox(height: 20),
                           _headerSection(header: 'ملخص الشهر'),
                           _monthlySummarySection(
-                              controller: controller, snapshot: snapshot),
-                          const SizedBox(height: 16),
-                          _headerSection(header: 'النفقات حسب التصنيف'),
-                          _expensesCategorySection(
                               controller: controller, snapshot: snapshot),
                           const SizedBox(height: 16),
                           _headerSection(
@@ -185,37 +188,60 @@ class TransactionsScreen extends StatelessWidget {
     final transactionsByMonth = controller.transactionsByMonth(
             transactions: snapshot.data, pickedDate: controller.pickedDate) ??
         [];
-    // if(snapshot.hasData && snapshot.hasError){
-    //   debugPrint(snapshot.error.toString());
-    //   return const Align(alignment: Alignment.center, child: Text('يوجد خطأ', style: AppTextTheme.headerTextStyle));
-    // }
-    // if(snapshot.connectionState == ConnectionState.waiting){
-    //   return const Align(alignment: Alignment.center, child: CircularProgressIndicator());
-    // }
     return Card(
-      color: redColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 15),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            SummaryCard(
-              title: 'النفقات',
-              image: 'assets/icons/expense.png',
-              amount: controller.calculateTotal(
-                  transactions: transactionsByMonth, type: 'expense'),
-            ),
-            SummaryCard(
-              title: 'الدخل',
-              image: 'assets/icons/expense.png',
-              amount: controller.calculateTotal(
-                transactions: transactionsByMonth,
-                type: 'income',
+      child: Container(
+          decoration:  BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: const LinearGradient(
+                  colors: [redColor,darkRedColor],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  tileMode: TileMode.mirror
+              )
+          ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 15),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Card(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: PriceWidget(
+                        amount: controller.calculateTotal(transactions: transactionsByMonth),
+                        amountFontSize: 30,
+                        currencyFontSize: 18,
+                        color: controller.calculateTotal(transactions: transactionsByMonth) < 0 ? Colors.red : Colors.green,
+                    ),
+                  ),
+                ),
               ),
-              quarterRotate: 2,
-            )
-          ],
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SummaryCard(
+                    title: 'النفقات',
+                    image: 'assets/icons/expense.png',
+                    amount: controller.calculateTotal(
+                        transactions: transactionsByMonth, type: 'expense'),
+                  ),
+                  SummaryCard(
+                    title: 'الدخل',
+                    image: 'assets/icons/expense.png',
+                    amount: controller.calculateTotal(
+                      transactions: transactionsByMonth,
+                      type: 'income',
+                    ),
+                    quarterRotate: 2,
+                  )
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -225,13 +251,6 @@ class TransactionsScreen extends StatelessWidget {
       {required TransactionController controller,
       required AsyncSnapshot<List<Transaction>> snapshot}) {
     final transactions = snapshot.data?.take(5).toList() ?? [];
-    // if(snapshot.hasData && snapshot.hasError){
-    //   debugPrint(snapshot.error.toString());
-    //   return const Align(alignment: Alignment.center, child: Text('يوجد خطأ', style: AppTextTheme.headerTextStyle));
-    // }
-    // if(snapshot.connectionState == ConnectionState.waiting){
-    //   return const Align(alignment: Alignment.center, child: CircularProgressIndicator());
-    // }
     return Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
@@ -257,45 +276,5 @@ class TransactionsScreen extends StatelessWidget {
                   },
                 )
         ]));
-  }
-
-  Widget _expensesCategorySection(
-      {required TransactionController controller,
-      required AsyncSnapshot<List<Transaction>> snapshot}) {
-    final transactionsByMonth = controller.transactionsByMonth(
-            transactions: snapshot.data, pickedDate: controller.pickedDate) ??
-        [];
-    final expenses = controller.calculateTotal(
-        transactions: transactionsByMonth, type: 'expense');
-    final grouped = controller.groupExpenses(transactionsByMonth);
-    // if(snapshot.hasData && snapshot.hasError){
-    //   debugPrint(snapshot.error.toString());
-    //   return const Align(alignment: Alignment.center, child: Text('يوجد خطأ', style: AppTextTheme.headerTextStyle));
-    // }
-    // if(snapshot.connectionState == ConnectionState.waiting){
-    //   return const Align(alignment: Alignment.center, child: CircularProgressIndicator());
-    // }
-    return Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-            border: Border.all(color: darkGray),
-            borderRadius: BorderRadius.circular(10)),
-        child: Stack(
-          children: [
-            transactionsByMonth.isEmpty
-                ? const EmptyWidget()
-                : ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: grouped.length,
-                    itemBuilder: (_, index) {
-                      return ExpensesCategorize(
-                          categoryName: grouped[index].name,
-                          categoryIcon: grouped[index].icon!,
-                          categoryAmount: grouped[index].value,
-                          totalExpense: expenses);
-                    })
-          ],
-        ));
   }
 }

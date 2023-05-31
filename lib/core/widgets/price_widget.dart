@@ -6,14 +6,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class PriceWidget extends StatelessWidget {
   final double amount;
-  final double fontSize;
+  final double amountFontSize;
+  final double currencyFontSize;
   final Color color;
   final FontWeight fontWeight;
 
   const PriceWidget(
       {Key? key,
       required this.amount,
-      this.fontSize = 18,
+      this.amountFontSize = 13,
+        this.currencyFontSize = 13,
         required this.color, this.fontWeight = FontWeight.bold}
       )
       : super(key: key);
@@ -27,7 +29,7 @@ class PriceWidget extends StatelessWidget {
         Text(
           NumberFormat.decimalPattern().format(amount),
           style: TextStyle(
-            fontSize: fontSize,
+            fontSize: amountFontSize,
             fontFamily: 'Tajawal',
             fontWeight: fontWeight,
             color: color,
@@ -37,7 +39,7 @@ class PriceWidget extends StatelessWidget {
         Text(
           currency,
           style: TextStyle(
-            fontSize: fontSize,
+            fontSize: currencyFontSize,
             fontFamily: 'Tajawal',
             fontWeight: fontWeight,
             color: color,

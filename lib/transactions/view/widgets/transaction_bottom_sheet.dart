@@ -180,7 +180,6 @@ class TransactionBottomSheet {
               ),
               PriceWidget(
                 amount: wallet.currentBalance!,
-                fontSize: 13,
                 color: !clickable(wallet)
                     ? Colors.grey.withOpacity(0.2)
                     : wallet.currentBalance! < 0

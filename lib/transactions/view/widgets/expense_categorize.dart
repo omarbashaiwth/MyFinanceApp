@@ -30,7 +30,7 @@ class ExpensesCategorize extends StatelessWidget {
                       fontFamily: 'Tajawal', fontSize: 13, color: blackColor),
                 ),
                 PriceWidget(
-                    amount: categoryAmount, fontSize: 13, color: categoryAmount < 0 ? Colors.red : Colors.green)
+                    amount: categoryAmount,color: categoryAmount < 0 ? Colors.red : Colors.green)
               ],
             )
           ],
