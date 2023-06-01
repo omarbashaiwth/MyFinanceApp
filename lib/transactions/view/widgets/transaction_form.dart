@@ -48,7 +48,7 @@ class TransactionForm {
                       keyboardType: TextInputType.number,
                       readOnly: false,
                       onSaved: (value) => transaction.amount =
-                          -int.parse(value).toDouble(),
+                          double.tryParse('-$value'),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -145,8 +145,8 @@ class TransactionForm {
                     hintStyle: AppTextTheme.hintTextStyle.copyWith(fontSize: 24),
                     keyboardType: TextInputType.number,
                     readOnly: false,
-                    onSaved: (newValue) {
-                      transaction.amount = int.parse(newValue).toDouble();
+                    onSaved: (value) {
+                      transaction.amount = double.parse(value);
                     },
                   ),
                 ),

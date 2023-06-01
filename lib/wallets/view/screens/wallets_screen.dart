@@ -62,16 +62,8 @@ class _WalletsScreenState extends State<WalletsScreen> {
       body: StreamBuilder(
           stream: walletProvider.getWallets(),
           builder: (_, snapshot) {
-            debugPrint('Stream snapshot: $snapshot');
-            // if(snapshot.hasError){
-            //   return  Align(alignment: Alignment.center, child: Text(snapshot.error.toString(), style: AppTextTheme.headerTextStyle));
-            // }
+            debugPrint('Stream snapshot');
             final data = snapshot.data;
-            // if (data == null) {
-            //   return const Align(
-            //       alignment: Alignment.center,
-            //       child: Text('فارغ', style: AppTextTheme.headerTextStyle));
-            // }
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -201,11 +193,6 @@ class _WalletsScreenState extends State<WalletsScreen> {
     required Function() onClose
   }) {
     final wallets = snapshot.data;
-    // if (wallets == null) {
-    //   return const Align(
-    //       alignment: Alignment.center,
-    //       child: Text('فارغ', style: AppTextTheme.headerTextStyle));
-    // }
     if (snapshot.hasData && snapshot.hasError) {
       return const Align(
           alignment: Alignment.center,

@@ -67,7 +67,7 @@ class AddWalletScreen extends StatelessWidget {
                     hint: 'الرصيد الحالي',
                     leadingIcon: Icons.attach_money,
                     keyboardType: TextInputType.number,
-                    onSaved: (value) => wallet.currentBalance = int.parse(value).toDouble(),
+                    onSaved: (value) => wallet.currentBalance = double.parse(value),
                 ),
                 const SizedBox(height: 40),
                 Align(alignment: Alignment.centerRight,child: Text('نوع المحفظة', style: AppTextTheme.headerTextStyle.copyWith(color: normalGray))),
