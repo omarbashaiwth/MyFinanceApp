@@ -6,6 +6,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:myfinance_app/onboarding/controller/onboarding_controller.dart';
+import 'package:myfinance_app/reports/controller/reports_controller.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/view/screens/add_transaction_screen.dart';
 import 'package:myfinance_app/transactions/view/screens/transactions_screen.dart';
@@ -29,6 +30,7 @@ void main() async {
     ChangeNotifierProvider<TransactionController>(create: (_) => TransactionController()),
     ChangeNotifierProvider<WalletController>(create: (_) => WalletController()),
     ChangeNotifierProvider<AuthController>(create: (_) => AuthController()),
+    ChangeNotifierProvider<ReportsController>(create: (_) => ReportsController()),
     ChangeNotifierProvider<OnBoardingController>(create: (_) => OnBoardingController(prefs))
   ], child: const MyApp())
   );
@@ -126,11 +128,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     height: _isFabVisible ? 60.0 : 0.0,
                     child: FloatingActionButton(
                       onPressed: () {
-                        Get.to(Directionality(
+                        Get.to(() => Directionality(
                             textDirection: TextDirection.rtl,
                             child: _selectedIndex == 0
                                 ? const AddTransactionScreen()
-                                : AddWalletScreen()));
+                                : AddWalletScreen())
+                        );
                       },
                       child: const Icon(Icons.add, color: Colors.white),
                     ));

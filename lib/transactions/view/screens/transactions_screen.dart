@@ -42,7 +42,7 @@ class TransactionsScreen extends StatelessWidget {
                   centerTitle: true,
                   actions: [
                     IconButton(
-                        onPressed:() => Get.to(const ReportsScreen()),
+                        onPressed:() => Get.to(() => const ReportsScreen()),
                         icon: const Icon(Icons.insert_chart_outlined_rounded, color: redColor),
                     )
                   ],
@@ -129,12 +129,13 @@ class TransactionsScreen extends StatelessWidget {
             Text(header, style: AppTextTheme.headerTextStyle),
             showMore
                 ? TextButton(
-                    onPressed: () => Get.to(const Directionality(
+                    onPressed: () => Get.to(() => const Directionality(
                         textDirection: TextDirection.rtl,
                         child: TransactionHistoryScreen())),
-                    child: Text('عرض المزيد',
-                        style: AppTextTheme.textButtonStyle
-                            .copyWith(color: redColor)),
+              child: Text('عرض المزيد',
+                  style: AppTextTheme.textButtonStyle
+                      .copyWith(color: redColor)
+              ),
                   )
                 : Container()
           ],
