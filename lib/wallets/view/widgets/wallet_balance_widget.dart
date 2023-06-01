@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/widgets/price_widget.dart';
-import 'package:intl/intl.dart';
 
 class WalletBalance extends StatelessWidget {
   final String balanceLabel;
@@ -13,8 +12,8 @@ class WalletBalance extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(balanceLabel, style: AppTextTheme.headerTextStyle),
         const SizedBox(height: 8),
+        Text(balanceLabel, style: const TextStyle(fontFamily: 'Tajawal', fontSize: 18, color: blackColor)),
         PriceWidget(
             amount: balance,
             currencyFontSize: fontSize,

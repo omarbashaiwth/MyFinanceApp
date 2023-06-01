@@ -8,6 +8,7 @@ import 'package:myfinance_app/transactions/model/category.dart';
 import 'package:myfinance_app/transactions/model/transaction.dart' as my_transaction;
 import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
 import 'package:myfinance_app/wallets/model/wallet.dart';
+import 'package:myfinance_app/wallets/view/widgets/total_balance_widget.dart';
 import 'package:myfinance_app/wallets/view/widgets/wallet_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
@@ -69,15 +70,15 @@ class _WalletsScreenState extends State<WalletsScreen> {
               children: [
                 const SizedBox(height: 16),
                 snapshot.hasData
-                    ? WalletBalance(
-                  balanceLabel: 'إجمالي الرصيد',
+                    ? TotalBalanceWidget(
                   balance: walletProvider.calculateTotalBalance(data!),
-                  fontSize: 36,
+                  amountFontSize: 36,
+                  currencyFontSize: 24,
                 )
-                    : const WalletBalance(
-                  balanceLabel: 'إجمالي الرصيد',
+                    : const TotalBalanceWidget(
                   balance: 0.0,
-                  fontSize: 36,
+                  amountFontSize: 36,
+                  currencyFontSize: 24,
                 ),
                 const SizedBox(height: 50),
                 const Padding(
