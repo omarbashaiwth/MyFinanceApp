@@ -56,10 +56,13 @@ class Utils {
         });
   }
 
-  static String dateFormat(Timestamp timestamp) {
-    return intl.DateFormat.yMMMd('ar').format(
-        DateTime.fromMicrosecondsSinceEpoch(timestamp.microsecondsSinceEpoch),
-    );
+  static String dateFormat({required DateTime date, bool showDays = true}) {
+    if(showDays) {
+      return intl.DateFormat.yMMMd('ar').format(date);
+    } else {
+      return intl.DateFormat('MMMM yyyy', 'ar').format(date);
+    }
+
   }
 
   static String emojiFlag(String flag){

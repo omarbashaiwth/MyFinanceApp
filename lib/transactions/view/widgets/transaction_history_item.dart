@@ -52,7 +52,9 @@ class TransactionHistoryItem extends StatelessWidget {
                   transaction.amount! < 0 ? Colors.red : Colors.green,
             ),
             Text(
-              Utils.dateFormat(transaction.createdAt!),
+              Utils.dateFormat(date: DateTime.fromMicrosecondsSinceEpoch(
+                  transaction.createdAt!.microsecondsSinceEpoch),
+              ),
               style: const TextStyle(
                   fontFamily: 'Tajawal', fontSize: 11, color: darkGray),
             )

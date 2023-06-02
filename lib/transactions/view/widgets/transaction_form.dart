@@ -93,7 +93,9 @@ class TransactionForm {
                       );
                       transactionController.onSelectedDateChange(Timestamp.fromDate(pickedDate!));
                     },
-                    text: Utils.dateFormat(transaction.createdAt!),
+                    text: Utils.dateFormat(date: DateTime.fromMicrosecondsSinceEpoch(
+                        transaction.createdAt!.microsecondsSinceEpoch),
+                    ),
                     icon: 'assets/icons/calendar.png'
                 ),
                 const SizedBox(height: 20),
@@ -179,7 +181,9 @@ class TransactionForm {
                       );
                       transactionController.onSelectedDateChange(Timestamp.fromDate(pickedDate!));
                     },
-                    text: Utils.dateFormat(transaction.createdAt!),
+                    text: Utils.dateFormat(date: DateTime.fromMicrosecondsSinceEpoch(
+                        transaction.createdAt!.microsecondsSinceEpoch)
+                    ),
                     icon: 'assets/icons/calendar.png'
                 ),
                 const SizedBox(height: 20),

@@ -5,6 +5,7 @@ import 'package:intl/intl.dart' as intl;
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:myfinance_app/auth/controller/services/firebase_auth_services.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
+import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/core/widgets/empty_widget.dart';
 import 'package:myfinance_app/core/widgets/price_widget.dart';
 import 'package:myfinance_app/profile/widget/profile_widget.dart';
@@ -93,8 +94,7 @@ class TransactionsScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(10),
                   child: Column(
                     children: [
-                      CenteredHeader(header: intl.DateFormat('MMMM yyyy', 'ar')
-                          .format(controller.pickedDate)),
+                      CenteredHeader(header: Utils.dateFormat(date: controller.pickedDate, showDays: false)),
                       const SizedBox(height: 20),
                       _headerSection(header: 'ملخص الشهر'),
                       _monthlySummarySection(

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:grouped_list/grouped_list.dart';
+import 'package:intl/intl.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
+import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/core/widgets/empty_widget.dart';
+import 'package:myfinance_app/transactions/view/widgets/centered_header.dart';
 import 'package:myfinance_app/transactions/view/widgets/transaction_history_item.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
@@ -17,7 +21,10 @@ class TransactionHistoryScreen extends StatelessWidget {
         elevation: 0,
         leading: IconButton(
           onPressed: () => Get.back(),
-          icon: const Icon(Icons.arrow_back, color: redColor,),
+          icon: const Icon(
+            Icons.arrow_back,
+            color: redColor,
+          ),
         ),
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.background,
@@ -27,16 +34,14 @@ class TransactionHistoryScreen extends StatelessWidget {
         ),
       ),
       body: StreamBuilder(
-          stream:
-              Provider.of<TransactionController>(context).getTransactions(),
+          stream: Provider.of<TransactionController>(context).getTransactions(),
           builder: (context, snapshot) {
             final transactions = snapshot.data;
             if (snapshot.hasData && snapshot.hasError) {
               debugPrint(snapshot.error.toString());
               return const Align(
                   alignment: Alignment.center,
-                  child:
-                      Text('يوجد خطأ', style: AppTextTheme.headerTextStyle));
+                  child: Text('يوجد خطأ', style: AppTextTheme.headerTextStyle));
             }
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Align(
@@ -46,23 +51,31 @@ class TransactionHistoryScreen extends StatelessWidget {
             return Stack(children: [
               transactions!.isEmpty
                   ? const EmptyWidget()
-                  : ListView.builder(
-                      itemCount: transactions.length,
-                      itemBuilder: (_, index) {
+                  : GroupedListView(
+                      elements: transactions,
+                      groupBy: (transaction) {
+                        final date = transaction.createdAt!.toDate();
+                        return DateTime(date.year, date.month );
+                      },
+                      groupSeparatorBuilder: (date) {
+                        return CenteredHeader(header: Utils.dateFormat(date: date, showDays: false));
+                      },
+                      itemBuilder: (_, transaction) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Column(
                             children: [
                               const SizedBox(height: 8),
-                              TransactionHistoryItem(
-                                transaction: transactions[index],
-                              ),
-                              index != transactions.indexOf(transactions.last)? const Divider():const SizedBox(height: 10,)
+                              TransactionHistoryItem(transaction: transaction),
+                              // index != transactions.indexOf(transactions.last)?
                             ],
                           ),
                         );
                       },
-                    ),
+                      separator: const Divider(),
+                      order: GroupedListOrder.DESC,
+                      useStickyGroupSeparators: true,
+                    )
             ]);
           }),
     );
