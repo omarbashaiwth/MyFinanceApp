@@ -11,6 +11,7 @@ import 'package:myfinance_app/profile/widget/profile_widget.dart';
 import 'package:myfinance_app/reports/view/reports_screen.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/view/screens/transaction_history_screen.dart';
+import 'package:myfinance_app/transactions/view/widgets/centered_header.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
 import '../../model/transaction.dart';
@@ -30,91 +31,84 @@ class TransactionsScreen extends StatelessWidget {
         statusBarIconBrightness: Brightness.dark));
     return SafeArea(
       child: Scaffold(
-        body: NestedScrollView(
-            headerSliverBuilder: (ctx, innerBoxIsScrolled) {
-              return [
-                SliverAppBar(
-                  backgroundColor: Theme.of(context).colorScheme.background,
-                  title: const Text(
-                    'المعاملات',
-                    style: AppTextTheme.appBarTitleTextStyle,
+        appBar: AppBar(
+          elevation: 0,
+          backgroundColor: Theme
+              .of(context)
+              .colorScheme
+              .background,
+          title: const Text(
+            'المعاملات',
+            style: AppTextTheme.appBarTitleTextStyle,
+          ),
+          centerTitle: true,
+          actions: [
+            IconButton(
+              onPressed: () => Get.to(() => const ReportsScreen()),
+              icon: const Icon(Icons.insert_chart_outlined_rounded,
+                  color: redColor),
+            )
+          ],
+          leading: IconButton(
+            onPressed: () {
+              Get.bottomSheet(Container(
+                padding: const EdgeInsets.only(top: 4),
+                decoration: const BoxDecoration(
+                  color: whiteColor,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(25),
+                    topRight: Radius.circular(25),
                   ),
-                  centerTitle: true,
-                  actions: [
-                    IconButton(
-                        onPressed:() => Get.to(() => const ReportsScreen()),
-                        icon: const Icon(Icons.insert_chart_outlined_rounded, color: redColor),
-                    )
-                  ],
-                  leading: IconButton(
-                      onPressed: () {
-                        Get.bottomSheet(Container(
-                          padding: const EdgeInsets.only(top: 4),
-                          decoration: const BoxDecoration(
-                            color: whiteColor,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(25),
-                              topRight: Radius.circular(25),
-                            ),
-                          ),
-                          child: StreamBuilder(
-                              stream: controller.getTransactions(),
-                              builder: (context, snapshot) {
-                                return ProfileWidget(
-                                  currentUser: auth.currentUser!,
-                                  controller: controller,
-                                  snapshot: snapshot,
-                                  onLogout: () async {
-                                    await FirebaseAuthServices(auth).logout();
-                                    Get.back();
-                                  },
-                                );
-                              }),
-                        ));
-                      },
-                      icon: auth.currentUser!.photoURL == null
-                          ? const Icon(
-                              Icons.account_circle_rounded,
-                              color: Colors.red,
-                            )
-                          : ClipOval(
-                              child:
-                                  Image.network(auth.currentUser!.photoURL!))),
-                  floating: true,
-                  snap: true,
-                )
-              ];
+                ),
+                child: StreamBuilder(
+                    stream: controller.getTransactions(),
+                    builder: (context, snapshot) {
+                      return ProfileWidget(
+                        currentUser: auth.currentUser!,
+                        controller: controller,
+                        snapshot: snapshot,
+                        onLogout: () async {
+                          await FirebaseAuthServices(auth).logout();
+                          Get.back();
+                        },
+                      );
+                    }),
+              ));
             },
-            body: SingleChildScrollView(
-              child: StreamBuilder(
-                  stream: controller.getTransactions(),
-                  builder: (context, snapshot) {
-                    return Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        children: [
-                          const SizedBox(height: 16),
-                          Text(
-                            intl.DateFormat('MMMM yyyy', 'ar').format(controller.pickedDate),
-                            style: const TextStyle(
-                                fontFamily: 'Tajawal',
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500),
-                          ),
-                          const SizedBox(height: 20),
-                          _headerSection(header: 'ملخص الشهر'),
-                          _monthlySummarySection(
-                              controller: controller, snapshot: snapshot),
-                          const SizedBox(height: 16),
-                          _headerSection(
-                              header: 'آخر المعاملات', showMore: true),
-                          _lastTransactionsSection(
-                              controller: controller, snapshot: snapshot),
-                        ],
-                      ),
-                    );
-                  }),
-            )),
+            icon: auth.currentUser!.photoURL == null
+                ? const Icon(
+              Icons.account_circle_rounded,
+              color: Colors.red,
+            )
+                : ClipOval(
+              child: Image.network(auth.currentUser!.photoURL!),
+            ),
+          ),
+        ),
+        body: SingleChildScrollView(
+          child: StreamBuilder(
+              stream: controller.getTransactions(),
+              builder: (context, snapshot) {
+                return Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      CenteredHeader(header: intl.DateFormat('MMMM yyyy', 'ar')
+                          .format(controller.pickedDate)),
+                      const SizedBox(height: 20),
+                      _headerSection(header: 'ملخص الشهر'),
+                      _monthlySummarySection(
+                          controller: controller, snapshot: snapshot),
+                      const SizedBox(height: 16),
+                      _headerSection(
+                          header: 'آخر المعاملات', showMore: true),
+                      _lastTransactionsSection(
+                          controller: controller, snapshot: snapshot),
+                    ],
+                  ),
+                );
+              }),
+        ),
       ),
     );
   }
@@ -122,21 +116,21 @@ class TransactionsScreen extends StatelessWidget {
   Widget _headerSection({required String header, bool showMore = false}) {
     return Column(
       children: [
-        showMore ? Container() : const SizedBox(height: 10),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(header, style: AppTextTheme.headerTextStyle),
             showMore
                 ? TextButton(
-                    onPressed: () => Get.to(() => const Directionality(
-                        textDirection: TextDirection.rtl,
-                        child: TransactionHistoryScreen())),
+              onPressed: () =>
+                  Get.to(() =>
+                  const Directionality(
+                      textDirection: TextDirection.rtl,
+                      child: TransactionHistoryScreen())),
               child: Text('عرض المزيد',
                   style: AppTextTheme.textButtonStyle
-                      .copyWith(color: redColor)
-              ),
-                  )
+                      .copyWith(color: redColor)),
+            )
                 : Container()
           ],
         ),
@@ -145,23 +139,32 @@ class TransactionsScreen extends StatelessWidget {
     );
   }
 
-  Widget _monthPicker(
-      {required BuildContext context,
-      required TransactionController controller}) {
+  Widget _monthPicker({required BuildContext context,
+    required TransactionController controller}) {
     return GestureDetector(
       onTap: () async {
         final pickedDate = await showMonthPicker(
-          lastDate: DateTime.now(),
-          context: context,
-          locale: const Locale('ar'),
-          roundedCornersRadius: 20,
-          headerColor: Theme.of(context).colorScheme.primary,
-          selectedMonthTextColor: whiteColor,
-          unselectedMonthTextColor: blackColor,
-          dismissible: true,
-          cancelWidget: const Text('اغلاق', style: TextStyle(fontFamily: 'Tajawal', fontWeight: FontWeight.bold),),
-          confirmWidget: const Text('تم', style: TextStyle(fontFamily: 'Tajawal', fontWeight: FontWeight.bold),)
-        );
+            lastDate: DateTime.now(),
+            context: context,
+            locale: const Locale('ar'),
+            roundedCornersRadius: 20,
+            headerColor: Theme
+                .of(context)
+                .colorScheme
+                .primary,
+            selectedMonthTextColor: whiteColor,
+            unselectedMonthTextColor: blackColor,
+            dismissible: true,
+            cancelWidget: const Text(
+              'اغلاق',
+              style:
+              TextStyle(fontFamily: 'Tajawal', fontWeight: FontWeight.bold),
+            ),
+            confirmWidget: const Text(
+              'تم',
+              style:
+              TextStyle(fontFamily: 'Tajawal', fontWeight: FontWeight.bold),
+            ));
         controller.onChangePickedMonth(pickedDate!);
       },
       child: Row(
@@ -184,22 +187,20 @@ class TransactionsScreen extends StatelessWidget {
 
   Widget _monthlySummarySection(
       {required AsyncSnapshot<List<Transaction>> snapshot,
-      required TransactionController controller}) {
+        required TransactionController controller}) {
     final transactionsByMonth = controller.transactionsByMonth(
-            transactions: snapshot.data, pickedDate: controller.pickedDate) ??
+        transactions: snapshot.data, pickedDate: controller.pickedDate) ??
         [];
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Container(
-          decoration:  BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              gradient: const LinearGradient(
-                  colors: [redColor,darkRedColor],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  tileMode: TileMode.mirror
-              )
-          ),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: const LinearGradient(
+                colors: [redColor, darkRedColor],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                tileMode: TileMode.mirror)),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 15),
           child: Column(
@@ -207,14 +208,20 @@ class TransactionsScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: Card(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20)),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     child: PriceWidget(
-                        amount: controller.calculateTotal(transactions: transactionsByMonth),
-                        amountFontSize: 30,
-                        currencyFontSize: 18,
-                        color: controller.calculateTotal(transactions: transactionsByMonth) < 0 ? Colors.red : Colors.green,
+                      amount: controller.calculateTotal(
+                          transactions: transactionsByMonth),
+                      amountFontSize: 30,
+                      currencyFontSize: 18,
+                      color: controller.calculateTotal(
+                          transactions: transactionsByMonth) <
+                          0
+                          ? Colors.red
+                          : Colors.green,
                     ),
                   ),
                 ),
@@ -247,9 +254,8 @@ class TransactionsScreen extends StatelessWidget {
     );
   }
 
-  Widget _lastTransactionsSection(
-      {required TransactionController controller,
-      required AsyncSnapshot<List<Transaction>> snapshot}) {
+  Widget _lastTransactionsSection({required TransactionController controller,
+    required AsyncSnapshot<List<Transaction>> snapshot}) {
     final transactions = snapshot.data?.take(5).toList() ?? [];
     return Container(
         padding: const EdgeInsets.all(10),
@@ -260,21 +266,21 @@ class TransactionsScreen extends StatelessWidget {
           transactions.isEmpty
               ? const EmptyWidget()
               : ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: transactions.length,
-                  itemBuilder: (_, index) {
-                    return Column(
-                      children: [
-                        TransactionHistoryItem(
-                            transaction: transactions[index]),
-                        index != transactions.indexOf(transactions.last)
-                            ? const Divider()
-                            : Container()
-                      ],
-                    );
-                  },
-                )
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: transactions.length,
+            itemBuilder: (_, index) {
+              return Column(
+                children: [
+                  TransactionHistoryItem(
+                      transaction: transactions[index]),
+                  index != transactions.indexOf(transactions.last)
+                      ? const Divider()
+                      : Container()
+                ],
+              );
+            },
+          )
         ]));
   }
 }

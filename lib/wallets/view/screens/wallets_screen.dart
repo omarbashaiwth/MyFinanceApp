@@ -14,7 +14,6 @@ import 'package:provider/provider.dart';
 import 'package:get/get.dart';
 
 import '../../../core/ui/theme.dart';
-import '../widgets/wallet_balance_widget.dart';
 
 class WalletsScreen extends StatefulWidget {
   const WalletsScreen({Key? key}) : super(key: key);
