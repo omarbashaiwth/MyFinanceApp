@@ -34,11 +34,23 @@ class ReportsController extends ChangeNotifier{
     return categorySummary;
   }
 
-  List<DateTime> getLastFiveMonths(){
+  List<DateTime> getLatestFiveMonths() {
     List<DateTime> months = [];
-    for(int i = 0; i < 5; i++){
-      final date = DateTime.now().subtract(Duration(days: 31 * i));
-      months.add(date);
+    DateTime currentDate = DateTime.now();
+
+    for (int i = 0; i < 5; i++) {
+      DateTime previousMonthDate =
+      DateTime(currentDate.year, currentDate.month - i, currentDate.day);
+
+      //If the resulting month has fewer days than the
+      // current month (i.e., if the previous month has
+      // fewer days than the current month), then the day is
+      // set to zero to get the last day of the previous month.
+      if (previousMonthDate.month != currentDate.month - i) {
+        previousMonthDate =
+            DateTime(currentDate.year, currentDate.month - i + 1, 0);
+      }
+      months.add(previousMonthDate);
     }
     return months;
   }

@@ -25,7 +25,7 @@ class MonthlyReport extends StatelessWidget {
         builder: (context, snapshot) {
           final data = List.generate(5, (index) {
             final transactions = snapshot.data;
-            final months = reportsController.getLastFiveMonths();
+            final months = reportsController.getLatestFiveMonths();
             final monthlyTransactions =
                 transactionController.transactionsByMonth(
                         transactions: transactions,
