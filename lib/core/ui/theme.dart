@@ -1,7 +1,3 @@
-
-
-
-
 import 'package:flutter/material.dart';
 
 const  Color redColor = Color(0xFFF04A37);
@@ -41,7 +37,9 @@ class AppTheme{
     const Color(0xFF04A88A),
     const Color(0xFF725F5F),
     const Color(0xFFDED86C),
-    const Color(0xFF857219)
+    const Color(0xFF857219),
+    const Color(0xFF4B047A),
+    const Color(0xFFD52C2C),
   ];
 }
 

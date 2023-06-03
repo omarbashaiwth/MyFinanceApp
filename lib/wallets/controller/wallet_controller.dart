@@ -58,7 +58,7 @@ class WalletController extends ChangeNotifier {
   Stream<List<Wallet>> getWallets()  {
     return _firestore.collection('Wallets')
         .where('userId', isEqualTo: _auth.currentUser!.uid)
-        .orderBy('createdAt')
+        .orderBy('balance', descending: true)
         .withConverter<Wallet>(
           fromFirestore: Wallet.fromFirestore,
           toFirestore: (Wallet wallet, _) => wallet.toFirestore()

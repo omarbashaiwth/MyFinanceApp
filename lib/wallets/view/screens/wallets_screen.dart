@@ -45,7 +45,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
     final auth = FirebaseAuth.instance;
     final walletProvider = Provider.of<WalletController>(
         context, listen: false);
-    final transactionProvider = Provider.of<TransactionController>(context);
+    final transactionProvider = Provider.of<TransactionController>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Theme

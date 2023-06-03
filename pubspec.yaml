@@ -109,6 +109,8 @@ flutter:
     - assets/icons/expenses_icons/shopping-cart.png
     - assets/icons/expenses_icons/wifi.png
     - assets/icons/expenses_icons/zakat.png
+    - assets/icons/expenses_icons/telephone-call.png
+    - assets/icons/expenses_icons/food.png
 
   fonts:
     - family: Tajawal
