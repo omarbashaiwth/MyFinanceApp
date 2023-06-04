@@ -6,6 +6,7 @@ import 'package:myfinance_app/core/widgets/empty_widget.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/model/category.dart';
 import 'package:myfinance_app/transactions/model/transaction.dart' as my_transaction;
+import 'package:myfinance_app/transactions/view/widgets/centered_header.dart';
 import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
 import 'package:myfinance_app/wallets/model/wallet.dart';
 import 'package:myfinance_app/wallets/view/widgets/total_balance_widget.dart';
@@ -68,25 +69,13 @@ class _WalletsScreenState extends State<WalletsScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const SizedBox(height: 16),
-                snapshot.hasData
-                    ? TotalBalanceWidget(
-                  balance: walletProvider.calculateTotalBalance(data!),
-                  amountFontSize: 36,
-                  currencyFontSize: 24,
-                )
-                    : const TotalBalanceWidget(
-                  balance: 0.0,
-                  amountFontSize: 36,
-                  currencyFontSize: 24,
+                TotalBalanceWidget(
+                    balance: snapshot.hasData? walletProvider.calculateTotalBalance(data!): 0.0 ,
+                    currencyFontSize: 24,
+                    amountFontSize: 36
                 ),
                 const SizedBox(height: 50),
-                const Padding(
-                  padding: EdgeInsets.only(right: 8),
-                  child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Text('كل المحفظات',
-                          style: AppTextTheme.headerTextStyle)),
-                ),
+                const CenteredHeader(header: 'كل المحفظات'),
                 const SizedBox(height: 16),
                 Expanded(
                     child: _allWallets(

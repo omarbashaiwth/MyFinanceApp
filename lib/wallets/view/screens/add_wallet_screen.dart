@@ -5,7 +5,7 @@ import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/transactions/view/widgets/custom_text_form_field.dart';
 import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
 import 'package:myfinance_app/wallets/model/wallet.dart';
-import 'package:myfinance_app/wallets/view/widgets/wallet_bottom_sheet.dart';
+import 'package:myfinance_app/wallets/view/widgets/wallet_bottom_sheets.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
 
@@ -74,7 +74,7 @@ class AddWalletScreen extends StatelessWidget {
                 const SizedBox(height: 8),
                 GestureDetector(
                   onTap: () {
-                    WalletBottomSheet.show(
+                    WalletBottomSheets.showWalletTypesBS(
                       onSelected: (walletType) {
                         Provider.of<WalletController>(context, listen: false).onWalletTypeChange(walletType);
                       }

@@ -7,6 +7,9 @@ import 'package:myfinance_app/wallets/view/widgets/add_balance_dialog.dart';
 import 'package:myfinance_app/wallets/view/widgets/transfer_balance_dialog.dart';
 import 'package:myfinance_app/wallets/view/widgets/wallet_balance_widget.dart';
 import 'package:get/get.dart';
+import 'package:myfinance_app/wallets/view/widgets/wallet_bottom_sheets.dart';
+
+import '../../../core/widgets/price_widget.dart';
 
 class WalletWidget extends StatelessWidget {
   final Wallet wallet;
@@ -42,60 +45,60 @@ class WalletWidget extends StatelessWidget {
           ),
           child: Column(
             children: [
-              const SizedBox(height: 35),
-              WalletBalance(
-                balanceLabel: wallet.name!,
-                balance: wallet.currentBalance!,
-                fontSize: 28,
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _walletAction(
-                    label: 'إضافة',
-                    icon: Icons.add,
-                    onClick: () => showDialog(
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                  onPressed: () => WalletBottomSheets.showWalletOptionsBT(
+                    onEditClick: (){},
+                    onAddBalanceClick: () => showDialog(
                       context: context,
                       builder: (_) => AddBalanceDialog(
                         textEditingController: addBalanceController,
                         onPositiveClick: onAddBalance,
                       ),
                     ),
+                    onTransferBalanceClick: () => showDialog(
+                        context: context,
+                        builder: (_) => TransferBalanceDialog(
+                          textEditingController: transferBalanceController,
+                          walletController: walletController,
+                          transferFrom: wallet,
+                          onClose: onClose,
+                          onPositiveClick: onTransferBalance,
+                          userId: wallet.userId!,
+                        ),
+                    ),
+                    onDeleteClick: () => Utils.showAlertDialog(
+                        context: context,
+                        positiveLabel: 'حذف',
+                        negativeLabel: 'إغلاق',
+                        title: 'تأكيد الحذف',
+                        content: 'هل أنت متأكد من حذف هذه المحفظة؟ ',
+                        onPositiveClick: (_) {
+                          Get.back();
+                          return onDeleteWallet();
+                          },
+                        onNegativeClick: (_) => Get.back())
                   ),
-                  _walletAction(
-                      label: 'تحويل',
-                      icon: Icons.currency_exchange,
-                      onClick: () => showDialog(
-                          context: context,
-                          builder: (_) => TransferBalanceDialog(
-                                textEditingController:
-                                    transferBalanceController,
-                                walletController: walletController,
-                                transferFrom: wallet,
-                                onClose: onClose,
-                                onPositiveClick: onTransferBalance,
-                                userId: wallet.userId!,
-                              ))),
-                  _walletAction(
-                      label: 'حذف',
-                      icon: Icons.delete_rounded,
-                      onClick: () {
-                        Utils.showAlertDialog(
-                            context: context,
-                            positiveLabel: 'حذف',
-                            negativeLabel: 'إغلاق',
-                            title: 'تأكيد الحذف',
-                            content: 'هل أنت متأكد من حذف هذه المحفظة؟ ',
-                            onPositiveClick: (_) {
-                              Get.back();
-                              return onDeleteWallet();
-                            },
-                            onNegativeClick: (_) => Get.back());
-                      })
-                ],
+                  icon: const Icon(Icons.more_vert, color: redColor,),
+                  splashRadius: 18,
+                ),
               ),
-              const SizedBox(height: 16),
+              Text(
+                  wallet.name!,
+                  style: const TextStyle(
+                      fontFamily: 'Tajawal',
+                      fontSize: 18,
+                      color: blackColor),
+              ),
+              const SizedBox(height: 8),
+              PriceWidget(
+                amount: wallet.currentBalance!,
+                currencyFontSize: 25,
+                amountFontSize: 35,
+                color: wallet.currentBalance! < 0 ? Colors.red: Colors.green,
+              ),
+              const SizedBox(height: 26),
             ],
           ),
         ),
@@ -110,28 +113,5 @@ class WalletWidget extends StatelessWidget {
         ),
       )
     ]);
-  }
-
-  Widget _walletAction(
-      {required String label,
-      required IconData icon,
-      required Function() onClick}) {
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: onClick,
-          child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                  color: redColor, borderRadius: BorderRadius.circular(10)),
-              child: Icon(icon, size: 24, color: whiteColor)),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: const TextStyle(fontFamily: 'Tajawal'),
-        )
-      ],
-    );
   }
 }
