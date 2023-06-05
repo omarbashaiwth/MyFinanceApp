@@ -13,122 +13,128 @@ import 'package:get/get.dart';
 import '../../controller/services/firebase_auth_services.dart';
 
 class AuthScreen extends StatelessWidget {
-  AuthScreen({Key? key}) : super(key: key);
-
-  final _auth = FirebaseAuth.instance;
-  final _formKey = GlobalKey<FormState>();
-
-  final MyUser _user = MyUser('','','');
+  const AuthScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AuthController>(context);
     final silentProvider = Provider.of<AuthController>(context, listen: false);
-    return Center(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 40),
-            const AppLogo(image: 'assets/images/Logo.png', name: 'مصاريفي'),
-            const SizedBox(height: 50),
-            AuthForm(formKey:_formKey, user: _user),
-            const SizedBox(height: 2),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                TextButton(
-                  onPressed: () {},
-                  style: ButtonStyle(
-                      overlayColor:
-                      MaterialStateProperty.all(Colors.transparent)),
-                  child: Text(
-                    'نسيت كلمة المرور؟',
-                    style: AppTextTheme.textButtonStyle
-                        .copyWith(decoration: TextDecoration.underline),
-                  ),
-                ),
-                const SizedBox(width: 50),
-                provider.isLoading ? const CircularProgressIndicator() : Container()
+    final auth = FirebaseAuth.instance;
+    final formKey = GlobalKey<FormState>();
+    final MyUser user = MyUser('', '', '');
 
-              ],
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                final isValid = _formKey.currentState?.validate();
-                FocusScope.of(context).unfocus();
-                if (isValid != null && isValid) {
-                  _formKey.currentState?.save();
-                  await FirebaseAuthServices(_auth).firebaseAuth(
-                    user: _user,
-                    isLogin: provider.isLogin,
-                    context: context,
-                    onLoading: (bool loading) {
-                      silentProvider.onLoadingStateChange(loading);
-                      // setState(() => _isLoading = loading);
-                    },
-                    onMessage: (String msg) async {
-                      FirebaseAuthServices.showMessageToUser(_auth, msg, context);
-                    },
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 50),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15)),
-              ),
-              child: Text(
-                provider.isLogin ? 'تسجيل الدخول' : 'إنشاء حساب',
-                style: AppTextTheme.elevatedButtonTextStyle,
-              ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () => GoogleAuthService.signInWithGoogle(_auth),
-              style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15)),
-                  backgroundColor: Theme.of(context).colorScheme.secondaryContainer),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(width: 20),
-                  Text(
-                    provider.isLogin
-                        ? 'تسجيل الدخول من خلال حساب قوقل'
-                        : 'إنشاء حساب من خلال قوقل',
-                    style: AppTextTheme.normalTextStyle,
-                  ),
-                  const SizedBox(width: 20),
-                  Image.asset('assets/images/Google_logo.png'),
-                ],
-              ),
-            ),
-            const SizedBox(height: 50),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
               children: [
-                Text(provider.isLogin ? 'ليس لديك حساب؟ ' : 'لديك حساب؟ ',
-                    style: AppTextTheme.normalTextStyle),
-                GestureDetector(
-                  child: Text(
-                      provider.isLogin ? 'قم بإنشاء حساب جديد' : 'قم بتسجيل الدخول',
-                      style: AppTextTheme.normalTextStyle.copyWith(
-                          color: Theme
-                              .of(context)
-                              .colorScheme
-                              .primary,
-                          fontWeight: FontWeight.bold)),
-                  onTap: () {
-                    silentProvider.onLoginStateChange(!provider.isLogin);
-                    // setState(() => _isLogin = !_isLogin);
-                  },
+                const SizedBox(height: 40),
+                const AppLogo(image: 'assets/images/Logo.png', name: 'مصاريفي'),
+                const SizedBox(height: 50),
+                AuthForm(formKey: formKey, user: user),
+                const SizedBox(height: 2),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    provider.isLogin
+                        ? TextButton(
+                            onPressed: () {},
+                            child: const Text('نسيت كلمة المرور؟',
+                                style: AppTextTheme.textButtonStyle),
+                          )
+                        : const SizedBox(height: 32),
+                    const SizedBox(width: 50),
+                    provider.isLoading
+                        ? const CircularProgressIndicator()
+                        : const SizedBox.shrink()
+                  ],
                 ),
+                ElevatedButton(
+                  onPressed: () async {
+                    final isValid = formKey.currentState?.validate();
+                    FocusScope.of(context).unfocus();
+                    if (isValid != null && isValid) {
+                      formKey.currentState?.save();
+                      await FirebaseAuthServices(auth).firebaseAuth(
+                          user: user,
+                          isLogin: provider.isLogin,
+                          context: context,
+                          onLoading: (bool loading) {
+                            silentProvider.onLoadingStateChange(loading);
+                            // setState(() => _isLoading = loading);
+                          },
+                          onMessage: (String msg) async {
+                            FirebaseAuthServices.showMessageToUser(
+                                auth, msg, context);
+                          },
+                          onEmailVerifiedSucceed: () {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => const MyHomePage()));
+                            debugPrint('move to my home page');
+                          });
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  child: Text(
+                    provider.isLogin ? 'تسجيل الدخول' : 'إنشاء حساب',
+                    style: AppTextTheme.elevatedButtonTextStyle,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () => GoogleAuthService.signInWithGoogle(auth),
+                  style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                      backgroundColor:
+                          Theme.of(context).colorScheme.secondaryContainer),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(width: 20),
+                      Text(
+                        provider.isLogin
+                            ? 'تسجيل الدخول من خلال حساب قوقل'
+                            : 'إنشاء حساب من خلال قوقل',
+                        style: AppTextTheme.normalTextStyle,
+                      ),
+                      const SizedBox(width: 20),
+                      Image.asset('assets/images/Google_logo.png'),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 50),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(provider.isLogin ? 'ليس لديك حساب؟ ' : 'لديك حساب؟ ',
+                        style: AppTextTheme.normalTextStyle),
+                    GestureDetector(
+                      child: Text(
+                          provider.isLogin
+                              ? 'قم بإنشاء حساب جديد'
+                              : 'قم بتسجيل الدخول',
+                          style: AppTextTheme.normalTextStyle.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.bold)),
+                      onTap: () {
+                        silentProvider.onLoginStateChange(!provider.isLogin);
+                        // setState(() => _isLogin = !_isLogin);
+                      },
+                    ),
+                  ],
+                )
               ],
-            )
-          ],
-        ),
+            )),
       ),
     );
   }

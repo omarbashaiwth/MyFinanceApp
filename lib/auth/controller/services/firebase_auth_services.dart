@@ -13,6 +13,7 @@ class FirebaseAuthServices {
   Future<void> firebaseAuth({
     required Function(String) onMessage,
     required Function(bool) onLoading,
+    required Function onEmailVerifiedSucceed,
     required BuildContext context,
     required bool isLogin,
     required MyUser user
@@ -26,6 +27,7 @@ class FirebaseAuthServices {
             email: user.email, password: user.password);
         if (auth.currentUser!.emailVerified) {
           //move to the home page
+          onEmailVerifiedSucceed();
           onLoading(false);
         } else {
           onMessage('الرجاء تأكيد ملكية هذا الحساب');
@@ -35,7 +37,6 @@ class FirebaseAuthServices {
         onLoading(true);
         authResult = await auth.createUserWithEmailAndPassword(
             email: user.email, password: user.password);
-        debugPrint('account created');
         await _sendEmailVerification(onMessage: (msg) => onMessage(msg));
         auth.currentUser!.updateDisplayName(user.username);
         firestore

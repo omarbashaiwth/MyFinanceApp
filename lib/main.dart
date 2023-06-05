@@ -191,10 +191,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               if (snapshot.hasData && snapshot.data!.emailVerified) {
                 return bottomNanScreens.elementAt(_selectedIndex);
               } else {
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: AuthScreen(),
-                );
+                return const AuthScreen();
               }
             },
           ),
