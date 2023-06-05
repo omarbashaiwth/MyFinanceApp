@@ -5,15 +5,15 @@ import 'package:myfinance_app/onboarding/model/currency.dart';
 
 class CurrencyItem extends StatelessWidget {
   final Currency currency;
-  final Function() onSelectCurrency;
+  final Function() onCurrencySelected;
   final bool isSelected;
 
-  const CurrencyItem({Key? key, required this.currency, required this.onSelectCurrency, required this.isSelected}) : super(key: key);
+  const CurrencyItem({Key? key, required this.currency, required this.onCurrencySelected, required this.isSelected}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onSelectCurrency,
+      onTap: onCurrencySelected,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         margin: const EdgeInsets.symmetric(horizontal: 4),
