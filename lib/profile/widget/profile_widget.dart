@@ -7,7 +7,7 @@ import 'package:myfinance_app/transactions/model/transaction.dart'
     as my_transactions;
 
 class ProfileWidget extends StatelessWidget {
-  final User currentUser;
+  final User? currentUser;
   final TransactionController controller;
   final AsyncSnapshot<List<my_transactions.Transaction>> snapshot;
   final Function() onLogout;
@@ -36,8 +36,8 @@ class ProfileWidget extends StatelessWidget {
           ),
           const SizedBox(height: 32),
           ClipOval(
-              child: currentUser.photoURL != null
-                  ? Image.network(currentUser.photoURL!, height: 70)
+              child: currentUser?.photoURL != null
+                  ? Image.network(currentUser!.photoURL!, height: 70)
                   : const Icon(
                       Icons.account_circle_rounded,
                       size: 70,
@@ -46,11 +46,11 @@ class ProfileWidget extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            currentUser.displayName ?? 'Unknown Name',
+            currentUser?.displayName ?? 'Unknown Name',
             style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
           ),
           const SizedBox(height: 5),
-          Text(currentUser.email!),
+          Text(currentUser?.email ?? 'Unknown Email'),
           const SizedBox(height: 10),
           GestureDetector(
             onTap: onLogout,

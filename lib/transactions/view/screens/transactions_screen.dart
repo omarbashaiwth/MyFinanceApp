@@ -65,7 +65,7 @@ class TransactionsScreen extends StatelessWidget {
                     stream: controller.getTransactions(),
                     builder: (context, snapshot) {
                       return ProfileWidget(
-                        currentUser: auth.currentUser!,
+                        currentUser: auth.currentUser,
                         controller: controller,
                         snapshot: snapshot,
                         onLogout: () async {
