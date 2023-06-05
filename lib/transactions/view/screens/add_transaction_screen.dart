@@ -56,75 +56,74 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
     );
 
 
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(kToolbarHeight * 2),
-        child: AppBarWithTabs(
-          tabController: _tabController,
-          onIndexChange: (index) {
-              setState(() => _currentTabIndex = index);
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight * 2),
+          child: AppBarWithTabs(
+            tabController: _tabController,
+            onIndexChange: (index) {
+                setState(() => _currentTabIndex = index);
+                transactionController.clearSelections();
+            },
+            onCloseClicked: () {
               transactionController.clearSelections();
-          },
-          onCloseClicked: () {
-            transactionController.clearSelections();
-            Get.back();
-          },
-          onSaveClicked: () async {
-            final provider =
-                Provider.of<TransactionController>(context, listen: false);
-            final isValid = _tabController.index == 0
-                ? _expenseFormKey.currentState!.validate()
-                : _incomeFormKey.currentState!.validate();
-            if (isValid && transaction.walletId != null && (transaction.category != null || _tabController.index == 1) ){
-              _tabController.index == 0
-                  ? _expenseFormKey.currentState!.save()
-                  : _incomeFormKey.currentState!.save();
-              // save transaction to the firebase
-              await provider.saveTransaction(transaction);
-              await walletController.updateWallet(
-                  walletId: transaction.walletId! ,
-                  value: transaction.amount!,
-              );
-              provider.clearSelections();
               Get.back();
-            } else if(transaction.walletId == null){
-              Fluttertoast.showToast(
-                msg: 'قم باختيار المحفظة',
-              );
-            } else if(transaction.category == null) {
-              Fluttertoast.showToast(
-                msg: 'قم باختيار نوع النفقة',
-              );
-            } else{
-              Fluttertoast.showToast(
-                msg: 'something wrong',
-              );
-            }
-          },
-        ),
-      ),
-      body: TabBarView(
-        physics: const NeverScrollableScrollPhysics(),
-        controller: _tabController,
-        children: [
-          TransactionForm.expenseForm(
-              key: _expenseFormKey,
-              textEditingController: _expenseTextEditingController,
-              context: context,
-              transaction: transaction,
-              currentUser: currentUser,
-              transactionController: transactionController,
-              walletController: walletController,
+            },
+            onSaveClicked: () async {
+              final provider =
+                  Provider.of<TransactionController>(context, listen: false);
+              final isValid = _tabController.index == 0
+                  ? _expenseFormKey.currentState!.validate()
+                  : _incomeFormKey.currentState!.validate();
+              if (isValid && transaction.walletId != null && (transaction.category != null || _tabController.index == 1) ){
+                _tabController.index == 0
+                    ? _expenseFormKey.currentState!.save()
+                    : _incomeFormKey.currentState!.save();
+                // save transaction to the firebase
+                await provider.saveTransaction(transaction);
+                await walletController.updateWalletBalance(
+                    walletId: transaction.walletId! ,
+                    value: transaction.amount!,
+                );
+                provider.clearSelections();
+                Get.back();
+              } else if(isValid && transaction.walletId == null){
+                Fluttertoast.showToast(
+                  msg: 'قم باختيار المحفظة',
+                );
+              } else if(isValid && transaction.category == null) {
+                Fluttertoast.showToast(
+                  msg: 'قم باختيار نوع النفقة',
+                );
+              }
+            },
           ),
-          TransactionForm.incomeForm(
-              key: _incomeFormKey,
-              context: context,
-              currentUser: currentUser,
-              transaction: transaction,
-              transactionController: transactionController,
-              walletController: walletController,
-          )
-        ],
+        ),
+        body: TabBarView(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: _tabController,
+          children: [
+            TransactionForm.expenseForm(
+                key: _expenseFormKey,
+                textEditingController: _expenseTextEditingController,
+                context: context,
+                transaction: transaction,
+                currentUser: currentUser,
+                transactionController: transactionController,
+                walletController: walletController,
+            ),
+            TransactionForm.incomeForm(
+                key: _incomeFormKey,
+                context: context,
+                currentUser: currentUser,
+                transaction: transaction,
+                transactionController: transactionController,
+                walletController: walletController,
+            )
+          ],
+        ),
       ),
     );
   }

@@ -128,11 +128,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     height: _isFabVisible ? 60.0 : 0.0,
                     child: FloatingActionButton(
                       onPressed: () {
-                        Get.to(() => Directionality(
-                            textDirection: TextDirection.rtl,
-                            child: _selectedIndex == 0
-                                ? const AddTransactionScreen()
-                                : AddWalletScreen())
+                        Get.to(() => _selectedIndex == 0
+                            ? const AddTransactionScreen()
+                            : const AddWalletScreen()
                         );
                       },
                       child: const Icon(Icons.add, color: Colors.white),

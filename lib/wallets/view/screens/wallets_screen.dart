@@ -94,7 +94,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
                           if (valueToAdd == null) {
                             Fluttertoast.showToast(msg: 'قم بادخال مبلغ صحيح');
                           } else {
-                            await walletProvider.updateWallet(
+                            await walletProvider.updateWalletBalance(
                                 value: valueToAdd,
                                 walletId: wallet.id!
                             );
@@ -121,11 +121,11 @@ class _WalletsScreenState extends State<WalletsScreen> {
                           if (transferAmount != null && to != null &&
                               transferAmount.isLowerThan(
                                   from.currentBalance!)) {
-                            await walletProvider.updateWallet(
+                            await walletProvider.updateWalletBalance(
                                 value: -transferAmount,
                                 walletId: from.id!
                             );
-                            await walletProvider.updateWallet(
+                            await walletProvider.updateWalletBalance(
                                 value: transferAmount,
                                 walletId: to.id!
                             );

@@ -9,10 +9,9 @@ class WalletController extends ChangeNotifier {
   final _firestore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
 
-  WalletType _walletType =
-      WalletType(type: 'كاش', icon: 'assets/icons/cash.png');
+  WalletType? _walletType;
 
-  WalletType get walletType => _walletType;
+  WalletType? get walletType => _walletType;
 
   void onWalletTypeChange(WalletType value) {
     _walletType = value;
@@ -45,9 +44,21 @@ class WalletController extends ChangeNotifier {
 
   }
   
-  Future<void> updateWallet({required double value,required String walletId}) async {
+  Future<void> updateWalletBalance({required double value,required String walletId}) async {
    final docRef =  _firestore.collection('Wallets').doc(walletId);
    docRef.update({'balance':FieldValue.increment(value)});
+  }
+  
+  Future<void> updateWallet({required Wallet wallet}) async {
+    final docRef = _firestore.collection('Wallets').doc(wallet.id);
+    docRef.update(
+      {
+        'balance': wallet.currentBalance,
+        'icon':wallet.walletType!.icon,
+        'type' : wallet.walletType!.type,
+        'name':wallet.name
+      }
+    );
   }
 
   Future<void> deleteWallet({required String walletId}) async{
@@ -66,6 +77,11 @@ class WalletController extends ChangeNotifier {
         .snapshots()
         .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
 
+  }
+
+  void clearSelections(){
+    _walletType = null;
+    notifyListeners();
   }
 
 }
