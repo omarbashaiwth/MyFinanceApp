@@ -17,10 +17,10 @@ class Utils {
     required BuildContext context,
     required String title,
     required String content,
-    required String positiveLabel,
-    required String negativeLabel,
-    required Function(BuildContext) onPositiveClick,
-    required Function(BuildContext) onNegativeClick,
+    required String primaryActionLabel,
+    required Function onPrimaryActionClicked,
+    String? secondaryActionLabel,
+    Function? onSecondaryActionClicked,
   }) {
     showDialog(
         context: context,
@@ -37,16 +37,16 @@ class Utils {
               contentTextStyle: AppTextTheme.normalTextStyle,
               content: Text(content),
               actions: [
-                TextButton(
-                  onPressed: () => onNegativeClick(ctx),
+                secondaryActionLabel != null ? TextButton(
+                  onPressed: () => onSecondaryActionClicked!(),
                   child: Text(
-                    negativeLabel,
+                    secondaryActionLabel,
                     style: AppTextTheme.textButtonStyle,
                   ),
-                ),
+                ):const SizedBox.shrink(),
                 TextButton(
-                  onPressed: () => onPositiveClick(ctx),
-                  child: Text(positiveLabel,
+                  onPressed: () => onPrimaryActionClicked(),
+                  child: Text(primaryActionLabel,
                       style: AppTextTheme.textButtonStyle.copyWith(
                           color: Theme.of(context).colorScheme.primary)),
                 ),

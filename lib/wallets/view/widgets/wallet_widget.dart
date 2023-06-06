@@ -71,15 +71,15 @@ class WalletWidget extends StatelessWidget {
                     ),
                     onDeleteClick: () => Utils.showAlertDialog(
                         context: context,
-                        positiveLabel: 'حذف',
-                        negativeLabel: 'إغلاق',
+                        primaryActionLabel: 'حذف',
+                        secondaryActionLabel: 'إغلاق',
                         title: 'تأكيد الحذف',
                         content: 'هل أنت متأكد من حذف هذه المحفظة؟ ',
-                        onPositiveClick: (_) {
+                        onPrimaryActionClicked: (_) {
                           Get.back();
                           return onDeleteWallet();
                           },
-                        onNegativeClick: (_) => Get.back())
+                        onSecondaryActionClicked: (_) => Get.back())
                   ),
                   icon: const Icon(Icons.more_vert, color: redColor,),
                   splashRadius: 18,

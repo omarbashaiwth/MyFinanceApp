@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:myfinance_app/auth/controller/services/google_auth_service.dart';
 import 'package:myfinance_app/auth/model/my_user.dart';
 import 'package:myfinance_app/core/utils/utils.dart';
+import 'package:get/get.dart';
 
 class FirebaseAuthServices {
   final FirebaseAuth auth;
@@ -30,7 +31,7 @@ class FirebaseAuthServices {
           onEmailVerifiedSucceed();
           onLoading(false);
         } else {
-          onMessage('الرجاء تأكيد ملكية هذا الحساب');
+          onMessage('confirm verification');
           onLoading(false);
         }
       } else {
@@ -71,8 +72,7 @@ class FirebaseAuthServices {
     try {
       auth.setLanguageCode('ar');
       auth.currentUser!.sendEmailVerification();
-      onMessage(
-          'لقد قمنا بإرسال رابط التحقق عبر البريد الإلكتروني المدخل. يرجى مراجعة البريد الإلكتروني وتأكيد الحساب');
+      onMessage('send email verification');
     } on FirebaseAuthException catch (e) {
       onMessage(e.message.toString()); // Display error message
     }
@@ -85,24 +85,32 @@ class FirebaseAuthServices {
 
   static void showMessageToUser(
       FirebaseAuth auth, String msg, BuildContext context) {
-    if (msg == 'الرجاء تأكيد ملكية هذا الحساب') {
+    if (msg == 'confirm verification') {
       Utils.showAlertDialog(
           context: context,
-          positiveLabel: 'إعادة الإرسال',
-          negativeLabel: 'إغلاق',
+          primaryActionLabel: 'إعادة الإرسال',
+          secondaryActionLabel: 'إغلاق',
           title: 'تأكيد الحساب',
           content:
               'لم يتم تأكيد ملكية هذا الحساب بعد. الرجاء مراحعة بريدك الإلكتروني للتأكد من أنك قمت بالضغط على رابط التأكيد المرسل لك.',
-          onPositiveClick: (ctx) {
+          onPrimaryActionClicked: (ctx) {
             auth.currentUser!.sendEmailVerification();
             Utils.showSnackBar(ctx, 'تم ارسال التأكيد الى بريدك الإلكتروني');
             Navigator.pop(ctx);
           },
-          onNegativeClick: (ctx) {
-            Navigator.pop(ctx);
-            debugPrint('back pressed');
-          });
-    } else {
+          onSecondaryActionClicked: () => Get.back()
+
+          );
+    } else if(msg == 'send email verification'){
+      Utils.showAlertDialog(
+          context: context,
+          title: 'تأكيد الحساب',
+          content: 'لقد قمنا بإرسال رابط التحقق عبر البريد الإلكتروني المدخل. يرجى مراجعة البريد الإلكتروني وتأكيد الحساب',
+          primaryActionLabel: 'تم',
+          onPrimaryActionClicked: () => Get.back(),
+      );
+    }
+    else {
       Utils.showSnackBar(context, msg);
     }
   }
