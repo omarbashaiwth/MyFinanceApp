@@ -3,7 +3,7 @@ import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
 import 'package:myfinance_app/wallets/model/wallet.dart';
-import 'package:myfinance_app/wallets/view/screens/add_wallet_screen.dart';
+import 'package:myfinance_app/wallets/view/screens/add_edit_wallet_screen.dart';
 import 'package:myfinance_app/wallets/view/widgets/add_balance_dialog.dart';
 import 'package:myfinance_app/wallets/view/widgets/transfer_balance_dialog.dart';
 import 'package:myfinance_app/wallets/view/widgets/wallet_balance_widget.dart';
@@ -50,7 +50,7 @@ class WalletWidget extends StatelessWidget {
                 alignment: Alignment.topRight,
                 child: IconButton(
                   onPressed: () => WalletBottomSheets.showWalletOptionsBT(
-                    onEditClick: () => Get.to(() => AddWalletScreen(wallet: wallet)),
+                    onEditClick: () => Get.to(() => AddEditWalletScreen(wallet: wallet)),
                     onAddBalanceClick: () => showDialog(
                       context: context,
                       builder: (_) => AddBalanceDialog(
@@ -75,11 +75,11 @@ class WalletWidget extends StatelessWidget {
                         secondaryActionLabel: 'إغلاق',
                         title: 'تأكيد الحذف',
                         content: 'هل أنت متأكد من حذف هذه المحفظة؟ ',
-                        onPrimaryActionClicked: (_) {
+                        onPrimaryActionClicked: () {
                           Get.back();
                           return onDeleteWallet();
                           },
-                        onSecondaryActionClicked: (_) => Get.back())
+                        onSecondaryActionClicked: () => Get.back())
                   ),
                   icon: const Icon(Icons.more_vert, color: redColor,),
                   splashRadius: 18,

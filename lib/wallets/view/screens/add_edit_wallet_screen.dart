@@ -10,15 +10,15 @@ import 'package:myfinance_app/wallets/view/widgets/wallet_bottom_sheets.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
 
-class AddWalletScreen extends StatefulWidget {
+class AddEditWalletScreen extends StatefulWidget {
   final Wallet? wallet;
-  const AddWalletScreen({Key? key, this.wallet}) : super(key: key);
+  const AddEditWalletScreen({Key? key, this.wallet}) : super(key: key);
 
   @override
-  State<AddWalletScreen> createState() => _AddWalletScreenState();
+  State<AddEditWalletScreen> createState() => _AddEditWalletScreenState();
 }
 
-class _AddWalletScreenState extends State<AddWalletScreen> {
+class _AddEditWalletScreenState extends State<AddEditWalletScreen> {
   final _walletFormKey = GlobalKey<FormState>();
   late final TextEditingController _balanceTextEditingController;
   late final TextEditingController _nameTextEditingController;
@@ -42,13 +42,12 @@ class _AddWalletScreenState extends State<AddWalletScreen> {
     final readProvider = context.read<WalletController>();
     final currentUser = FirebaseAuth.instance.currentUser;
     final walletToUpdate = widget.wallet;
-
+    debugPrint('rebuild: ${watchProvider.walletType?.type ?? 'red'}');
 
     final newWallet = Wallet(
       createdAt: Timestamp.now(),
       walletType: watchProvider.walletType,
       userId: currentUser!.uid,
-      id: walletToUpdate?.id
     );
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -73,16 +72,32 @@ class _AddWalletScreenState extends State<AddWalletScreen> {
                 final isValid = _walletFormKey.currentState!.validate();
                 if(isValid) {
                   _walletFormKey.currentState!.save();
-                  if(newWallet.walletType == null){
+                  if(walletToUpdate == null && newWallet.walletType == null){
                     Fluttertoast.showToast(msg: 'اختر نوع المحفظة');
                   }
-                  if(walletToUpdate == null && newWallet.walletType != null){
+                  if(walletToUpdate == null && newWallet.walletType != null) {
                     await readProvider.insertWallet(newWallet);
-                  } else {
-                    await readProvider.updateWallet(wallet: newWallet);
+                    Fluttertoast.showToast(msg: 'تم الإضافة');
+                    watchProvider.clearSelections();
+                    Get.back();
                   }
-                  watchProvider.clearSelections();
-                  Get.back();
+                  if(walletToUpdate != null && watchProvider.walletType == null){
+                    readProvider.onWalletTypeChange(walletToUpdate.walletType!);
+                  }
+                  if(walletToUpdate != null){
+                    final updatedWallet = Wallet(
+                      name: _nameTextEditingController.text,
+                      currentBalance: double.parse(_balanceTextEditingController.text),
+                      id: walletToUpdate.id,
+                      createdAt: walletToUpdate.createdAt,
+                      walletType: watchProvider.walletType,
+                      userId: walletToUpdate.userId,
+                    );
+                    await readProvider.updateWallet(wallet: updatedWallet);
+                    Fluttertoast.showToast(msg: 'تم التحديث');
+                    watchProvider.clearSelections();
+                    Get.back();
+                  }
                 }
               },
               icon: const Icon(Icons.check, color: Colors.red,))
