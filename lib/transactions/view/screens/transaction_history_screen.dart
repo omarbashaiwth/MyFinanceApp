@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
-import 'package:intl/intl.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/core/widgets/empty_widget.dart';
@@ -72,6 +71,7 @@ class TransactionHistoryScreen extends StatelessWidget {
                           ),
                         );
                       },
+                      sort: false,
                       separator: const Divider(),
                       order: GroupedListOrder.DESC,
                       useStickyGroupSeparators: true,
