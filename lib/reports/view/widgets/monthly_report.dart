@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:myfinance_app/core/widgets/empty_widget.dart';
@@ -23,27 +24,26 @@ class MonthlyReport extends StatelessWidget {
     return StreamBuilder(
         stream: transactionController.getTransactions(),
         builder: (context, snapshot) {
-          final data = List.generate(5, (index) {
             final transactions = snapshot.data;
-            final months = reportsController.getLatestFiveMonths();
-            final monthlyTransactions =
-                transactionController.transactionsByMonth(
-                        transactions: transactions,
-                        pickedDate: months[index],
-                ) ??[];
-            final incomes = transactionController.calculateTotal(
+            final latestFiveMonths = reportsController.getLatestFiveMonths();
+            final data = latestFiveMonths.map((month) {
+              final monthlyTransactions =
+                  transactionController.transactionsByMonth(
+                    transactions: transactions,
+                    pickedMonth: month,
+                  ) ??[];
+              final incomes = transactionController.calculateTotal(
                 transactions: monthlyTransactions, type: 'income',
-            );
-            final expenses = transactionController.calculateTotal(
-                transactions: monthlyTransactions, type: 'expense',
-            );
-            return MonthlyReportModel(
+              );
+              final expenses = transactionController.calculateTotal(
+                  transactions: monthlyTransactions, type: 'expense',
+              );
+              return MonthlyReportModel(
                 incomes: incomes,
                 expenses: expenses,
-                month: DateFormat('MMMM', 'ar').format(months[index]),
-            );
-          });
-
+                month: DateFormat('MMMM', 'ar').format(month),
+              );
+            }).toList();
           return Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
@@ -54,11 +54,11 @@ class MonthlyReport extends StatelessWidget {
               child: Column(
                 children: [
                   const ChartHeader(
-                    header: 'أداؤك خلال آخر 5 أشهر',
+                    header: 'أداؤك المالي خلال آخر 5 أشهر',
                     showFilter: false,
                   ),
                   const SizedBox(height: 30),
-                  data.isNotEmpty? Column(
+                  (transactions != null && transactions.isNotEmpty)? Column(
                     children: [
                       SizedBox(height: 200, child: DrawBarChart(data: data)),
                       Padding(

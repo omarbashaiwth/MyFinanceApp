@@ -64,9 +64,9 @@ class TransactionController extends ChangeNotifier {
         .add(transaction);
   }
 
-  List<my_transaction.Transaction>? transactionsByMonth({required List<my_transaction.Transaction>? transactions, required DateTime pickedDate}){
-    final startOfMonth = DateTime(pickedDate.year, pickedDate.month);
-    final endOfMonth = DateTime(pickedDate.year, pickedDate.month + 1).subtract(const Duration(milliseconds: 1));
+  List<my_transaction.Transaction>? transactionsByMonth({required List<my_transaction.Transaction>? transactions, required DateTime pickedMonth}){
+    final startOfMonth = DateTime(pickedMonth.year, pickedMonth.month);
+    final endOfMonth = DateTime(pickedMonth.year, pickedMonth.month + 1).subtract(const Duration(milliseconds: 1));
     return transactions?.where((transaction) => transaction.createdAt!.toDate().isAfter(startOfMonth) && transaction.createdAt!.toDate().isBefore(endOfMonth)).toList();
   }
 

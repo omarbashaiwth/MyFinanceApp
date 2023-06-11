@@ -189,7 +189,7 @@ class TransactionsScreen extends StatelessWidget {
       {required AsyncSnapshot<List<Transaction>> snapshot,
         required TransactionController controller}) {
     final transactionsByMonth = controller.transactionsByMonth(
-        transactions: snapshot.data, pickedDate: controller.pickedDate) ??
+        transactions: snapshot.data, pickedMonth: controller.pickedDate) ??
         [];
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),

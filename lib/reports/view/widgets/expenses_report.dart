@@ -20,7 +20,7 @@ class ExpensesReport extends StatelessWidget {
       stream: transactionController.getTransactions(),
       builder: (context, snapshot) {
         final transactions = snapshot.data;
-        final monthlyTransactions = transactionController.transactionsByMonth(transactions: transactions, pickedDate: DateTime.now()) ?? [];
+        final monthlyTransactions = transactionController.transactionsByMonth(transactions: transactions, pickedMonth: DateTime.now()) ?? [];
         final groupedExpenses = reportsController.groupExpenses(monthlyTransactions);
         final total  = transactionController.calculateTotal(transactions: monthlyTransactions, type: 'expense');
         return Container(

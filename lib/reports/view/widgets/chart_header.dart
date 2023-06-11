@@ -12,7 +12,7 @@ class ChartHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: showFilter? MainAxisAlignment.spaceBetween : MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children:  [
         Text(header, style: const TextStyle(fontFamily: 'Tajawal', fontSize: 20),),
         showFilter? OutlinedButton(
