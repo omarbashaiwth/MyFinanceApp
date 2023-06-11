@@ -83,9 +83,10 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
                     : _incomeFormKey.currentState!.save();
                 // save transaction to the firebase
                 await provider.saveTransaction(transaction);
+                //update wallet balance
                 await walletController.updateWalletBalance(
                     walletId: transaction.walletId! ,
-                    value: transaction.amount!,
+                    value: transaction.type == 'expense'? -transaction.amount!:transaction.amount!,
                 );
                 provider.clearSelections();
                 Get.back();

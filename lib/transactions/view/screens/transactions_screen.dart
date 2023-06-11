@@ -191,6 +191,8 @@ class TransactionsScreen extends StatelessWidget {
     final transactionsByMonth = controller.transactionsByMonth(
         transactions: snapshot.data, pickedMonth: controller.pickedDate) ??
         [];
+    final calculateDiff = controller.calculateTotal(
+        transactions: transactionsByMonth);
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Container(
@@ -213,15 +215,10 @@ class TransactionsScreen extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     child: PriceWidget(
-                      amount: controller.calculateTotal(
-                          transactions: transactionsByMonth),
+                      amount: calculateDiff.isNegative? -calculateDiff: calculateDiff,
                       amountFontSize: 30,
                       currencyFontSize: 18,
-                      color: controller.calculateTotal(
-                          transactions: transactionsByMonth) <
-                          0
-                          ? Colors.red
-                          : Colors.green,
+                      color: calculateDiff.isNegative ? Colors.red : Colors.green,
                     ),
                   ),
                 ),
@@ -235,6 +232,7 @@ class TransactionsScreen extends StatelessWidget {
                     image: 'assets/icons/expense.png',
                     amount: controller.calculateTotal(
                         transactions: transactionsByMonth, type: 'expense'),
+                    color: Colors.red,
                   ),
                   SummaryCard(
                     title: 'الدخل',
@@ -243,6 +241,7 @@ class TransactionsScreen extends StatelessWidget {
                       transactions: transactionsByMonth,
                       type: 'income',
                     ),
+                    color: Colors.green,
                     quarterRotate: 2,
                   )
                 ],

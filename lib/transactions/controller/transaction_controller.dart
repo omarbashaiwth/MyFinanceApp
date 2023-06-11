@@ -88,10 +88,9 @@ class TransactionController extends ChangeNotifier {
     if (type == null) {
       final realTransactions =
           transactions.where((element) => element.type != null);
-      return realTransactions.fold(
-          0.0,
-          (previousValue, transaction) =>
-              previousValue + transaction.amount!);
+      final incomes = realTransactions.where((element) => element.type == 'income');
+      final expenses = realTransactions.where((element) => element.type == 'expense');
+      return incomes.fold(0.0, (previousValue, incomes) => previousValue + incomes.amount! ) - expenses.fold(0.0, (previousValue, expenses) => previousValue + expenses.amount!);
     } else {
       final transactionsByType =
           transactions.where((element) => element.type == type).toList();

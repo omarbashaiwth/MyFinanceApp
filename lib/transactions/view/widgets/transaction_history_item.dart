@@ -49,7 +49,7 @@ class TransactionHistoryItem extends StatelessWidget {
             PriceWidget(
               amount: transaction.amount!,
               color:
-                  transaction.amount! < 0 ? Colors.red : Colors.green,
+                  transaction.type == 'expense' ? Colors.red : Colors.green,
             ),
             Text(
               Utils.dateFormat(date: DateTime.fromMicrosecondsSinceEpoch(

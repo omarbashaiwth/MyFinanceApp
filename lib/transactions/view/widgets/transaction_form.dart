@@ -48,7 +48,7 @@ class TransactionForm {
                       keyboardType: TextInputType.number,
                       readOnly: false,
                       onSaved: (value) => transaction.amount =
-                          double.tryParse('-$value'),
+                          double.tryParse(value),
                   ),
                 ),
                 const SizedBox(height: 20),
