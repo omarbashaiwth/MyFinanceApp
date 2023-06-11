@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:myfinance_app/onboarding/controller/onboarding_controller.dart';
+import 'package:provider/provider.dart';
 
 import '../../../core/ui/theme.dart';
 
@@ -11,6 +13,7 @@ class AddBalanceDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currency = context.read<OnBoardingController>().getCurrency();
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: SizedBox(
@@ -44,9 +47,9 @@ class AddBalanceDialog extends StatelessWidget {
               mainAxisAlignment:
               MainAxisAlignment.center,
               children: [
-                const Text(
-                  'ريال',
-                  style: TextStyle(fontFamily: 'Tajawal', fontSize: 20),
+                 Text(
+                  currency ?? '',
+                  style: const TextStyle(fontFamily: 'Tajawal', fontSize: 20),
                 ),
                 const SizedBox(width: 10),
                 Container(

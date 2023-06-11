@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:myfinance_app/onboarding/controller/onboarding_controller.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/view/widgets/clickable_text_field.dart';
 import 'package:myfinance_app/transactions/view/widgets/transaction_bottom_sheet.dart';
@@ -22,6 +23,7 @@ class TransferBalanceDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final transactionProvider = Provider.of<TransactionController>(context);
+    final currency = Provider.of<OnBoardingController>(context, listen: false).getCurrency();
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: IntrinsicHeight(
@@ -54,9 +56,9 @@ class TransferBalanceDialog extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    'ريال',
-                    style: TextStyle(fontFamily: 'Tajawal', fontSize: 20),
+                  Text(
+                    currency ?? '',
+                    style: const TextStyle(fontFamily: 'Tajawal', fontSize: 20),
                   ),
                   const SizedBox(width: 10),
                   Container(
