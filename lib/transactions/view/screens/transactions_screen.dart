@@ -94,7 +94,7 @@ class TransactionsScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(10),
                   child: Column(
                     children: [
-                      CenteredHeader(header: Utils.dateFormat(date: controller.pickedDate, showDays: false)),
+                      CenteredHeader(header: Utils.dateFormat(date: DateTime.now(), showDays: false)),
                       const SizedBox(height: 20),
                       _headerSection(header: 'ملخص الشهر'),
                       _monthlySummarySection(
@@ -122,15 +122,13 @@ class TransactionsScreen extends StatelessWidget {
             Text(header, style: AppTextTheme.headerTextStyle),
             showMore
                 ? TextButton(
-              onPressed: () =>
-                  Get.to(() =>
-                  const Directionality(
-                      textDirection: TextDirection.rtl,
-                      child: TransactionHistoryScreen())),
-              child: Text('عرض المزيد',
-                  style: AppTextTheme.textButtonStyle
-                      .copyWith(color: redColor)),
-            )
+                    onPressed: () => Get.to(() => const Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: TransactionHistoryScreen())),
+                    child: Text('عرض المزيد',
+                        style: AppTextTheme.textButtonStyle
+                            .copyWith(color: redColor)),
+                  )
                 : Container()
           ],
         ),
@@ -139,60 +137,14 @@ class TransactionsScreen extends StatelessWidget {
     );
   }
 
-  Widget _monthPicker({required BuildContext context,
-    required TransactionController controller}) {
-    return GestureDetector(
-      onTap: () async {
-        final pickedDate = await showMonthPicker(
-            lastDate: DateTime.now(),
-            context: context,
-            locale: const Locale('ar'),
-            roundedCornersRadius: 20,
-            headerColor: Theme
-                .of(context)
-                .colorScheme
-                .primary,
-            selectedMonthTextColor: whiteColor,
-            unselectedMonthTextColor: blackColor,
-            dismissible: true,
-            cancelWidget: const Text(
-              'اغلاق',
-              style:
-              TextStyle(fontFamily: 'Tajawal', fontWeight: FontWeight.bold),
-            ),
-            confirmWidget: const Text(
-              'تم',
-              style:
-              TextStyle(fontFamily: 'Tajawal', fontWeight: FontWeight.bold),
-            ));
-        controller.onChangePickedMonth(pickedDate!);
-      },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            intl.DateFormat('MMMM yyyy', 'ar').format(controller.pickedDate),
-            style: const TextStyle(
-                fontFamily: 'Tajawal',
-                fontSize: 16,
-                fontWeight: FontWeight.w500),
-          ),
-          const SizedBox(width: 4),
-          const Icon(Icons.keyboard_arrow_down, color: redColor)
-        ],
-      ),
-    );
-  }
-
   Widget _monthlySummarySection(
       {required AsyncSnapshot<List<Transaction>> snapshot,
-        required TransactionController controller}) {
+      required TransactionController controller}) {
     final transactionsByMonth = controller.transactionsByMonth(
-        transactions: snapshot.data, pickedMonth: controller.pickedDate) ??
+            transactions: snapshot.data, pickedMonth: DateTime.now()) ??
         [];
-    final calculateDiff = controller.calculateTotal(
-        transactions: transactionsByMonth);
+    final calculateDiff =
+        controller.calculateTotal(transactions: transactionsByMonth);
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Container(
@@ -215,10 +167,13 @@ class TransactionsScreen extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     child: PriceWidget(
-                      amount: calculateDiff.isNegative? -calculateDiff: calculateDiff,
+                      amount: calculateDiff.isNegative
+                          ? -calculateDiff
+                          : calculateDiff,
                       amountFontSize: 30,
                       currencyFontSize: 18,
-                      color: calculateDiff.isNegative ? Colors.red : Colors.green,
+                      color:
+                          calculateDiff.isNegative ? Colors.red : Colors.green,
                     ),
                   ),
                 ),
@@ -253,8 +208,9 @@ class TransactionsScreen extends StatelessWidget {
     );
   }
 
-  Widget _lastTransactionsSection({required TransactionController controller,
-    required AsyncSnapshot<List<Transaction>> snapshot}) {
+  Widget _lastTransactionsSection(
+      {required TransactionController controller,
+      required AsyncSnapshot<List<Transaction>> snapshot}) {
     final transactions = snapshot.data?.take(5).toList() ?? [];
     return Container(
         padding: const EdgeInsets.all(10),
@@ -265,21 +221,21 @@ class TransactionsScreen extends StatelessWidget {
           transactions.isEmpty
               ? const EmptyWidget()
               : ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: transactions.length,
-            itemBuilder: (_, index) {
-              return Column(
-                children: [
-                  TransactionHistoryItem(
-                      transaction: transactions[index]),
-                  index != transactions.indexOf(transactions.last)
-                      ? const Divider()
-                      : Container()
-                ],
-              );
-            },
-          )
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: transactions.length,
+                  itemBuilder: (_, index) {
+                    return Column(
+                      children: [
+                        TransactionHistoryItem(
+                            transaction: transactions[index]),
+                        index != transactions.indexOf(transactions.last)
+                            ? const Divider()
+                            : Container()
+                      ],
+                    );
+                  },
+                )
         ]));
   }
 }

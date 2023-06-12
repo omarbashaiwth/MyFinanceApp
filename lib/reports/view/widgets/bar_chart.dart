@@ -42,7 +42,7 @@ class DrawBarChart extends StatelessWidget {
               width: width
             ),
             BarChartRodData(
-                toY: -data[index].expenses,
+                toY: data[index].expenses,
                 color: const Color(0xFFEF4A37),
                 width: width
             ),

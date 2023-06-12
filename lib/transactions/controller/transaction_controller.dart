@@ -22,17 +22,9 @@ class TransactionController extends ChangeNotifier {
   Timestamp _selectedDate = Timestamp.now();
   Timestamp get selectedDate => _selectedDate;
 
-  DateTime _pickedDate = DateTime.now();
-  DateTime get pickedDate => _pickedDate;
-
   Wallet? _selectedWallet;
 
   Wallet? get selectedWallet => _selectedWallet;
-
-  void onChangePickedMonth(DateTime value){
-    _pickedDate = value;
-    notifyListeners();
-  }
 
   void onChangeSelectedIcon(int selectedIconIndex) {
     _selectedIcon = selectedIconIndex;

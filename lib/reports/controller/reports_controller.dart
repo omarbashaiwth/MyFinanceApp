@@ -6,6 +6,14 @@ import '../model/expense_summray_model.dart';
 
 class ReportsController extends ChangeNotifier{
 
+  DateTime _pickedDate = DateTime.now();
+  DateTime get pickedDate => _pickedDate;
+
+  void onChangePickedMonth(DateTime value){
+    _pickedDate = value;
+    notifyListeners();
+  }
+
   List<ExpenseSummaryModel> groupExpenses(
       List<Transaction> transactions) {
     final expenses =
