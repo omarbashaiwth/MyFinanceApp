@@ -22,6 +22,7 @@ class AuthScreen extends StatelessWidget {
     final auth = FirebaseAuth.instance;
     final formKey = GlobalKey<FormState>();
     final MyUser user = MyUser('', '', '');
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: SingleChildScrollView(
@@ -34,32 +35,36 @@ class AuthScreen extends StatelessWidget {
                 const SizedBox(height: 50),
                 AuthForm(formKey: formKey, user: user),
                 const SizedBox(height: 2),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    provider.isLogin
-                        ? TextButton(
-                            onPressed: () {},
-                            child: const Text('نسيت كلمة المرور؟',
-                                style: AppTextTheme.textButtonStyle),
-                          )
-                        : const SizedBox(height: 32),
-                    const SizedBox(width: 50),
-                    provider.isLoading
-                        ? const CircularProgressIndicator()
-                        : const SizedBox.shrink()
-                  ],
-                ),
+                provider.isLogin?
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text('نسيت كلمة المرور؟',
+                              style: AppTextTheme.textButtonStyle
+                          ),
+                        ),
+                        const SizedBox(width: 50,),
+                        provider.isLoading
+                            ? const CircularProgressIndicator()
+                            : const SizedBox.shrink(),
+                      ],
+                    )
+                : provider.isLoading
+                    ? const CircularProgressIndicator()
+                    : const SizedBox.shrink(),
+                const SizedBox(height: 18,),
                 ElevatedButton(
                   onPressed: () async {
                     final isValid = formKey.currentState?.validate();
                     FocusScope.of(context).unfocus();
                     if (isValid != null && isValid) {
                       formKey.currentState?.save();
-                      await FirebaseAuthServices(auth).firebaseAuth(
+                      await FirebaseAuthServices.emailPasswordAuth(
                           user: user,
                           isLogin: provider.isLogin,
-                          context: context,
+                          screenHeight: screenHeight,
                           onLoading: (bool loading) {
                             silentProvider.onLoadingStateChange(loading);
                             // setState(() => _isLoading = loading);
@@ -68,12 +73,11 @@ class AuthScreen extends StatelessWidget {
                             FirebaseAuthServices.showMessageToUser(
                                 auth, msg, context);
                           },
-                          onEmailVerifiedSucceed: () {
+                          onNavigateToHomeScreen: () {
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (_) => const MyHomePage()));
-                            debugPrint('move to my home page');
                           });
                     }
                   },
@@ -90,7 +94,7 @@ class AuthScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () => GoogleAuthService.signInWithGoogle(auth),
+                  onPressed: () => FirebaseAuthServices.googleAuth(screenHeight: screenHeight),
                   style: ElevatedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(

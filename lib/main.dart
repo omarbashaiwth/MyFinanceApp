@@ -42,16 +42,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Provider.of<OnBoardingController>(context, listen: false);
-    final savedCurrency = controller.getCurrency();
+    final firstTimeLaunched = controller.firstTimeLaunched() ?? true;
     return GetMaterialApp(
         debugShowCheckedModeBanner: false,
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
         ],
         theme: AppTheme.lightTheme,
-        home: savedCurrency == null
+        home: firstTimeLaunched
             ? OnBoardingScreen(onBoardingEnd: (ctx) {
-                controller.setCurrency(controller.selectedCurrency?.symbol ?? 'null');
+                controller.onFirstTimeLaunchedChanged(false);
                 Navigator.pushReplacement(ctx, MaterialPageRoute(builder: (_) => const MyHomePage()));
               })
             : const MyHomePage()

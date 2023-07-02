@@ -13,7 +13,7 @@ class AddBalanceDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currency = context.read<OnBoardingController>().getCurrency();
+    // final currency = context.read<OnBoardingController>().getCurrency();
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: SizedBox(
@@ -47,9 +47,9 @@ class AddBalanceDialog extends StatelessWidget {
               mainAxisAlignment:
               MainAxisAlignment.center,
               children: [
-                 Text(
-                  currency ?? '',
-                  style: const TextStyle(fontFamily: 'Tajawal', fontSize: 20),
+                 const Text(
+                   '',
+                  style: TextStyle(fontFamily: 'Tajawal', fontSize: 20),
                 ),
                 const SizedBox(width: 10),
                 Container(

@@ -69,7 +69,7 @@ class TransactionsScreen extends StatelessWidget {
                         controller: controller,
                         snapshot: snapshot,
                         onLogout: () async {
-                          await FirebaseAuthServices(auth).logout();
+                          await FirebaseAuthServices.logout();
                           Get.back();
                         },
                       );

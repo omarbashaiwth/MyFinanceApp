@@ -22,7 +22,7 @@ class PriceWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currency =  Provider.of<OnBoardingController>(context, listen: false).getCurrency() ?? '';
+    // final currency =  Provider.of<OnBoardingController>(context, listen: false).getCurrency() ?? '';
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -37,7 +37,7 @@ class PriceWidget extends StatelessWidget {
         ),
         const SizedBox(width: 2),
         Text(
-          currency,
+          '',
           style: TextStyle(
             fontSize: currencyFontSize,
             fontFamily: 'Tajawal',

@@ -5,46 +5,65 @@ import 'package:myfinance_app/auth/controller/services/google_auth_service.dart'
 import 'package:myfinance_app/auth/model/my_user.dart';
 import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:get/get.dart';
+import 'package:myfinance_app/core/widgets/currency_manager.dart';
+
 
 class FirebaseAuthServices {
-  final FirebaseAuth auth;
+  static final _auth = FirebaseAuth.instance;
+  static final _firestore = FirebaseFirestore.instance;
 
-  FirebaseAuthServices(this.auth);
-
-  Future<void> firebaseAuth({
-    required Function(String) onMessage,
-    required Function(bool) onLoading,
-    required Function onEmailVerifiedSucceed,
-    required BuildContext context,
-    required bool isLogin,
-    required MyUser user
-  }) async {
-    UserCredential authResult;
-    final firestore = FirebaseFirestore.instance;
+  static Future<void> emailPasswordAuth(
+      {required Function(String) onMessage,
+      required Function(bool) onLoading,
+      required Function onNavigateToHomeScreen,
+      required double screenHeight,
+      required bool isLogin,
+      required MyUser user}) async {
+    // UserCredential authResult;
     try {
       if (isLogin) {
         onLoading(true);
-        await auth.signInWithEmailAndPassword(
-            email: user.email, password: user.password);
-        if (auth.currentUser!.emailVerified) {
-          //move to the home page
-          onEmailVerifiedSucceed();
+        await _auth.signInWithEmailAndPassword(
+            email: user.email, password: user.password
+        );
+        if (_auth.currentUser!.emailVerified) {
+          //move to the home page after selected currency
+          debugPrint('Login: emailVerified = ${_auth.currentUser!.emailVerified}');
+          final selectedCurrency = await CurrencyManager.hasSelectedCurrency(
+              userId: _auth.currentUser!.uid,
+              firestore: _firestore
+          );
+          if(selectedCurrency){
+            onNavigateToHomeScreen();
+          } else {
+           CurrencyManager.showCurrencyPicker(
+               bottomSheetHeight: screenHeight * 0.90,
+               firestore: _firestore,
+               user: _auth.currentUser!
+           );
+           onNavigateToHomeScreen();
+          }
           onLoading(false);
         } else {
+          debugPrint('Login: emailNotVerified = ${_auth.currentUser!.emailVerified}');
           onMessage('confirm verification');
           onLoading(false);
         }
       } else {
         onLoading(true);
-        authResult = await auth.createUserWithEmailAndPassword(
-            email: user.email, password: user.password);
-        await _sendEmailVerification(onMessage: (msg) => onMessage(msg));
-        auth.currentUser!.updateDisplayName(user.username);
-        firestore
-            .collection('Users')
-            .doc(authResult.user?.uid.toString())
-            .set({'username': user.username, 'password': user.password});
-        onLoading(false);
+        final userCredential = await _auth.createUserWithEmailAndPassword(
+            email: user.email, password: user.password
+        );
+        // await userCredential.user!.updateDisplayName(user.username);
+        if(userCredential.user != null) {
+          await _sendEmailVerification(onMessage: (msg) => onMessage(msg));
+          await _auth.currentUser!.updateDisplayName(user.username);
+          onLoading(false);
+        } else {
+          onMessage('حدث خطأ أثناء إنشاء الحساب');
+          onLoading(false);
+        }
+
       }
     } on FirebaseAuthException catch (e) {
       String message = 'حدث خطأ ما';
@@ -67,20 +86,34 @@ class FirebaseAuthServices {
     }
   }
 
-  Future<void> _sendEmailVerification(
+  static Future<void> googleAuth({required double screenHeight}) async {
+    final userCredential = await GoogleAuthService.signInWithGoogle(_auth);
+    final user = userCredential.user;
+    final hasCurrency = await CurrencyManager.hasSelectedCurrency(userId: user!.uid, firestore: _firestore);
+    if (!hasCurrency) {
+      //show pick currency dialog
+      CurrencyManager.showCurrencyPicker(
+          bottomSheetHeight: screenHeight * 0.90,
+          firestore: _firestore,
+          user: user
+      );
+    }
+  }
+
+  static Future<void> _sendEmailVerification(
       {required Function(String) onMessage}) async {
     try {
-      auth.setLanguageCode('ar');
-      auth.currentUser!.sendEmailVerification();
+      _auth.setLanguageCode('ar');
+      _auth.currentUser!.sendEmailVerification();
       onMessage('send email verification');
     } on FirebaseAuthException catch (e) {
       onMessage(e.message.toString()); // Display error message
     }
   }
 
-  Future<void> logout() async {
+  static Future<void> logout() async {
     GoogleAuthService.signOut();
-    auth.signOut();
+    _auth.signOut();
   }
 
   static void showMessageToUser(
@@ -98,19 +131,17 @@ class FirebaseAuthServices {
             Utils.showSnackBar(ctx, 'تم ارسال التأكيد الى بريدك الإلكتروني');
             Navigator.pop(ctx);
           },
-          onSecondaryActionClicked: () => Get.back()
-
-          );
-    } else if(msg == 'send email verification'){
+          onSecondaryActionClicked: () => Get.back());
+    } else if (msg == 'send email verification') {
       Utils.showAlertDialog(
-          context: context,
-          title: 'تأكيد الحساب',
-          content: 'لقد قمنا بإرسال رابط التحقق عبر البريد الإلكتروني المدخل. يرجى مراجعة البريد الإلكتروني وتأكيد الحساب',
-          primaryActionLabel: 'تم',
-          onPrimaryActionClicked: () => Get.back(),
+        context: context,
+        title: 'تأكيد الحساب',
+        content:
+            'لقد قمنا بإرسال رابط التحقق عبر البريد الإلكتروني المدخل. يرجى مراجعة البريد الإلكتروني وتأكيد الحساب',
+        primaryActionLabel: 'تم',
+        onPrimaryActionClicked: () => Get.back(),
       );
-    }
-    else {
+    } else {
       Utils.showSnackBar(context, msg);
     }
   }

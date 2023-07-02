@@ -7,7 +7,7 @@ import 'package:myfinance_app/onboarding/model/on_boarding.dart';
 import 'package:myfinance_app/onboarding/view/widget/onboarding_image.dart';
 import 'package:provider/provider.dart';
 
-import 'widget/currencies_picker.dart';
+import '../../core/widgets/currencies_picker.dart';
 
 class OnBoardingScreen extends StatelessWidget {
   final Function(BuildContext) onBoardingEnd;
@@ -19,7 +19,7 @@ class OnBoardingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedCurrency = context.read<OnBoardingController>().selectedCurrency;
+    // final selectedCurrency = context.read<OnBoardingController>().selectedCurrency;
     final onBoardingPages = [
       OnBoarding(
           'سجّل نفقاتك',
@@ -70,34 +70,34 @@ class OnBoardingScreen extends StatelessWidget {
             body: onBoardingPages[2].description,
             image: OnBoardingImage(image: onBoardingPages[2].image),
             decoration: pageDecoration),
-        PageViewModel(
-            decoration: const PageDecoration(
-                bodyAlignment: Alignment.center,
-                bodyPadding: EdgeInsets.symmetric(horizontal: 4)),
-            titleWidget: Column(
-              children: [
-                Text(
-                  'اختر العملة',
-                  style: pageDecoration.titleTextStyle,
-                ),
-                Text(
-                  'يمكنك تغيير ذلك لاحقاً',
-                  style: pageDecoration.bodyTextStyle,
-                )
-              ],
-            ),
-            bodyWidget: CurrenciesPicker(
-              currenciesList: currenciesList,
-              isSelected: (currency) {
-                return context.watch<OnBoardingController>()
-                  .selectedCurrency?.code == currency.code;
-              },
-              onCurrencySelected: (currency) {
-                context.read<OnBoardingController>()
-                  .onSelectedCurrencyChange(currency);
-              },
-            )
-        )
+        // PageViewModel(
+        //     decoration: const PageDecoration(
+        //         bodyAlignment: Alignment.center,
+        //         bodyPadding: EdgeInsets.symmetric(horizontal: 4)),
+        //     titleWidget: Column(
+        //       children: [
+        //         Text(
+        //           'اختر العملة',
+        //           style: pageDecoration.titleTextStyle,
+        //         ),
+        //         Text(
+        //           'يمكنك تغيير ذلك لاحقاً',
+        //           style: pageDecoration.bodyTextStyle,
+        //         )
+        //       ],
+        //     ),
+        //     bodyWidget: CurrenciesPicker(
+        //       currenciesList: currenciesList,
+        //       isSelected: (currency) {
+        //         return context.watch<OnBoardingController>()
+        //           .selectedCurrency?.code == currency.code;
+        //       },
+        //       onCurrencySelected: (currency) {
+        //         context.read<OnBoardingController>()
+        //           .onSelectedCurrencyChange(currency);
+        //       },
+        //     )
+        // )
       ],
       next: FloatingActionButton(
         backgroundColor: redColor,
@@ -109,7 +109,7 @@ class OnBoardingScreen extends StatelessWidget {
       ),
       nextFlex: 0,
       dotsFlex: 3,
-      done: selectedCurrency != null ? FloatingActionButton(
+      done: FloatingActionButton(
         backgroundColor: redColor,
         onPressed: (){
           onBoardingEnd(context);
@@ -118,7 +118,7 @@ class OnBoardingScreen extends StatelessWidget {
           Icons.done,
           color: whiteColor,
         ),
-      ): Container(),
+      ),
       onDone: (){},
       dotsDecorator:
           const DotsDecorator(size: Size(10, 10), activeColor: redColor),

@@ -5,21 +5,21 @@ import 'package:shared_preferences/shared_preferences.dart';
 class OnBoardingController extends ChangeNotifier{
   final SharedPreferences prefs;
   OnBoardingController(this.prefs);
+
+  // bool _firstTimeLaunched = true;
+  // bool get firstTimeLaunched => _firstTimeLaunched;
+  //
+  //
+  // void onFirstTimeLaunchedChanged(bool value) {
+  //   _firstTimeLaunched = value;
+  //   notifyListeners();
+  // }
   
-  Currency? _selectedCurrency;
-  Currency? get selectedCurrency => _selectedCurrency;
-
-
-  void onSelectedCurrencyChange(Currency value) {
-    _selectedCurrency = value;
-    notifyListeners();
-  }
-  
-  String? getCurrency(){
-    return prefs.getString('currency');
+  bool? firstTimeLaunched(){
+    return prefs.getBool('onBoarding');
   }
 
-  void setCurrency(String value){
-    prefs.setString('currency', value);
+  void onFirstTimeLaunchedChanged(bool value){
+    prefs.setBool('onBoarding', value);
   }
 }

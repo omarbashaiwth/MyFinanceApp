@@ -23,7 +23,7 @@ class TransferBalanceDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final transactionProvider = Provider.of<TransactionController>(context);
-    final currency = Provider.of<OnBoardingController>(context, listen: false).getCurrency();
+    // final currency = Provider.of<OnBoardingController>(context, listen: false).getCurrency();
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: IntrinsicHeight(
@@ -56,9 +56,9 @@ class TransferBalanceDialog extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    currency ?? '',
-                    style: const TextStyle(fontFamily: 'Tajawal', fontSize: 20),
+                  const Text(
+                    '',
+                    style: TextStyle(fontFamily: 'Tajawal', fontSize: 20),
                   ),
                   const SizedBox(width: 10),
                   Container(
