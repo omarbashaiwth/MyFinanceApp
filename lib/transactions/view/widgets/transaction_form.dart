@@ -19,6 +19,7 @@ class TransactionForm {
       required TransactionController transactionController,
       required WalletController walletController,
       required my_transaction.Transaction transaction,
+        required String currency,
       required TextEditingController textEditingController,
       required BuildContext context,
       required Key key}) {
@@ -66,6 +67,7 @@ class TransactionForm {
                         expenseAmount != null
                             ? TransactionBottomSheet.showWalletsBS(
                           title: 'خصم المبلغ من',
+                          currency: currency,
                           userId: currentUser.uid,
                           availableWallets: snapshot.data!,
                           walletClickable: (wallet) => expenseAmount
@@ -121,6 +123,7 @@ class TransactionForm {
     required TransactionController transactionController,
     required WalletController walletController,
     required my_transaction.Transaction transaction,
+    required String currency,
     required BuildContext context,
   }) {
     return Form(
@@ -163,6 +166,7 @@ class TransactionForm {
                               'assets/icons/wallet.png',
                       onClick: () => TransactionBottomSheet.showWalletsBS(
                         title: 'إضافة المبلغ إلى',
+                        currency: currency,
                         userId: currentUser.uid,
                         availableWallets: snapshot.data!,
                         walletClickable: (_) => true,

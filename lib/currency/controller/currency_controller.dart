@@ -16,6 +16,7 @@ class CurrencyController extends ChangeNotifier {
   }
 
   String? getCurrency({required String key}){
+    debugPrint('getCurrencyCalled');
     return prefs.getString(key);
   }
 }

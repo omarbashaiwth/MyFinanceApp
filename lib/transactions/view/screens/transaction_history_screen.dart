@@ -10,7 +10,8 @@ import 'package:get/get.dart';
 import '../../controller/transaction_controller.dart';
 
 class TransactionHistoryScreen extends StatelessWidget {
-  const TransactionHistoryScreen({Key? key}) : super(key: key);
+  final String currency;
+  const TransactionHistoryScreen({Key? key, required this.currency}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +66,7 @@ class TransactionHistoryScreen extends StatelessWidget {
                           child: Column(
                             children: [
                               const SizedBox(height: 8),
-                              TransactionHistoryItem(transaction: transaction),
+                              TransactionHistoryItem(transaction: transaction, currency: currency),
                               // index != transactions.indexOf(transactions.last)?
                             ],
                           ),

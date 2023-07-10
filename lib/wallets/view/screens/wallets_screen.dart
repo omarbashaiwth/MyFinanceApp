@@ -15,6 +15,7 @@ import 'package:provider/provider.dart';
 import 'package:get/get.dart';
 
 import '../../../core/ui/theme.dart';
+import '../../../currency/controller/currency_controller.dart';
 
 class WalletsScreen extends StatefulWidget {
   const WalletsScreen({Key? key}) : super(key: key);
@@ -44,6 +45,8 @@ class _WalletsScreenState extends State<WalletsScreen> {
   @override
   Widget build(BuildContext context) {
     final auth = FirebaseAuth.instance;
+    final currencyController = Provider.of<CurrencyController>(context, listen: false);
+    final currency = currencyController.getCurrency(key: auth.currentUser?.uid ?? '') ?? '';
     final walletProvider = Provider.of<WalletController>(
         context, listen: false);
     final transactionProvider = Provider.of<TransactionController>(context, listen: false);
@@ -71,6 +74,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
                 const SizedBox(height: 16),
                 TotalBalanceWidget(
                     balance: snapshot.hasData? walletProvider.calculateTotalBalance(data!): 0.0 ,
+                    currency: currency,
                     currencyFontSize: 24,
                     amountFontSize: 36
                 ),
@@ -80,6 +84,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
                 Expanded(
                     child: _allWallets(
                         snapshot: snapshot,
+                        currency: currency,
                         transactionController: transactionProvider,
                         walletController: walletProvider,
                         transferBalanceController: _transferBalanceController,
@@ -176,6 +181,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
     required TextEditingController transferBalanceController,
     required TransactionController transactionController,
     required WalletController walletController,
+    required String currency,
     required Function(Wallet from, Wallet? to) onTransferBalance,
     required Function(Wallet) onAddBalance,
     required Function(Wallet) onDeleteWallet,
@@ -202,6 +208,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
               itemCount: wallets.length,
               itemBuilder: (_, index) {
                 return WalletWidget(
+                  currency: currency,
                   wallet: wallets[index],
                   addBalanceController: addBalanceController,
                   walletController: walletController,

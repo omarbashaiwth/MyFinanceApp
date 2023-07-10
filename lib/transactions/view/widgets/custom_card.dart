@@ -5,6 +5,7 @@ import 'package:myfinance_app/core/widgets/price_widget.dart';
 class SummaryCard extends StatelessWidget {
   final String title;
   final double amount;
+  final String currency;
   final Color color;
   final String image;
   final int quarterRotate;
@@ -14,7 +15,7 @@ class SummaryCard extends StatelessWidget {
       required this.title,
       required this.amount,
       required this.image,
-         this.quarterRotate = 0, required this.color})
+         this.quarterRotate = 0, required this.color, required this.currency})
       : super(key: key);
 
   @override
@@ -40,6 +41,7 @@ class SummaryCard extends StatelessWidget {
                 const SizedBox(height: 8),
                 PriceWidget(
                     amount: amount,
+                    currency: currency,
                     amountFontSize: 20,
                     currencyFontSize: 18,
                     color: color,

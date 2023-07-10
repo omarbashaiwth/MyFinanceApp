@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/widgets/price_widget.dart';
-import 'package:intl/intl.dart';
 
 class TotalBalanceWidget extends StatelessWidget {
   final double balance;
+  final String currency;
   final double currencyFontSize;
   final double amountFontSize;
-  const TotalBalanceWidget({Key? key, required this.balance,required this.currencyFontSize, required this.amountFontSize}) : super(key: key);
+  const TotalBalanceWidget({Key? key, required this.balance,required this.currencyFontSize, required this.amountFontSize, required this.currency}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +25,7 @@ class TotalBalanceWidget extends StatelessWidget {
           const SizedBox(height: 8),
           PriceWidget(
               amount: balance,
+              currency: currency,
               currencyFontSize: currencyFontSize,
               amountFontSize: amountFontSize,
             color: balance < 0 ? Colors.red: Colors.green,

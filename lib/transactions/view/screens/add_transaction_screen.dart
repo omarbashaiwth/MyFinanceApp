@@ -10,6 +10,8 @@ import 'package:myfinance_app/transactions/view/widgets/transaction_form.dart';
 import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
 import 'package:provider/provider.dart';
 
+import '../../../currency/controller/currency_controller.dart';
+
 
 
 class AddTransactionScreen extends StatefulWidget {
@@ -43,7 +45,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
 
   @override
   Widget build(BuildContext context) {
-
+    final currencyController = Provider.of<CurrencyController>(context, listen: false);
     final currentUser = FirebaseAuth.instance.currentUser;
     final transactionController = Provider.of<TransactionController>(context);
     final walletController = Provider.of<WalletController>(context);
@@ -110,6 +112,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
                 key: _expenseFormKey,
                 textEditingController: _expenseTextEditingController,
                 context: context,
+                currency: currencyController.getCurrency(key: currentUser.uid)?? '',
                 transaction: transaction,
                 currentUser: currentUser,
                 transactionController: transactionController,
@@ -118,7 +121,8 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
             TransactionForm.incomeForm(
                 key: _incomeFormKey,
                 context: context,
-                currentUser: currentUser,
+              currency: currencyController.getCurrency(key: currentUser.uid)?? '',
+              currentUser: currentUser,
                 transaction: transaction,
                 transactionController: transactionController,
                 walletController: walletController,

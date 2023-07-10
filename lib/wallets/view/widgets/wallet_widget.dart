@@ -6,7 +6,6 @@ import 'package:myfinance_app/wallets/model/wallet.dart';
 import 'package:myfinance_app/wallets/view/screens/add_edit_wallet_screen.dart';
 import 'package:myfinance_app/wallets/view/widgets/add_balance_dialog.dart';
 import 'package:myfinance_app/wallets/view/widgets/transfer_balance_dialog.dart';
-import 'package:myfinance_app/wallets/view/widgets/wallet_balance_widget.dart';
 import 'package:get/get.dart';
 import 'package:myfinance_app/wallets/view/widgets/wallet_bottom_sheets.dart';
 
@@ -17,6 +16,7 @@ class WalletWidget extends StatelessWidget {
   final TextEditingController addBalanceController;
   final TextEditingController transferBalanceController;
   final WalletController walletController;
+  final String currency;
   final Function() onAddBalance;
   final Function() onTransferBalance;
   final Function() onDeleteWallet;
@@ -30,7 +30,7 @@ class WalletWidget extends StatelessWidget {
       required this.transferBalanceController,
       required this.walletController,
       required this.onTransferBalance,
-      required this.onDeleteWallet, required this.onClose})
+      required this.onDeleteWallet, required this.onClose, required this.currency})
       : super(key: key);
 
   @override
@@ -63,6 +63,7 @@ class WalletWidget extends StatelessWidget {
                         builder: (_) => TransferBalanceDialog(
                           textEditingController: transferBalanceController,
                           walletController: walletController,
+                          currency: currency,
                           transferFrom: wallet,
                           onClose: onClose,
                           onPositiveClick: onTransferBalance,
@@ -95,6 +96,7 @@ class WalletWidget extends StatelessWidget {
               const SizedBox(height: 8),
               PriceWidget(
                 amount: wallet.currentBalance!,
+                currency: currency,
                 currencyFontSize: 25,
                 amountFontSize: 35,
                 color: wallet.currentBalance! < 0 ? Colors.red: Colors.green,

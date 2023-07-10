@@ -10,6 +10,7 @@ class ProfileWidget extends StatelessWidget {
   final User? currentUser;
   final TransactionController controller;
   final AsyncSnapshot<List<my_transactions.Transaction>> snapshot;
+  final String currency;
   final Function() onLogout;
 
   const ProfileWidget(
@@ -17,7 +18,7 @@ class ProfileWidget extends StatelessWidget {
       required this.currentUser,
       required this.onLogout,
       required this.snapshot,
-      required this.controller})
+      required this.controller, required this.currency})
       : super(key: key);
 
   @override
@@ -79,6 +80,7 @@ class ProfileWidget extends StatelessWidget {
                     style: TextStyle(fontFamily: 'Tajawl'),
                   ),
                   PriceWidget(
+                    currency: currency,
                     amount: controller.calculateTotal(
                         transactions: transactions, type: 'expense'),
                     color: blackColor,
@@ -99,6 +101,7 @@ class ProfileWidget extends StatelessWidget {
                     style: TextStyle(fontFamily: 'Tajawal'),
                   ),
                   PriceWidget(
+                    currency: currency,
                     amount: controller.calculateTotal(
                         transactions: transactions, type: 'income'),
                     color: blackColor,

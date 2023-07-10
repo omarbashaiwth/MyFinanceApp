@@ -4,7 +4,6 @@ import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/utils/expenses_icons.dart';
 import 'package:myfinance_app/core/widgets/empty_widget.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
-import 'package:myfinance_app/transactions/model/category.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/widgets/price_widget.dart';
@@ -62,6 +61,7 @@ class TransactionBottomSheet {
   static void showWalletsBS({
     required String userId,
     required String title,
+    required String currency,
     required List<Wallet> availableWallets,
     required bool Function(Wallet) walletClickable,
   }) {
@@ -95,6 +95,7 @@ class TransactionBottomSheet {
                             return Column(children: [
                               _walletItem(
                                   wallet: availableWallets[index],
+                                  currency: currency,
                                   clickable: walletClickable,
                                   onClick: () {
                                     Provider.of<TransactionController>(context,
@@ -119,9 +120,7 @@ class TransactionBottomSheet {
       {required Wallet wallet,
       required Function() onClick,
       required bool Function(Wallet) clickable,
-      String currency = 'ريال'}) {
-    // final canChooseWallet =  (expenseAmount != null &&
-    //     expenseAmount.isLowerThan(wallet.currentBalance!)) || expenseAmount == null;
+      required String currency}) {
     final colorFilter =
         ColorFilter.mode(Colors.grey.withOpacity(0.2), BlendMode.dstATop);
     return GestureDetector(
@@ -155,6 +154,7 @@ class TransactionBottomSheet {
               ),
               PriceWidget(
                 amount: wallet.currentBalance!,
+                currency: currency,
                 color: !clickable(wallet)
                     ? Colors.grey.withOpacity(0.2)
                     : wallet.currentBalance! < 0

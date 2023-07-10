@@ -1,8 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart' as intl;
-import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:myfinance_app/auth/controller/services/firebase_auth_services.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/utils/utils.dart';
@@ -15,6 +13,7 @@ import 'package:myfinance_app/transactions/view/screens/transaction_history_scre
 import 'package:myfinance_app/transactions/view/widgets/centered_header.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
+import '../../../currency/controller/currency_controller.dart';
 import '../../model/transaction.dart';
 import '../widgets/custom_card.dart';
 import '../widgets/transaction_history_item.dart';
@@ -25,8 +24,12 @@ class TransactionsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     debugPrint('build');
-    final controller = Provider.of<TransactionController>(context);
+    final transactionController = Provider.of<TransactionController>(context);
+    final currencyController =
+        Provider.of<CurrencyController>(context, listen: false);
     final auth = FirebaseAuth.instance;
+    final currency =
+        currencyController.getCurrency(key: auth.currentUser?.uid ?? '') ?? '';
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark));
@@ -34,10 +37,7 @@ class TransactionsScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
-          backgroundColor: Theme
-              .of(context)
-              .colorScheme
-              .background,
+          backgroundColor: Theme.of(context).colorScheme.background,
           title: const Text(
             'المعاملات',
             style: AppTextTheme.appBarTitleTextStyle,
@@ -62,11 +62,12 @@ class TransactionsScreen extends StatelessWidget {
                   ),
                 ),
                 child: StreamBuilder(
-                    stream: controller.getTransactions(),
+                    stream: transactionController.getTransactions(),
                     builder: (context, snapshot) {
                       return ProfileWidget(
                         currentUser: auth.currentUser,
-                        controller: controller,
+                        currency: currency,
+                        controller: transactionController,
                         snapshot: snapshot,
                         onLogout: () async {
                           await FirebaseAuthServices.logout();
@@ -78,32 +79,44 @@ class TransactionsScreen extends StatelessWidget {
             },
             icon: auth.currentUser!.photoURL == null
                 ? const Icon(
-              Icons.account_circle_rounded,
-              color: Colors.red,
-            )
+                    Icons.account_circle_rounded,
+                    color: Colors.red,
+                  )
                 : ClipOval(
-              child: Image.network(auth.currentUser!.photoURL!),
-            ),
+                    child: Image.network(auth.currentUser!.photoURL!),
+                  ),
           ),
         ),
         body: SingleChildScrollView(
           child: StreamBuilder(
-              stream: controller.getTransactions(),
+              stream: transactionController.getTransactions(),
               builder: (context, snapshot) {
                 return Padding(
                   padding: const EdgeInsets.all(10),
                   child: Column(
                     children: [
-                      CenteredHeader(header: Utils.dateFormat(date: DateTime.now(), showDays: false)),
+                      CenteredHeader(
+                          header: Utils.dateFormat(
+                              date: DateTime.now(), showDays: false),
+                      ),
                       const SizedBox(height: 20),
-                      _headerSection(header: 'ملخص الشهر'),
+                      _headerSection(header: 'ملخص الشهر', currency: currency),
                       _monthlySummarySection(
-                          controller: controller, snapshot: snapshot),
+                          controller: transactionController,
+                          snapshot: snapshot,
+                          currency: currency,
+                      ),
                       const SizedBox(height: 16),
                       _headerSection(
-                          header: 'آخر المعاملات', showMore: true),
+                          header: 'آخر المعاملات',
+                          showMore: true,
+                          currency: currency,
+                      ),
                       _lastTransactionsSection(
-                          controller: controller, snapshot: snapshot),
+                          controller: transactionController,
+                          snapshot: snapshot,
+                          currency: currency,
+                      ),
                     ],
                   ),
                 );
@@ -113,7 +126,10 @@ class TransactionsScreen extends StatelessWidget {
     );
   }
 
-  Widget _headerSection({required String header, bool showMore = false}) {
+  Widget _headerSection(
+      {required String header,
+      bool showMore = false,
+      required String currency}) {
     return Column(
       children: [
         Row(
@@ -122,9 +138,11 @@ class TransactionsScreen extends StatelessWidget {
             Text(header, style: AppTextTheme.headerTextStyle),
             showMore
                 ? TextButton(
-                    onPressed: () => Get.to(() => const Directionality(
+                    onPressed: () => Get.to(() => Directionality(
                         textDirection: TextDirection.rtl,
-                        child: TransactionHistoryScreen())),
+                        child: TransactionHistoryScreen(
+                          currency: currency,
+                        ))),
                     child: Text('عرض المزيد',
                         style: AppTextTheme.textButtonStyle
                             .copyWith(color: redColor)),
@@ -139,6 +157,7 @@ class TransactionsScreen extends StatelessWidget {
 
   Widget _monthlySummarySection(
       {required AsyncSnapshot<List<Transaction>> snapshot,
+      required String currency,
       required TransactionController controller}) {
     final transactionsByMonth = controller.transactionsByMonth(
             transactions: snapshot.data, pickedMonth: DateTime.now()) ??
@@ -170,6 +189,7 @@ class TransactionsScreen extends StatelessWidget {
                       amount: calculateDiff.isNegative
                           ? -calculateDiff
                           : calculateDiff,
+                      currency: currency,
                       amountFontSize: 30,
                       currencyFontSize: 18,
                       color:
@@ -187,6 +207,7 @@ class TransactionsScreen extends StatelessWidget {
                     image: 'assets/icons/expense.png',
                     amount: controller.calculateTotal(
                         transactions: transactionsByMonth, type: 'expense'),
+                    currency: currency,
                     color: Colors.red,
                   ),
                   SummaryCard(
@@ -196,6 +217,7 @@ class TransactionsScreen extends StatelessWidget {
                       transactions: transactionsByMonth,
                       type: 'income',
                     ),
+                    currency: currency,
                     color: Colors.green,
                     quarterRotate: 2,
                   )
@@ -210,6 +232,7 @@ class TransactionsScreen extends StatelessWidget {
 
   Widget _lastTransactionsSection(
       {required TransactionController controller,
+      required String currency,
       required AsyncSnapshot<List<Transaction>> snapshot}) {
     final transactions = snapshot.data?.take(5).toList() ?? [];
     return Container(
@@ -228,7 +251,9 @@ class TransactionsScreen extends StatelessWidget {
                     return Column(
                       children: [
                         TransactionHistoryItem(
-                            transaction: transactions[index]),
+                          transaction: transactions[index],
+                          currency: currency,
+                        ),
                         index != transactions.indexOf(transactions.last)
                             ? const Divider()
                             : Container()

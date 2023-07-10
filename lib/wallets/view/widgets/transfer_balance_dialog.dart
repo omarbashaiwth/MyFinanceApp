@@ -16,9 +16,10 @@ class TransferBalanceDialog extends StatelessWidget {
   final Function() onClose;
   final WalletController walletController;
   final Wallet transferFrom;
+  final String currency;
   final String userId;
 
-  const TransferBalanceDialog({Key? key, required this.textEditingController, required this.onPositiveClick, required this.userId, required this.walletController, required this.transferFrom, required this.onClose}) : super(key: key);
+  const TransferBalanceDialog({Key? key, required this.textEditingController, required this.onPositiveClick, required this.userId, required this.walletController, required this.transferFrom, required this.onClose, required this.currency}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -112,6 +113,7 @@ class TransferBalanceDialog extends StatelessWidget {
                           onClick: (){
                             TransactionBottomSheet.showWalletsBS(
                                 title: 'تحويل المبلغ إلى',
+                                currency: currency,
                                 userId: userId,
                                 availableWallets: snapshot.data!,
                                 walletClickable: (wallet ) => wallet.id != transferFrom.id

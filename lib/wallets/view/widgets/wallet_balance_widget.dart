@@ -6,7 +6,8 @@ class WalletBalance extends StatelessWidget {
   final String balanceLabel;
   final double balance;
   final double fontSize;
-  const WalletBalance({Key? key, required this.balance, required this.balanceLabel, required this.fontSize}) : super(key: key);
+  final String currency;
+  const WalletBalance({Key? key, required this.balance, required this.balanceLabel, required this.fontSize, required this.currency}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +17,7 @@ class WalletBalance extends StatelessWidget {
         Text(balanceLabel, style: const TextStyle(fontFamily: 'Tajawal', fontSize: 18, color: blackColor)),
         PriceWidget(
             amount: balance,
+            currency: currency,
             currencyFontSize: fontSize,
             amountFontSize: fontSize,
           color: balance < 0 ? Colors.red: Colors.green,

@@ -7,9 +7,10 @@ import '../../model/transaction.dart' as my_transaction;
 
 class TransactionHistoryItem extends StatelessWidget {
   final my_transaction.Transaction transaction;
+  final String currency;
 
   const TransactionHistoryItem(
-      {Key? key, required this.transaction})
+      {Key? key, required this.transaction, required this.currency})
       : super(key: key);
 
   @override
@@ -48,6 +49,7 @@ class TransactionHistoryItem extends StatelessWidget {
           children: [
             PriceWidget(
               amount: transaction.amount!,
+              currency: currency,
               color:
                   transaction.type == 'expense' ? Colors.red : Colors.green,
             ),
