@@ -1,15 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:myfinance_app/currency/model/currency.dart';
 
-import '../ui/theme.dart';
-import '../utils/utils.dart';
-import 'currencies_picker.dart';
+import '../../core/ui/theme.dart';
+import '../../core/utils/utils.dart';
+import 'currencies_list.dart';
 
-class CurrencyManager {
-
-  static showCurrencyPicker({required double bottomSheetHeight, required FirebaseFirestore firestore, required User user}){
+class CurrenciesBottomSheet {
+  static show({
+    required double bottomSheetHeight,
+    required Function(Currency) onCurrencySelected
+  }) async {
     Get.bottomSheet(WillPopScope(
       onWillPop: () async =>  false,
       child: Container(
@@ -29,14 +30,14 @@ class CurrencyManager {
             ),
             const SizedBox(height: 8),
             Expanded(
-              child: CurrenciesPicker(
+              child: CurrenciesList(
                 currenciesList: Utils.currencies(),
-                onCurrencySelected: (currency) async {
-                  firestore.collection('Users')
-                      .doc(user.uid)
-                      .set({'username': user.displayName, 'email': user.email, 'currency': currency.symbol});
-                  Get.back();
-                },
+                onCurrencySelected: onCurrencySelected
+                  // firestore.collection('Users')
+                  //     .doc(user.uid)
+                  //     .set({'username': user.displayName, 'email': user.email, 'currency': currency.symbol});
+                  // Get.back();
+
               ),
             )
           ],
@@ -49,8 +50,5 @@ class CurrencyManager {
     );
   }
 
-  static Future<bool> hasSelectedCurrency({required String userId, required FirebaseFirestore firestore}) async {
-    final doc = await firestore.collection('Users').doc(userId).get();
-    return doc.exists;
-  }
 }
+

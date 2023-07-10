@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:myfinance_app/core/utils/currencies.dart' as all_currencies;
+import 'package:myfinance_app/currency/utils/currencies.dart' as all_currencies;
 
 
-import '../../onboarding/model/currency.dart';
+import '../../currency/model/currency.dart';
 import '../ui/theme.dart';
 
 class Utils {

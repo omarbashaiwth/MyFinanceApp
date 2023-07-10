@@ -1,8 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:myfinance_app/onboarding/controller/onboarding_controller.dart';
+import 'package:myfinance_app/currency/controller/currency_controller.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class PriceWidget extends StatelessWidget {
   final double amount;
@@ -21,8 +21,9 @@ class PriceWidget extends StatelessWidget {
       : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    // final currency =  Provider.of<OnBoardingController>(context, listen: false).getCurrency() ?? '';
+  Widget build(BuildContext context){
+    final currencyController = Provider.of<CurrencyController>(context, listen: false);
+    final user = FirebaseAuth.instance.currentUser;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -37,7 +38,7 @@ class PriceWidget extends StatelessWidget {
         ),
         const SizedBox(width: 2),
         Text(
-          '',
+          currencyController.getCurrency(key: user?.uid ?? '') ?? '',
           style: TextStyle(
             fontSize: currencyFontSize,
             fontFamily: 'Tajawal',

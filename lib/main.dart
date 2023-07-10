@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:myfinance_app/currency/controller/currency_controller.dart';
 import 'package:myfinance_app/onboarding/controller/onboarding_controller.dart';
 import 'package:myfinance_app/reports/controller/reports_controller.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
@@ -26,12 +27,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   final  prefs = await SharedPreferences.getInstance();
+  // final user = FirebaseAuth.instance.currentUser;
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider<TransactionController>(create: (_) => TransactionController()),
     ChangeNotifierProvider<WalletController>(create: (_) => WalletController()),
     ChangeNotifierProvider<AuthController>(create: (_) => AuthController()),
     ChangeNotifierProvider<ReportsController>(create: (_) => ReportsController()),
-    ChangeNotifierProvider<OnBoardingController>(create: (_) => OnBoardingController(prefs))
+    ChangeNotifierProvider<OnBoardingController>(create: (_) => OnBoardingController(prefs)),
+    ChangeNotifierProvider<CurrencyController>(create: (_) => CurrencyController(prefs))
   ], child: const MyApp())
   );
 }

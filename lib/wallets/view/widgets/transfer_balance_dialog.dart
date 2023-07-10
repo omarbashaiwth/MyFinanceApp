@@ -1,6 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:myfinance_app/onboarding/controller/onboarding_controller.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/view/widgets/clickable_text_field.dart';
 import 'package:myfinance_app/transactions/view/widgets/transaction_bottom_sheet.dart';
@@ -9,6 +8,7 @@ import 'package:myfinance_app/wallets/model/wallet.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/ui/theme.dart';
+import '../../../currency/controller/currency_controller.dart';
 
 class TransferBalanceDialog extends StatelessWidget {
   final TextEditingController textEditingController;
@@ -23,7 +23,8 @@ class TransferBalanceDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final transactionProvider = Provider.of<TransactionController>(context);
-    // final currency = Provider.of<OnBoardingController>(context, listen: false).getCurrency();
+    final currencyController = Provider.of<CurrencyController>(context);
+    final user = FirebaseAuth.instance.currentUser;
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: IntrinsicHeight(
@@ -56,9 +57,11 @@ class TransferBalanceDialog extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    '',
-                    style: TextStyle(fontFamily: 'Tajawal', fontSize: 20),
+                   Text(
+                    currencyController.getCurrency(
+                      key: user?.uid ?? ''
+                    ) ?? '',
+                    style: const TextStyle(fontFamily: 'Tajawal', fontSize: 20),
                   ),
                   const SizedBox(width: 10),
                   Container(

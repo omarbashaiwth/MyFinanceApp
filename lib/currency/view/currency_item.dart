@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/utils/utils.dart';
-import 'package:myfinance_app/onboarding/model/currency.dart';
+import 'package:myfinance_app/currency/model/currency.dart';
 
 class CurrencyItem extends StatelessWidget {
   final Currency currency;

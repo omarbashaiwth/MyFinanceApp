@@ -62,6 +62,7 @@ class AuthScreen extends StatelessWidget {
                     if (isValid != null && isValid) {
                       formKey.currentState?.save();
                       await FirebaseAuthServices.emailPasswordAuth(
+                          context: context,
                           user: user,
                           isLogin: provider.isLogin,
                           screenHeight: screenHeight,
@@ -94,7 +95,7 @@ class AuthScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () => FirebaseAuthServices.googleAuth(screenHeight: screenHeight),
+                  onPressed: () => FirebaseAuthServices.googleAuth(screenHeight: screenHeight, context: context),
                   style: ElevatedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(

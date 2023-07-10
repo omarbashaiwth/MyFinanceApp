@@ -18,11 +18,4 @@ class Currency {
     );
   }
 
-  // Map<String, dynamic> toJson() => {
-  //   'code': code,
-  //   'name': name,
-  //   'flag': flag,
-  //   'symbol': symbol,
-  // };
-
 }

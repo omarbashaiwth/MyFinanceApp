@@ -1,9 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:myfinance_app/onboarding/controller/onboarding_controller.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/ui/theme.dart';
+import '../../../currency/controller/currency_controller.dart';
 
 
 class AddBalanceDialog extends StatelessWidget {
@@ -13,7 +14,8 @@ class AddBalanceDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final currency = context.read<OnBoardingController>().getCurrency();
+    final currencyController = Provider.of<CurrencyController>(context);
+    final user = FirebaseAuth.instance.currentUser;
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: SizedBox(
@@ -47,9 +49,11 @@ class AddBalanceDialog extends StatelessWidget {
               mainAxisAlignment:
               MainAxisAlignment.center,
               children: [
-                 const Text(
-                   '',
-                  style: TextStyle(fontFamily: 'Tajawal', fontSize: 20),
+                  Text(
+                    currencyController.getCurrency(
+                      key: user?.uid ?? ''
+                    ) ?? '',
+                  style: const TextStyle(fontFamily: 'Tajawal', fontSize: 20),
                 ),
                 const SizedBox(width: 10),
                 Container(

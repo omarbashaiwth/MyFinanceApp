@@ -1,16 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:myfinance_app/auth/controller/services/google_auth_service.dart';
 import 'package:myfinance_app/auth/model/my_user.dart';
 import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:get/get.dart';
-import 'package:myfinance_app/core/widgets/currency_manager.dart';
+import 'package:myfinance_app/currency/controller/currency_controller.dart';
+import 'package:myfinance_app/currency/view/currenciesBottomSheet.dart';
+import 'package:provider/provider.dart';
 
 
 class FirebaseAuthServices {
   static final _auth = FirebaseAuth.instance;
-  static final _firestore = FirebaseFirestore.instance;
 
   static Future<void> emailPasswordAuth(
       {required Function(String) onMessage,
@@ -18,43 +18,45 @@ class FirebaseAuthServices {
       required Function onNavigateToHomeScreen,
       required double screenHeight,
       required bool isLogin,
+        required BuildContext context,
       required MyUser user}) async {
-    // UserCredential authResult;
+    final currencyController = Provider.of<CurrencyController>(context, listen: false);
     try {
       if (isLogin) {
         onLoading(true);
-        await _auth.signInWithEmailAndPassword(
+        final userCredential = await _auth.signInWithEmailAndPassword(
             email: user.email, password: user.password
         );
-        if (_auth.currentUser!.emailVerified) {
-          //move to the home page after selected currency
-          debugPrint('Login: emailVerified = ${_auth.currentUser!.emailVerified}');
-          final selectedCurrency = await CurrencyManager.hasSelectedCurrency(
-              userId: _auth.currentUser!.uid,
-              firestore: _firestore
-          );
-          if(selectedCurrency){
-            onNavigateToHomeScreen();
-          } else {
-           CurrencyManager.showCurrencyPicker(
-               bottomSheetHeight: screenHeight * 0.90,
-               firestore: _firestore,
-               user: _auth.currentUser!
-           );
-           onNavigateToHomeScreen();
-          }
-          onLoading(false);
-        } else {
-          debugPrint('Login: emailNotVerified = ${_auth.currentUser!.emailVerified}');
+        if (!userCredential.user!.emailVerified) {
           onMessage('confirm verification');
           onLoading(false);
+        } else {
+          final selectedCurrency = currencyController.selectedCurrency(
+            key: userCredential.user?.uid ?? ''
+          );
+          debugPrint('Selected currency: $selectedCurrency');
+          if(selectedCurrency == null){
+            CurrenciesBottomSheet.show(
+                bottomSheetHeight: screenHeight * 0.90,
+                onCurrencySelected: (currency) async {
+                  await currencyController.saveCurrencyLocally(
+                      key: userCredential.user?.uid ?? '',
+                      value: currency.symbol!
+                  );
+                  Get.back();
+                }
+            );
+          } else {
+            onNavigateToHomeScreen();
+          }
+          onLoading(false);
         }
+
       } else {
         onLoading(true);
         final userCredential = await _auth.createUserWithEmailAndPassword(
             email: user.email, password: user.password
         );
-        // await userCredential.user!.updateDisplayName(user.username);
         if(userCredential.user != null) {
           await _sendEmailVerification(onMessage: (msg) => onMessage(msg));
           await _auth.currentUser!.updateDisplayName(user.username);
@@ -86,16 +88,24 @@ class FirebaseAuthServices {
     }
   }
 
-  static Future<void> googleAuth({required double screenHeight}) async {
-    final userCredential = await GoogleAuthService.signInWithGoogle(_auth);
-    final user = userCredential.user;
-    final hasCurrency = await CurrencyManager.hasSelectedCurrency(userId: user!.uid, firestore: _firestore);
-    if (!hasCurrency) {
+  static Future<void> googleAuth({required double screenHeight, required BuildContext context}) async {
+    final currencyController = Provider.of<CurrencyController>(context, listen: false);
+    await GoogleAuthService.signInWithGoogle(_auth);
+    final selectedCurrency =  currencyController.selectedCurrency(
+      key: _auth.currentUser?.uid ?? ''
+    );
+    debugPrint('Selected currency: $selectedCurrency');
+    if (selectedCurrency == null) {
       //show pick currency dialog
-      CurrencyManager.showCurrencyPicker(
+      CurrenciesBottomSheet.show(
           bottomSheetHeight: screenHeight * 0.90,
-          firestore: _firestore,
-          user: user
+          onCurrencySelected: (currency) async {
+            await currencyController.saveCurrencyLocally(
+                key: _auth.currentUser?.uid ?? '',
+                value: currency.symbol!);
+            // currencyController.onCurrencyChanged(currency.symbol);
+            Get.back();
+          }
       );
     }
   }

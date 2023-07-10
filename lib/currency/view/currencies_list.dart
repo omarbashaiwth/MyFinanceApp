@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../onboarding/model/currency.dart';
+import '../model/currency.dart';
 import 'currency_item.dart';
 
-class CurrenciesPicker extends StatelessWidget {
+class CurrenciesList extends StatelessWidget {
   final List<Currency> currenciesList;
   final Function(Currency) onCurrencySelected;
-  const CurrenciesPicker({Key? key, required this.currenciesList,required this.onCurrencySelected}) : super(key: key);
+  const CurrenciesList({Key? key, required this.currenciesList,required this.onCurrencySelected}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
