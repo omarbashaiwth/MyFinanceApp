@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/view/widgets/clickable_text_field.dart';
@@ -16,7 +16,7 @@ class TransferBalanceDialog extends StatelessWidget {
   final Function() onClose;
   final WalletController walletController;
   final Wallet transferFrom;
-  final String currency;
+  final Future<String> currency;
   final String userId;
 
   const TransferBalanceDialog({Key? key, required this.textEditingController, required this.onPositiveClick, required this.userId, required this.walletController, required this.transferFrom, required this.onClose, required this.currency}) : super(key: key);
@@ -25,7 +25,7 @@ class TransferBalanceDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final transactionProvider = Provider.of<TransactionController>(context);
     final currencyController = Provider.of<CurrencyController>(context);
-    final user = FirebaseAuth.instance.currentUser;
+    final firestore = FirebaseFirestore.instance;
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: IntrinsicHeight(
@@ -58,12 +58,13 @@ class TransferBalanceDialog extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                   Text(
-                    currencyController.getCurrency(
-                      key: user?.uid ?? ''
-                    ) ?? '',
-                    style: const TextStyle(fontFamily: 'Tajawal', fontSize: 20),
+                   FutureBuilder(
+                     future: currencyController.getCurrencyFromFirebase(firestore: firestore, userId: userId),
+                     builder: (_,snapshot) => Text(
+                      snapshot.data ??  '',
+                      style: const TextStyle(fontFamily: 'Tajawal', fontSize: 20),
                   ),
+                   ),
                   const SizedBox(width: 10),
                   Container(
                     decoration: BoxDecoration(

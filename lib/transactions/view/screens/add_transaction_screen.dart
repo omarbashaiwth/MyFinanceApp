@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -49,6 +50,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
     final currentUser = FirebaseAuth.instance.currentUser;
     final transactionController = Provider.of<TransactionController>(context);
     final walletController = Provider.of<WalletController>(context);
+    final firestore = FirebaseFirestore.instance;
     final transaction = my_transaction.Transaction(
       type: _currentTabIndex == 0? 'expense': 'income',
       userId: currentUser!.uid,
@@ -112,7 +114,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
                 key: _expenseFormKey,
                 textEditingController: _expenseTextEditingController,
                 context: context,
-                currency: currencyController.getCurrency(key: currentUser.uid)?? '',
+                currency: currencyController.getCurrencyFromFirebase(userId: currentUser.uid, firestore: firestore),
                 transaction: transaction,
                 currentUser: currentUser,
                 transactionController: transactionController,
@@ -121,7 +123,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
             TransactionForm.incomeForm(
                 key: _incomeFormKey,
                 context: context,
-              currency: currencyController.getCurrency(key: currentUser.uid)?? '',
+              currency: currencyController.getCurrencyFromFirebase(userId: currentUser.uid, firestore: firestore),
               currentUser: currentUser,
                 transaction: transaction,
                 transactionController: transactionController,

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,6 +17,7 @@ class AddBalanceDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final currencyController = Provider.of<CurrencyController>(context);
     final user = FirebaseAuth.instance.currentUser;
+    final firestore = FirebaseFirestore.instance;
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: SizedBox(
@@ -49,12 +51,16 @@ class AddBalanceDialog extends StatelessWidget {
               mainAxisAlignment:
               MainAxisAlignment.center,
               children: [
-                  Text(
-                    currencyController.getCurrency(
-                      key: user?.uid ?? ''
-                    ) ?? '',
-                  style: const TextStyle(fontFamily: 'Tajawal', fontSize: 20),
+                  FutureBuilder(
+                    future: currencyController.getCurrencyFromFirebase(
+                      userId: user?.uid ?? '',
+                      firestore: firestore
+                    ),
+                    builder:(_,snapshot) => Text(
+                      snapshot.data ?? '',
+                    style: const TextStyle(fontFamily: 'Tajawal', fontSize: 20),
                 ),
+                  ),
                 const SizedBox(width: 10),
                 Container(
                   decoration: BoxDecoration(

@@ -10,7 +10,7 @@ import 'package:get/get.dart';
 import '../../controller/transaction_controller.dart';
 
 class TransactionHistoryScreen extends StatelessWidget {
-  final String currency;
+  final Future<String> currency;
   const TransactionHistoryScreen({Key? key, required this.currency}) : super(key: key);
 
   @override

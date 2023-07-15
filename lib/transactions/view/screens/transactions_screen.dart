@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +15,7 @@ import 'package:myfinance_app/transactions/view/widgets/centered_header.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
 import '../../../currency/controller/currency_controller.dart';
-import '../../model/transaction.dart';
+import '../../model/transaction.dart' as my_transaction;
 import '../widgets/custom_card.dart';
 import '../widgets/transaction_history_item.dart';
 
@@ -28,8 +29,9 @@ class TransactionsScreen extends StatelessWidget {
     final currencyController =
         Provider.of<CurrencyController>(context, listen: false);
     final auth = FirebaseAuth.instance;
+    final firestore = FirebaseFirestore.instance;
     final currency =
-        currencyController.getCurrency(key: auth.currentUser?.uid ?? '') ?? '';
+        currencyController.getCurrencyFromFirebase(userId: auth.currentUser?.uid ?? '', firestore: firestore) ;
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark));
@@ -129,7 +131,7 @@ class TransactionsScreen extends StatelessWidget {
   Widget _headerSection(
       {required String header,
       bool showMore = false,
-      required String currency}) {
+      required Future<String> currency}) {
     return Column(
       children: [
         Row(
@@ -156,8 +158,8 @@ class TransactionsScreen extends StatelessWidget {
   }
 
   Widget _monthlySummarySection(
-      {required AsyncSnapshot<List<Transaction>> snapshot,
-      required String currency,
+      {required AsyncSnapshot<List<my_transaction.Transaction>> snapshot,
+      required Future<String> currency,
       required TransactionController controller}) {
     final transactionsByMonth = controller.transactionsByMonth(
             transactions: snapshot.data, pickedMonth: DateTime.now()) ??
@@ -232,8 +234,8 @@ class TransactionsScreen extends StatelessWidget {
 
   Widget _lastTransactionsSection(
       {required TransactionController controller,
-      required String currency,
-      required AsyncSnapshot<List<Transaction>> snapshot}) {
+      required Future<String> currency,
+      required AsyncSnapshot<List<my_transaction.Transaction>> snapshot}) {
     final transactions = snapshot.data?.take(5).toList() ?? [];
     return Container(
         padding: const EdgeInsets.all(10),

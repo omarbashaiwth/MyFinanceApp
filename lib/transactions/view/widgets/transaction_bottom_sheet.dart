@@ -61,7 +61,7 @@ class TransactionBottomSheet {
   static void showWalletsBS({
     required String userId,
     required String title,
-    required String currency,
+    required Future<String> currency,
     required List<Wallet> availableWallets,
     required bool Function(Wallet) walletClickable,
   }) {
@@ -120,7 +120,7 @@ class TransactionBottomSheet {
       {required Wallet wallet,
       required Function() onClick,
       required bool Function(Wallet) clickable,
-      required String currency}) {
+      required Future<String> currency}) {
     final colorFilter =
         ColorFilter.mode(Colors.grey.withOpacity(0.2), BlendMode.dstATop);
     return GestureDetector(

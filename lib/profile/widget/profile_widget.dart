@@ -10,7 +10,7 @@ class ProfileWidget extends StatelessWidget {
   final User? currentUser;
   final TransactionController controller;
   final AsyncSnapshot<List<my_transactions.Transaction>> snapshot;
-  final String currency;
+  final Future<String> currency;
   final Function() onLogout;
 
   const ProfileWidget(

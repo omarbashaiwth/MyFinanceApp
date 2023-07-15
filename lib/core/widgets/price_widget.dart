@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 
 class PriceWidget extends StatelessWidget {
   final double amount;
-  final String currency;
+  final Future<String> currency;
   final double amountFontSize;
   final double currencyFontSize;
   final Color color;
@@ -34,13 +34,16 @@ class PriceWidget extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 2),
-        Text(
-          currency,
-          style: TextStyle(
-            fontSize: currencyFontSize,
-            fontFamily: 'Tajawal',
-            fontWeight: fontWeight,
-            color: color,
+        FutureBuilder(
+          future: currency,
+          builder: (_, snapshot) => Text(
+            snapshot.data ?? '',
+            style: TextStyle(
+              fontSize: currencyFontSize,
+              fontFamily: 'Tajawal',
+              fontWeight: fontWeight,
+              color: color,
+            ),
           ),
         )
       ],

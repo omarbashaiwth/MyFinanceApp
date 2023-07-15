@@ -45,8 +45,9 @@ class _WalletsScreenState extends State<WalletsScreen> {
   @override
   Widget build(BuildContext context) {
     final auth = FirebaseAuth.instance;
+    final firestore = FirebaseFirestore.instance;
     final currencyController = Provider.of<CurrencyController>(context, listen: false);
-    final currency = currencyController.getCurrency(key: auth.currentUser?.uid ?? '') ?? '';
+    final currency = currencyController.getCurrencyFromFirebase(userId: auth.currentUser?.uid ?? '', firestore: firestore);
     final walletProvider = Provider.of<WalletController>(
         context, listen: false);
     final transactionProvider = Provider.of<TransactionController>(context, listen: false);
@@ -181,7 +182,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
     required TextEditingController transferBalanceController,
     required TransactionController transactionController,
     required WalletController walletController,
-    required String currency,
+    required Future<String> currency,
     required Function(Wallet from, Wallet? to) onTransferBalance,
     required Function(Wallet) onAddBalance,
     required Function(Wallet) onDeleteWallet,

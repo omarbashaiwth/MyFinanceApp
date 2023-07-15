@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:myfinance_app/auth/controller/services/google_auth_service.dart';
@@ -11,6 +12,7 @@ import 'package:provider/provider.dart';
 
 class FirebaseAuthServices {
   static final _auth = FirebaseAuth.instance;
+  static final _firestore = FirebaseFirestore.instance;
 
   static Future<void> emailPasswordAuth(
       {required Function(String) onMessage,
@@ -27,22 +29,30 @@ class FirebaseAuthServices {
         final userCredential = await _auth.signInWithEmailAndPassword(
             email: user.email, password: user.password
         );
-        if (!userCredential.user!.emailVerified) {
+        final firebaseUser = userCredential.user;
+        if (!firebaseUser!.emailVerified) {
           onMessage('confirm verification');
           onLoading(false);
         } else {
-          final selectedCurrency = currencyController.selectedCurrency(
-            key: userCredential.user?.uid ?? ''
+          final selectedCurrency = await currencyController.hasSelectedCurrency(
+            firestore: _firestore,
+            userId: firebaseUser.uid,
+
           );
           debugPrint('Selected currency: $selectedCurrency');
-          if(selectedCurrency == null){
+          if(!selectedCurrency){
             CurrenciesBottomSheet.show(
                 bottomSheetHeight: screenHeight * 0.90,
                 onCurrencySelected: (currency) async {
-                  await currencyController.saveCurrencyLocally(
-                      key: userCredential.user?.uid ?? '',
-                      value: currency.symbol!
-                  );
+                 await currencyController.saveCurrency(
+                     firestore: _firestore,
+                     user: firebaseUser,
+                     currency: currency.symbol!
+                 );
+                  // await currencyController.saveCurrencyLocally(
+                  //     key: userCredential.user?.uid ?? '',
+                  //     value: currency.symbol!
+                  // );
                   Get.back();
                 }
             );
@@ -90,20 +100,26 @@ class FirebaseAuthServices {
 
   static Future<void> googleAuth({required double screenHeight, required BuildContext context}) async {
     final currencyController = Provider.of<CurrencyController>(context, listen: false);
-    await GoogleAuthService.signInWithGoogle(_auth);
-    final selectedCurrency =  currencyController.selectedCurrency(
-      key: _auth.currentUser?.uid ?? ''
+    final userCredential = await GoogleAuthService.signInWithGoogle(_auth);
+    final firebaseUser = userCredential.user;
+    final selectedCurrency =  await currencyController.hasSelectedCurrency(
+      firestore: _firestore,
+      userId: firebaseUser!.uid
     );
     debugPrint('Selected currency: $selectedCurrency');
-    if (selectedCurrency == null) {
+    if (!selectedCurrency) {
       //show pick currency dialog
       CurrenciesBottomSheet.show(
           bottomSheetHeight: screenHeight * 0.90,
           onCurrencySelected: (currency) async {
-            await currencyController.saveCurrencyLocally(
-                key: _auth.currentUser?.uid ?? '',
-                value: currency.symbol!);
-            // currencyController.onCurrencyChanged(currency.symbol);
+            await currencyController.saveCurrency(
+                firestore: _firestore,
+                user: firebaseUser,
+                currency: currency.symbol!
+            );
+            // await currencyController.saveCurrencyLocally(
+            //     key: _auth.currentUser?.uid ?? '',
+            //     value: currency.symbol!);
             Get.back();
           }
       );
