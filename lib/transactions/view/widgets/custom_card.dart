@@ -5,7 +5,7 @@ import 'package:myfinance_app/core/widgets/price_widget.dart';
 class SummaryCard extends StatelessWidget {
   final String title;
   final double amount;
-  final Future<String> currency;
+  final String? currency;
   final Color color;
   final String image;
   final int quarterRotate;

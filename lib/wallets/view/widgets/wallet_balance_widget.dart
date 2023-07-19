@@ -6,7 +6,7 @@ class WalletBalance extends StatelessWidget {
   final String balanceLabel;
   final double balance;
   final double fontSize;
-  final Future<String> currency;
+  final String? currency;
   const WalletBalance({Key? key, required this.balance, required this.balanceLabel, required this.fontSize, required this.currency}) : super(key: key);
 
   @override

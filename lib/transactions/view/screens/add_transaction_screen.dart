@@ -46,7 +46,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
 
   @override
   Widget build(BuildContext context) {
-    final currencyController = Provider.of<CurrencyController>(context, listen: false);
+    final currencyController = Provider.of<CurrencyController>(context);
     final currentUser = FirebaseAuth.instance.currentUser;
     final transactionController = Provider.of<TransactionController>(context);
     final walletController = Provider.of<WalletController>(context);
@@ -106,30 +106,33 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
             },
           ),
         ),
-        body: TabBarView(
-          physics: const NeverScrollableScrollPhysics(),
-          controller: _tabController,
-          children: [
-            TransactionForm.expenseForm(
-                key: _expenseFormKey,
-                textEditingController: _expenseTextEditingController,
-                context: context,
-                currency: currencyController.getCurrencyFromFirebase(userId: currentUser.uid, firestore: firestore),
-                transaction: transaction,
+        body: FutureBuilder(
+          future:currencyController.getCurrencyFromFirebase(userId: currentUser.uid, firestore: firestore),
+          builder: (_, currency) => TabBarView(
+            physics: const NeverScrollableScrollPhysics(),
+            controller: _tabController,
+            children: [
+              TransactionForm.expenseForm(
+                  key: _expenseFormKey,
+                  textEditingController: _expenseTextEditingController,
+                  context: context,
+                  currency: currencyController.currency?.symbol ?? '',
+                  transaction: transaction,
+                  currentUser: currentUser,
+                  transactionController: transactionController,
+                  walletController: walletController,
+              ),
+              TransactionForm.incomeForm(
+                  key: _incomeFormKey,
+                  context: context,
+                currency: currencyController.currency?.symbol ?? '',
                 currentUser: currentUser,
-                transactionController: transactionController,
-                walletController: walletController,
-            ),
-            TransactionForm.incomeForm(
-                key: _incomeFormKey,
-                context: context,
-              currency: currencyController.getCurrencyFromFirebase(userId: currentUser.uid, firestore: firestore),
-              currentUser: currentUser,
-                transaction: transaction,
-                transactionController: transactionController,
-                walletController: walletController,
-            )
-          ],
+                  transaction: transaction,
+                  transactionController: transactionController,
+                  walletController: walletController,
+              )
+            ],
+          ),
         ),
       ),
     );

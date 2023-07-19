@@ -7,7 +7,7 @@ import '../../model/transaction.dart' as my_transaction;
 
 class TransactionHistoryItem extends StatelessWidget {
   final my_transaction.Transaction transaction;
-  final Future<String> currency;
+  final String? currency;
 
   const TransactionHistoryItem(
       {Key? key, required this.transaction, required this.currency})

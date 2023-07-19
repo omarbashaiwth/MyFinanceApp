@@ -16,7 +16,7 @@ class TransferBalanceDialog extends StatelessWidget {
   final Function() onClose;
   final WalletController walletController;
   final Wallet transferFrom;
-  final Future<String> currency;
+  final String? currency;
   final String userId;
 
   const TransferBalanceDialog({Key? key, required this.textEditingController, required this.onPositiveClick, required this.userId, required this.walletController, required this.transferFrom, required this.onClose, required this.currency}) : super(key: key);
@@ -61,7 +61,7 @@ class TransferBalanceDialog extends StatelessWidget {
                    FutureBuilder(
                      future: currencyController.getCurrencyFromFirebase(firestore: firestore, userId: userId),
                      builder: (_,snapshot) => Text(
-                      snapshot.data ??  '',
+                       currencyController.currency?.symbol ?? '',
                       style: const TextStyle(fontFamily: 'Tajawal', fontSize: 20),
                   ),
                    ),

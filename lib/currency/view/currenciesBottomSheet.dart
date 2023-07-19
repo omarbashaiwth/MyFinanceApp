@@ -9,10 +9,12 @@ import 'currencies_list.dart';
 class CurrenciesBottomSheet {
   static show({
     required double bottomSheetHeight,
+    bool isDismissible = false,
+    bool willPop = false,
     required Function(Currency) onCurrencySelected
   }) async {
     Get.bottomSheet(WillPopScope(
-      onWillPop: () async =>  false,
+      onWillPop: () async =>  willPop,
       child: Container(
         height: bottomSheetHeight,
         decoration: const BoxDecoration(
@@ -30,21 +32,19 @@ class CurrenciesBottomSheet {
             ),
             const SizedBox(height: 8),
             Expanded(
-              child: CurrenciesList(
-                currenciesList: Utils.currencies(),
-                onCurrencySelected: onCurrencySelected
-                  // firestore.collection('Users')
-                  //     .doc(user.uid)
-                  //     .set({'username': user.displayName, 'email': user.email, 'currency': currency.symbol});
-                  // Get.back();
-
+              child: Directionality(
+                textDirection: TextDirection.rtl,
+                child: CurrenciesList(
+                  currenciesList: Utils.currencies(),
+                  onCurrencySelected: onCurrencySelected
+                ),
               ),
             )
           ],
         ),
       ),
     ),
-        isDismissible: false,
+        isDismissible: isDismissible,
         enableDrag: false,
         isScrollControlled: true
     );

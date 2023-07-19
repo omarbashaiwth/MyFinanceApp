@@ -21,7 +21,7 @@ class CurrenciesList extends StatelessWidget {
             children: [
               CurrencyItem(
                 currency: currency,
-                isSelected: false,
+                showSymbol: true,
                 onCurrencySelected: () => onCurrencySelected(currency),
               ),
               const SizedBox(height: 4)

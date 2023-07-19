@@ -2,13 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:myfinance_app/auth/controller/services/firebase_auth_services.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/core/widgets/empty_widget.dart';
 import 'package:myfinance_app/core/widgets/price_widget.dart';
-import 'package:myfinance_app/profile/widget/profile_widget.dart';
 import 'package:myfinance_app/reports/view/reports_screen.dart';
+import 'package:myfinance_app/settings/settings_screen.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/view/screens/transaction_history_screen.dart';
 import 'package:myfinance_app/transactions/view/widgets/centered_header.dart';
@@ -24,14 +23,12 @@ class TransactionsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('build');
     final transactionController = Provider.of<TransactionController>(context);
-    final currencyController =
-        Provider.of<CurrencyController>(context, listen: false);
+    final currencyController = Provider.of<CurrencyController>(context);
+    final currency = currencyController.currency;
     final auth = FirebaseAuth.instance;
     final firestore = FirebaseFirestore.instance;
-    final currency =
-        currencyController.getCurrencyFromFirebase(userId: auth.currentUser?.uid ?? '', firestore: firestore) ;
+
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark));
@@ -53,40 +50,8 @@ class TransactionsScreen extends StatelessWidget {
             )
           ],
           leading: IconButton(
-            onPressed: () {
-              Get.bottomSheet(Container(
-                padding: const EdgeInsets.only(top: 4),
-                decoration: const BoxDecoration(
-                  color: whiteColor,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(25),
-                    topRight: Radius.circular(25),
-                  ),
-                ),
-                child: StreamBuilder(
-                    stream: transactionController.getTransactions(),
-                    builder: (context, snapshot) {
-                      return ProfileWidget(
-                        currentUser: auth.currentUser,
-                        currency: currency,
-                        controller: transactionController,
-                        snapshot: snapshot,
-                        onLogout: () async {
-                          await FirebaseAuthServices.logout();
-                          Get.back();
-                        },
-                      );
-                    }),
-              ));
-            },
-            icon: auth.currentUser!.photoURL == null
-                ? const Icon(
-                    Icons.account_circle_rounded,
-                    color: Colors.red,
-                  )
-                : ClipOval(
-                    child: Image.network(auth.currentUser!.photoURL!),
-                  ),
+            onPressed: () {Get.to(() => const SettingsScreen());},
+            icon: const Icon(Icons.menu_rounded, color: redColor),
           ),
         ),
         body: SingleChildScrollView(
@@ -95,31 +60,34 @@ class TransactionsScreen extends StatelessWidget {
               builder: (context, snapshot) {
                 return Padding(
                   padding: const EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      CenteredHeader(
-                          header: Utils.dateFormat(
-                              date: DateTime.now(), showDays: false),
-                      ),
-                      const SizedBox(height: 20),
-                      _headerSection(header: 'ملخص الشهر', currency: currency),
-                      _monthlySummarySection(
-                          controller: transactionController,
-                          snapshot: snapshot,
-                          currency: currency,
-                      ),
-                      const SizedBox(height: 16),
-                      _headerSection(
-                          header: 'آخر المعاملات',
-                          showMore: true,
-                          currency: currency,
-                      ),
-                      _lastTransactionsSection(
-                          controller: transactionController,
-                          snapshot: snapshot,
-                          currency: currency,
-                      ),
-                    ],
+                  child: FutureBuilder(
+                    future:currencyController.getCurrencyFromFirebase(userId: auth.currentUser!.uid, firestore: firestore),
+                    builder: (_, __)  => Column(
+                      children: [
+                        CenteredHeader(
+                            header: Utils.dateFormat(
+                                date: DateTime.now(), showDays: false),
+                        ),
+                        const SizedBox(height: 20),
+                        _headerSection(header: 'ملخص الشهر', currency: currency?.symbol ?? ''),
+                        _monthlySummarySection(
+                            controller: transactionController,
+                            snapshot: snapshot,
+                            currency: currency?.symbol ?? '',
+                        ),
+                        const SizedBox(height: 16),
+                        _headerSection(
+                            header: 'آخر المعاملات',
+                            showMore: true,
+                            currency: currency?.symbol ?? '',
+                        ),
+                        _lastTransactionsSection(
+                            controller: transactionController,
+                            snapshot: snapshot,
+                            currency: currency?.symbol ?? '',
+                        ),
+                      ],
+                    ),
                   ),
                 );
               }),
@@ -131,7 +99,7 @@ class TransactionsScreen extends StatelessWidget {
   Widget _headerSection(
       {required String header,
       bool showMore = false,
-      required Future<String> currency}) {
+      required String? currency}) {
     return Column(
       children: [
         Row(
@@ -159,7 +127,7 @@ class TransactionsScreen extends StatelessWidget {
 
   Widget _monthlySummarySection(
       {required AsyncSnapshot<List<my_transaction.Transaction>> snapshot,
-      required Future<String> currency,
+      required String? currency,
       required TransactionController controller}) {
     final transactionsByMonth = controller.transactionsByMonth(
             transactions: snapshot.data, pickedMonth: DateTime.now()) ??
@@ -234,7 +202,7 @@ class TransactionsScreen extends StatelessWidget {
 
   Widget _lastTransactionsSection(
       {required TransactionController controller,
-      required Future<String> currency,
+      required String? currency,
       required AsyncSnapshot<List<my_transaction.Transaction>> snapshot}) {
     final transactions = snapshot.data?.take(5).toList() ?? [];
     return Container(

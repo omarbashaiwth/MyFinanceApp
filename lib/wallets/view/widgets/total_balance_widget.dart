@@ -4,7 +4,7 @@ import 'package:myfinance_app/core/widgets/price_widget.dart';
 
 class TotalBalanceWidget extends StatelessWidget {
   final double balance;
-  final Future<String> currency;
+  final String? currency;
   final double currencyFontSize;
   final double amountFontSize;
   const TotalBalanceWidget({Key? key, required this.balance,required this.currencyFontSize, required this.amountFontSize, required this.currency}) : super(key: key);

@@ -19,7 +19,7 @@ class TransactionForm {
       required TransactionController transactionController,
       required WalletController walletController,
       required my_transaction.Transaction transaction,
-        required Future<String> currency,
+        required String? currency,
       required TextEditingController textEditingController,
       required BuildContext context,
       required Key key}) {
@@ -123,7 +123,7 @@ class TransactionForm {
     required TransactionController transactionController,
     required WalletController walletController,
     required my_transaction.Transaction transaction,
-    required Future<String> currency,
+    required String? currency,
     required BuildContext context,
   }) {
     return Form(

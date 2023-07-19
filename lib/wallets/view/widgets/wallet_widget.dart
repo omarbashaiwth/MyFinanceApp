@@ -16,7 +16,7 @@ class WalletWidget extends StatelessWidget {
   final TextEditingController addBalanceController;
   final TextEditingController transferBalanceController;
   final WalletController walletController;
-  final Future<String> currency;
+  final String? currency;
   final Function() onAddBalance;
   final Function() onTransferBalance;
   final Function() onDeleteWallet;

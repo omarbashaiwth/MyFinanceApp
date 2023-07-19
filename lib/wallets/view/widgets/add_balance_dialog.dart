@@ -57,7 +57,7 @@ class AddBalanceDialog extends StatelessWidget {
                       firestore: firestore
                     ),
                     builder:(_,snapshot) => Text(
-                      snapshot.data ?? '',
+                      currencyController.currency?.symbol ?? '',
                     style: const TextStyle(fontFamily: 'Tajawal', fontSize: 20),
                 ),
                   ),

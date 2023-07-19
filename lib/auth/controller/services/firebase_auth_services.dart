@@ -47,13 +47,9 @@ class FirebaseAuthServices {
                  await currencyController.saveCurrency(
                      firestore: _firestore,
                      user: firebaseUser,
-                     currency: currency.symbol!
+                     currency: currency
                  );
-                  // await currencyController.saveCurrencyLocally(
-                  //     key: userCredential.user?.uid ?? '',
-                  //     value: currency.symbol!
-                  // );
-                  Get.back();
+                 Get.back();
                 }
             );
           } else {
@@ -115,11 +111,8 @@ class FirebaseAuthServices {
             await currencyController.saveCurrency(
                 firestore: _firestore,
                 user: firebaseUser,
-                currency: currency.symbol!
+                currency: currency
             );
-            // await currencyController.saveCurrencyLocally(
-            //     key: _auth.currentUser?.uid ?? '',
-            //     value: currency.symbol!);
             Get.back();
           }
       );
