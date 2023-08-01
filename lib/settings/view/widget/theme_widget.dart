@@ -13,7 +13,6 @@ class ThemeWidget extends StatelessWidget {
     return GestureDetector(
       onTap: onThemeChangeClicked,
       child: Container(
-        color: Colors.transparent,
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         margin: const EdgeInsets.symmetric(horizontal: 4),
         child: Row(

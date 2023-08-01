@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:myfinance_app/auth/controller/services/firebase_auth_services.dart';
 import 'package:myfinance_app/settings/controller/settings_cntroller.dart';
 import 'package:myfinance_app/settings/view/widget/currency_widget.dart';
+import 'package:myfinance_app/settings/view/widget/email_us_widget.dart';
 import 'package:myfinance_app/settings/view/widget/header_text.dart';
 import 'package:myfinance_app/settings/view/widget/profile_widget.dart';
 import 'package:myfinance_app/settings/view/widget/theme_options_dialog.dart';
@@ -53,6 +54,7 @@ class SettingsScreen extends StatelessWidget {
               CurrencyWidget(auth: auth, firestore: firestore),
               const SizedBox(height: 30),
               const HeaderText(text: 'الثيم'),
+              const SizedBox(height: 10),
               ThemeWidget(
                   themeModeOptions: SettingsController.getThemeModeOption(prefs),
                   onThemeChangeClicked: (){
@@ -63,8 +65,13 @@ class SettingsScreen extends StatelessWidget {
                       }
                     );
                   }
-              )
-
+              ),
+              const SizedBox(height: 10),
+              const Divider(),
+              const SizedBox(height: 10),
+              const HeaderText(text: 'راسلنا',),
+              const SizedBox(height: 10),
+              EmailUsWidget(onEmailUsClicked: (){SettingsController.sendEmail();}),
             ],
           ),
         ),

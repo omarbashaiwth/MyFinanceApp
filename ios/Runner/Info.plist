@@ -21,6 +21,10 @@
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
 	<string>Myfinance App</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+	 <string>mailto</string>
+	</array>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>

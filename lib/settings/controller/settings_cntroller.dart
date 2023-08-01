@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:myfinance_app/settings/model/theme_mode_options.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+
 
 class SettingsController extends ChangeNotifier {
 
@@ -40,4 +43,19 @@ class SettingsController extends ChangeNotifier {
         return ThemeModeOptions(modeName: 'النظام', modeIcon: Icons.phone_android_rounded, mode: ThemeMode.system);
     }
   }
+
+  static void sendEmail() async {
+    final Uri params = Uri(
+      scheme: 'mailto',
+      path: 'om2013ab@gmail.com',
+    );
+
+    String url = params.toString();
+    if (await canLaunchUrlString(url)) {
+      await launchUrlString(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
 }
