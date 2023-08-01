@@ -2,7 +2,6 @@ import  'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
 import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/model/transaction.dart' as my_transaction;
@@ -72,8 +71,7 @@ class TransactionForm {
                           currency: currency,
                           userId: currentUser.uid,
                           availableWallets: snapshot.data!,
-                          walletClickable: (wallet) => expenseAmount
-                              .isLowerThan(wallet.currentBalance!),
+                          walletClickable: (wallet) => expenseAmount <= wallet.currentBalance!,
                         )
                             : Fluttertoast.showToast(msg: 'قم بإدخال المبلغ أولاً');
                       },
