@@ -16,9 +16,9 @@ class WalletBottomSheets {
     Get.bottomSheet(
         Container(
           padding: const EdgeInsets.only(top: 4, right: 18, left: 18),
-          decoration: const BoxDecoration(
-            color: whiteColor,
-            borderRadius: BorderRadius.only(
+          decoration:  BoxDecoration(
+            color: Theme.of(Get.context!).colorScheme.onBackground,
+            borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(25),
               topRight: Radius.circular(25),
             ),
@@ -31,7 +31,7 @@ class WalletBottomSheets {
                   width: 80,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: Colors.grey[300]),
+                      color: lightGrey),
                 ),
                 const SizedBox(height: 40),
                 _walletOption(
@@ -72,9 +72,9 @@ class WalletBottomSheets {
     ];
     Get.bottomSheet(Container(
       padding: const EdgeInsets.only(top: 4, right: 18, left: 18),
-      decoration: const BoxDecoration(
-        color: whiteColor,
-        borderRadius: BorderRadius.only(
+      decoration:  BoxDecoration(
+        color: Theme.of(Get.context!).colorScheme.onBackground,
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(25),
           topRight: Radius.circular(25),
         ),
@@ -86,7 +86,7 @@ class WalletBottomSheets {
             width: 80,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: Colors.grey[300]),
+                color: lightGrey),
           ),
           const SizedBox(height: 40),
           Expanded(
@@ -152,12 +152,12 @@ class WalletBottomSheets {
                 Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                        color: redColor, borderRadius: BorderRadius.circular(20)
+                        color: orangeyRed, borderRadius: BorderRadius.circular(20)
                     ),
-                    child: Icon(icon, size: 24, color: whiteColor)
+                    child: Icon(icon, size: 24, color: Theme.of(Get.context!).colorScheme.background)
                 ),
                 const SizedBox(width: 16),
-                Text(label, style: const TextStyle(fontFamily: 'Tajawal', fontSize: 18),)
+                Text(label, style:  TextStyle(fontFamily: 'Tajawal', fontSize: 18, color: Theme.of(Get.context!).colorScheme.onPrimary),)
 
               ],
             ),

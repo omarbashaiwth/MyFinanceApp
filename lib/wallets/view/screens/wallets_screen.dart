@@ -51,15 +51,20 @@ class _WalletsScreenState extends State<WalletsScreen> {
         context, listen: false);
     final transactionProvider = Provider.of<TransactionController>(context, listen: false);
     return Scaffold(
+      backgroundColor: Theme
+          .of(context)
+          .colorScheme
+          .background,
       appBar: AppBar(
           backgroundColor: Theme
               .of(context)
               .colorScheme
               .background,
           elevation: 0,
-          title: const Text(
+          title:  Text(
             'المحفظات',
-            style: AppTextTheme.appBarTitleTextStyle,
+            style: AppTextTheme.appBarTitleTextStyle.copyWith(
+                color: Theme.of(context).colorScheme.onSecondary)
           ),
           centerTitle: true
       ),

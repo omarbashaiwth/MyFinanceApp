@@ -52,10 +52,11 @@ class _AddEditWalletScreenState extends State<AddEditWalletScreen> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           backgroundColor: Theme.of(context).colorScheme.background,
-          title:  Text(walletToUpdate == null? 'إضافة محفظة جديدة':'تعديل المحفظة', style: AppTextTheme.appBarTitleTextStyle),
+          title:  Text(walletToUpdate == null? 'إضافة محفظة جديدة':'تعديل المحفظة', style: AppTextTheme.appBarTitleTextStyle.copyWith(color: Theme.of(context).colorScheme.onSecondary)),
           centerTitle: true,
           elevation: 0,
           actions: [
@@ -64,7 +65,7 @@ class _AddEditWalletScreenState extends State<AddEditWalletScreen> {
                   Get.back();
                   watchProvider.clearSelections();
                 },
-                icon: const Icon(Icons.close, color: redColor,),
+                icon:  Icon(Icons.close, color: Theme.of(context).colorScheme.onSecondary,),
             )
           ],
           leading: IconButton(
@@ -100,7 +101,7 @@ class _AddEditWalletScreenState extends State<AddEditWalletScreen> {
                   }
                 }
               },
-              icon: const Icon(Icons.check, color: Colors.red,))
+              icon:  Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary,))
           ),
 
         body: Padding(
@@ -145,13 +146,13 @@ class _AddEditWalletScreenState extends State<AddEditWalletScreen> {
                         width: double.infinity,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(15),
-                            color: Theme.of(context).colorScheme.secondaryContainer
+                            color: Theme.of(context).colorScheme.onPrimaryContainer
                         ),
                         child: Row(
                           children: [
                             Image.asset(watchProvider.walletType?.icon ?? walletToUpdate?.walletType?.icon ?? 'assets/icons/wallet.png', width: 24,),
                             const SizedBox(width: 8),
-                            Text(watchProvider.walletType?.type ?? walletToUpdate?.walletType?.type ?? 'نوع المحفظة', style:  TextStyle(fontFamily: 'Tajawal', color: Theme.of(context).hintColor)),
+                            Text(watchProvider.walletType?.type ?? walletToUpdate?.walletType?.type ?? 'نوع المحفظة', style:  const TextStyle(fontFamily: 'Tajawal', color: lightGrey)),
                           ],
                         )
                     ),

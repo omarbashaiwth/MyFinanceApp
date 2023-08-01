@@ -38,7 +38,7 @@ class CustomTextFormField extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color: Theme.of(context).colorScheme.secondaryContainer),
+          color: Theme.of(context).colorScheme.onPrimaryContainer),
       child: TextFormField(
         controller: controller,
         key: ValueKey(key),
@@ -61,7 +61,7 @@ class CustomTextFormField extends StatelessWidget {
           hintTextDirection: TextDirection.rtl,
           hintStyle: hintStyle,
           prefixIcon: leadingIcon != null ? Icon(leadingIcon,
-              color: Theme.of(context).colorScheme.onSecondaryContainer): null,
+              color: lightGrey): null,
         ),
       ),
     );

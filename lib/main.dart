@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:myfinance_app/currency/controller/currency_controller.dart';
 import 'package:myfinance_app/onboarding/controller/onboarding_controller.dart';
 import 'package:myfinance_app/reports/controller/reports_controller.dart';
+import 'package:myfinance_app/settings/controller/settings_cntroller.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/view/screens/add_transaction_screen.dart';
 import 'package:myfinance_app/transactions/view/screens/transactions_screen.dart';
@@ -27,14 +28,15 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   final  prefs = await SharedPreferences.getInstance();
-  // final user = FirebaseAuth.instance.currentUser;
+  SettingsController.init(prefs);
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider<TransactionController>(create: (_) => TransactionController()),
     ChangeNotifierProvider<WalletController>(create: (_) => WalletController()),
     ChangeNotifierProvider<AuthController>(create: (_) => AuthController()),
     ChangeNotifierProvider<ReportsController>(create: (_) => ReportsController()),
     ChangeNotifierProvider<OnBoardingController>(create: (_) => OnBoardingController(prefs)),
-    ChangeNotifierProvider<CurrencyController>(create: (_) => CurrencyController(prefs))
+    ChangeNotifierProvider<CurrencyController>(create: (_) => CurrencyController(prefs)),
+    ChangeNotifierProvider<SettingsController>(create: (_) => SettingsController())
   ], child: const MyApp())
   );
 }
@@ -45,6 +47,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Provider.of<OnBoardingController>(context, listen: false);
+    final settingsController = Provider.of<SettingsController>(context);
     final firstTimeLaunched = controller.firstTimeLaunched() ?? true;
     return GetMaterialApp(
         debugShowCheckedModeBanner: false,
@@ -52,6 +55,8 @@ class MyApp extends StatelessWidget {
           GlobalMaterialLocalizations.delegate,
         ],
         theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: settingsController.currentTheme.mode,
         home: firstTimeLaunched
             ? OnBoardingScreen(onBoardingEnd: (ctx) {
                 controller.onFirstTimeLaunchedChanged(false);
@@ -110,9 +115,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    final settingsController = Provider.of<SettingsController>(context);
+
+    SystemChrome.setSystemUIOverlayStyle( SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark));
+        statusBarIconBrightness: settingsController.currentTheme == ThemeMode.dark ? Brightness.light : Brightness.dark));
 
     final bottomNanScreens = [
       const TransactionsScreen(),
@@ -130,13 +137,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     duration: const Duration(milliseconds: 500),
                     height: _isFabVisible ? 60.0 : 0.0,
                     child: FloatingActionButton(
+                      backgroundColor: orangeyRed,
                       onPressed: () {
                         Get.to(() => _selectedIndex == 0
                             ? const AddTransactionScreen()
                             : const AddEditWalletScreen()
                         );
                       },
-                      child: const Icon(Icons.add, color: Colors.white),
+                      child:  Icon(Icons.add, color: Theme.of(context).colorScheme.surface),
                     ));
               } else {
                 return const SizedBox.shrink();
@@ -149,6 +157,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             builder: (context, snapshot) {
               if (snapshot.hasData && snapshot.data!.emailVerified) {
                 return AnimatedBottomNavigationBar.builder(
+                  backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
                   itemCount: 2,
                   tabBuilder: (index, isActive) {
                     return Column(
@@ -159,14 +168,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                               ? Icons.cached_sharp
                               : Icons.account_balance_wallet_outlined,
                           size: 24,
-                          color: isActive ? redColor : darkGray,
+                          color: isActive ? orangeyRed : lightGrey,
                         ),
                         const SizedBox(height: 4),
                         Text(
                           index == 0 ? 'المعاملات' : 'المحفظات',
                           style: TextStyle(
                             fontFamily: 'Tajawal',
-                            color: isActive ? redColor : darkGray,
+                            color: isActive ? orangeyRed : lightGrey,
                           ),
                         )
                       ],

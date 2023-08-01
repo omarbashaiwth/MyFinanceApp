@@ -28,9 +28,9 @@ class ExpensesReport extends StatelessWidget {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-              border: Border.all(color: normalGray),
+              border: Border.all(color: lightGrey),
               borderRadius: BorderRadius.circular(10),
-              color: whiteColor
+              color: Theme.of(context).colorScheme.onBackground
           ),
           child: SingleChildScrollView(
             child: Column(
@@ -46,8 +46,8 @@ class ExpensesReport extends StatelessWidget {
                         locale: const Locale('ar'),
                         roundedCornersRadius: 20,
                         headerColor: Theme.of(context).colorScheme.primary,
-                        selectedMonthTextColor: whiteColor,
-                        unselectedMonthTextColor: blackColor,
+                        selectedMonthTextColor: white,
+                        unselectedMonthTextColor: Theme.of(context).colorScheme.onPrimary,
                         dismissible: true,
                         cancelWidget: const Text(
                           'اغلاق',

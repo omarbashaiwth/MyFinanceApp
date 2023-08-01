@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:myfinance_app/currency/utils/currencies.dart' as all_currencies;
@@ -29,19 +28,21 @@ class Utils {
             textDirection: TextDirection.rtl,
             child: AlertDialog(
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10)),
+                  borderRadius: BorderRadius.circular(10),
+              ),
+              backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
               icon: const Icon(Icons.warning_amber_rounded, size: 30),
               titleTextStyle:
-                  AppTextTheme.textButtonStyle.copyWith(fontSize: 18),
+                  AppTextTheme.textButtonStyle.copyWith(fontSize: 18, color: Theme.of(context).colorScheme.onPrimary),
               title: Text(title),
-              contentTextStyle: AppTextTheme.normalTextStyle,
+              contentTextStyle: AppTextTheme.normalTextStyle.copyWith(color: Theme.of(context).colorScheme.onPrimary),
               content: Text(content),
               actions: [
                 secondaryActionLabel != null ? TextButton(
                   onPressed: () => onSecondaryActionClicked!(),
                   child: Text(
                     secondaryActionLabel,
-                    style: AppTextTheme.textButtonStyle,
+                    style: AppTextTheme.textButtonStyle.copyWith(color: Theme.of(context).colorScheme.onPrimary),
                   ),
                 ):const SizedBox.shrink(),
                 TextButton(

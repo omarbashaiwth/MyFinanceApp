@@ -19,6 +19,7 @@ class FirebaseAuthServices {
       required Function(bool) onLoading,
       required Function onNavigateToHomeScreen,
       required double screenHeight,
+        required Color backgroundColor,
       required bool isLogin,
         required BuildContext context,
       required MyUser user}) async {
@@ -42,6 +43,7 @@ class FirebaseAuthServices {
           debugPrint('Selected currency: $selectedCurrency');
           if(!selectedCurrency){
             CurrenciesBottomSheet.show(
+                backgroundColor: backgroundColor,
                 bottomSheetHeight: screenHeight * 0.90,
                 onCurrencySelected: (currency) async {
                  await currencyController.saveCurrency(
@@ -94,7 +96,7 @@ class FirebaseAuthServices {
     }
   }
 
-  static Future<void> googleAuth({required double screenHeight, required BuildContext context}) async {
+  static Future<void> googleAuth({required double screenHeight, required BuildContext context, required Color backgroundColor}) async {
     final currencyController = Provider.of<CurrencyController>(context, listen: false);
     final userCredential = await GoogleAuthService.signInWithGoogle(_auth);
     final firebaseUser = userCredential.user;
@@ -106,6 +108,7 @@ class FirebaseAuthServices {
     if (!selectedCurrency) {
       //show pick currency dialog
       CurrenciesBottomSheet.show(
+          backgroundColor: backgroundColor,
           bottomSheetHeight: screenHeight * 0.90,
           onCurrencySelected: (currency) async {
             await currencyController.saveCurrency(

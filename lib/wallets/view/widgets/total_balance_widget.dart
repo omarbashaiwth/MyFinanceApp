@@ -16,7 +16,7 @@ class TotalBalanceWidget extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
-          border: Border.all(color: normalGray),
+          border: Border.all(color: lightGrey),
           borderRadius: BorderRadius.circular(10)
       ),
       child: Column(
@@ -28,7 +28,7 @@ class TotalBalanceWidget extends StatelessWidget {
               currency: currency,
               currencyFontSize: currencyFontSize,
               amountFontSize: amountFontSize,
-            color: balance < 0 ? Colors.red: Colors.green,
+            color: balance < 0 ? red: green,
           )
         ],
       ),

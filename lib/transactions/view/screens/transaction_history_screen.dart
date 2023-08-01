@@ -16,21 +16,22 @@ class TransactionHistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         elevation: 0,
         leading: IconButton(
           onPressed: () => Get.back(),
-          icon: const Icon(
+          icon:  Icon(
             Icons.arrow_back,
-            color: redColor,
+            color: Theme.of(context).colorScheme.onSecondary,
           ),
         ),
         centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.background,
-        title: const Text(
+        title:  Text(
           'سجل المعاملات',
-          style: AppTextTheme.appBarTitleTextStyle,
+          style: AppTextTheme.appBarTitleTextStyle.copyWith(color: Theme.of(context).colorScheme.onSecondary),
         ),
       ),
       body: StreamBuilder(
@@ -39,9 +40,9 @@ class TransactionHistoryScreen extends StatelessWidget {
             final transactions = snapshot.data;
             if (snapshot.hasData && snapshot.hasError) {
               debugPrint(snapshot.error.toString());
-              return const Align(
+              return  Align(
                   alignment: Alignment.center,
-                  child: Text('يوجد خطأ', style: AppTextTheme.headerTextStyle));
+                  child: Text('يوجد خطأ', style: AppTextTheme.headerTextStyle.copyWith(color:Theme.of(context).colorScheme.onPrimary)));
             }
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Align(
@@ -75,6 +76,7 @@ class TransactionHistoryScreen extends StatelessWidget {
                       sort: false,
                       separator: const Divider(),
                       order: GroupedListOrder.DESC,
+                      stickyHeaderBackgroundColor: Theme.of(context).colorScheme.background,
                       useStickyGroupSeparators: true,
                     )
             ]);

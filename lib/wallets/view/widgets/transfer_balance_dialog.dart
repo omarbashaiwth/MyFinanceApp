@@ -28,6 +28,7 @@ class TransferBalanceDialog extends StatelessWidget {
     final firestore = FirebaseFirestore.instance;
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
       child: IntrinsicHeight(
         child: SingleChildScrollView(
           child: Column(
@@ -35,19 +36,22 @@ class TransferBalanceDialog extends StatelessWidget {
               Row(
                 children: [
                   const SizedBox(width: 40),
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       'تحويل رصيد',
-                      style: TextStyle(fontFamily: 'Tajawal'),
+                      style: TextStyle(
+                          fontFamily: 'Tajawal',
+                        color: Theme.of(context).colorScheme.onSecondary
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
                   IconButton(
                     onPressed: onClose,
-                    icon: const Icon(
+                    icon:  Icon(
                       Icons.close,
                       size: 20,
-                      color: normalGray,
+                      color: Theme.of(context).colorScheme.onSecondary,
                     ),
                     splashRadius: 15,
                   )
@@ -62,7 +66,7 @@ class TransferBalanceDialog extends StatelessWidget {
                      future: currencyController.getCurrencyFromFirebase(firestore: firestore, userId: userId),
                      builder: (_,snapshot) => Text(
                        currencyController.currency?.symbol ?? '',
-                      style: const TextStyle(fontFamily: 'Tajawal', fontSize: 20),
+                      style: const TextStyle(fontFamily: 'Tajawal', fontSize: 20, color: lightGrey),
                   ),
                    ),
                   const SizedBox(width: 10),
@@ -72,7 +76,7 @@ class TransferBalanceDialog extends StatelessWidget {
                         topLeft: Radius.circular(20),
                         bottomRight: Radius.circular(20),
                       ),
-                      color: Colors.grey.shade100,
+                      color: Theme.of(context).colorScheme.background,
                     ),
                     width: 120,
                     child: TextField(
@@ -94,14 +98,14 @@ class TransferBalanceDialog extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: ClickableTextField(
                       onClick: (){},
-                      color: Colors.grey.shade100,
+                      color: Theme.of(context).colorScheme.background,
                       text: transferFrom.name!,
                       icon: transferFrom.walletType!.icon
                   ),
                 ),
               ),
               const SizedBox(height: 10),
-              const Icon(Icons.arrow_downward, color: normalGray,),
+              const Icon(Icons.arrow_downward, color:lightGrey,),
               const SizedBox(height: 10),
               StreamBuilder(
                 stream: walletController.getWallets(),
@@ -120,7 +124,7 @@ class TransferBalanceDialog extends StatelessWidget {
                                 walletClickable: (wallet ) => wallet.id != transferFrom.id
                             );
                           },
-                          color: Colors.grey.shade100,
+                          color: Theme.of(context).colorScheme.background,
                           text: transactionProvider.selectedWallet?.name ?? 'اختر المحفظة',
                           icon: transactionProvider.selectedWallet?.walletType?.icon ??
                               'assets/icons/wallet.png',
@@ -137,14 +141,13 @@ class TransferBalanceDialog extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed:  onPositiveClick,
                   style: ElevatedButton.styleFrom(
-                    side: const BorderSide(color: redColor),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50),
-                    ),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
                   ),
                   child:  Text(
                     'تحويل',
                     style: AppTextTheme
-                        .elevatedButtonTextStyle.copyWith(color: blackColor, fontWeight: FontWeight.normal),
+                        .elevatedButtonTextStyle.copyWith(color: white, fontWeight: FontWeight.normal),
                   ),
                 ),
               )

@@ -33,7 +33,7 @@ class TransactionForm {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: normalGray)
+                border: Border.all(color: lightGrey)
             ),
             child: Column(
               children: [
@@ -57,6 +57,8 @@ class TransactionForm {
                   stream: walletController.getWallets(),
                   builder: (_, snapshot) {
                     return ClickableTextField(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+
                       text: transactionController.selectedWallet?.name ?? 'خصم المبلغ من',
                       icon:
                       transactionController.selectedWallet?.walletType?.icon ??
@@ -80,12 +82,14 @@ class TransactionForm {
                 ),
                 const SizedBox(height: 20),
                 ClickableTextField(
+                  color: Theme.of(context).colorScheme.onPrimaryContainer,
                   onClick: () => TransactionBottomSheet.showExpensesIconsBS(),
                   text: transactionController.selectedCategory?.name ?? 'نوع النفقة',
                   icon: transactionController.selectedCategory?.icon ?? 'assets/icons/category.png',
                 ),
                 const SizedBox(height: 20),
                 ClickableTextField(
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
                     onClick: () async {
                       final pickedDate = await showDatePicker(
                           context: context,
@@ -136,7 +140,7 @@ class TransactionForm {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: normalGray)
+                border: Border.all(color: lightGrey)
             ),
             child: Column(
               children: [
@@ -160,6 +164,7 @@ class TransactionForm {
                   stream: walletController.getWallets(),
                   builder: (_, snapshot) {
                     return ClickableTextField(
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
                       text: transactionController.selectedWallet?.name ?? 'إضافة المبلغ إلى',
                       icon:
                           transactionController.selectedWallet?.walletType?.icon ??
@@ -176,6 +181,7 @@ class TransactionForm {
                 ),
                 const SizedBox(height: 20),
                 ClickableTextField(
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
                     onClick: () async {
                       final pickedDate = await showDatePicker(
                           context: context,

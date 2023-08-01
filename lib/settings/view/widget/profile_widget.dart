@@ -21,28 +21,28 @@ class ProfileWidget extends StatelessWidget {
                 : const Icon(
                     Icons.account_circle_rounded,
                     size: 70,
-                    color: Colors.red,
+                    color: orangeyRed,
                   )
         ),
         const SizedBox(height: 10),
         Text(
           currentUser?.displayName ?? 'Unknown Name',
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+          style:  TextStyle(fontSize: 24, fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.onPrimary),
         ),
         const SizedBox(height: 5),
-        Text(currentUser?.email ?? 'Unknown Email'),
+        Text(currentUser?.email ?? 'Unknown Email', style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.onPrimary)),
         const SizedBox(height: 10),
         GestureDetector(
           onTap: onLogout,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Icon(Icons.logout, size: 15, color: redColor),
+            children:  const [
+              Icon(Icons.logout, size: 15, color: orangeyRed),
               SizedBox(width: 8),
-              Text(
+               Text(
                 'تسجيل الخروج',
                 style: TextStyle(
-                    fontFamily: 'Tajawal', fontSize: 15, color: Colors.red),
+                    fontFamily: 'Tajawal', fontSize: 15, color: orangeyRed),
               ),
             ],
           ),

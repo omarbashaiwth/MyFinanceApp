@@ -78,6 +78,8 @@ flutter:
   assets:
     - assets/images/Logo.png
     - assets/images/Google_logo.png
+    - assets/images/sign_up.png
+    - assets/images/log_in.png
     - assets/images/onboarding1.png
     - assets/images/onboarding2.png
     - assets/images/onboarding3.png

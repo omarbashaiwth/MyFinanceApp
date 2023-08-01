@@ -1,14 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:myfinance_app/auth/controller/auth_controller.dart';
-import 'package:myfinance_app/auth/controller/services/google_auth_service.dart';
 import 'package:myfinance_app/auth/model/my_user.dart';
-import 'package:myfinance_app/auth/view/widgets/app_logo.dart';
+import 'package:myfinance_app/auth/view/widgets/auth_logo.dart';
 import 'package:myfinance_app/auth/view/widgets/auth_form.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/main.dart';
 import 'package:provider/provider.dart';
-import 'package:get/get.dart';
 
 import '../../controller/services/firebase_auth_services.dart';
 
@@ -31,7 +29,10 @@ class AuthScreen extends StatelessWidget {
             child: Column(
               children: [
                 const SizedBox(height: 40),
-                const AppLogo(image: 'assets/images/Logo.png', name: 'مصاريفي'),
+                AuthLogo(
+                    image: provider.isLogin? 'assets/images/log_in.png':'assets/images/sign_up.png',
+                    text: provider.isLogin? 'تسجيل الدخول': 'حساب جديد'
+                ),
                 const SizedBox(height: 50),
                 AuthForm(formKey: formKey, user: user),
                 const SizedBox(height: 2),
@@ -41,8 +42,8 @@ class AuthScreen extends StatelessWidget {
                       children: [
                         TextButton(
                           onPressed: () {},
-                          child: const Text('نسيت كلمة المرور؟',
-                              style: AppTextTheme.textButtonStyle
+                          child:  Text('نسيت كلمة المرور؟',
+                              style: AppTextTheme.textButtonStyle.copyWith(color: Theme.of(context).colorScheme.onPrimary)
                           ),
                         ),
                         const SizedBox(width: 50,),
@@ -62,13 +63,13 @@ class AuthScreen extends StatelessWidget {
                     if (isValid != null && isValid) {
                       formKey.currentState?.save();
                       await FirebaseAuthServices.emailPasswordAuth(
+                          backgroundColor: Theme.of(context).colorScheme.onBackground,
                           context: context,
                           user: user,
                           isLogin: provider.isLogin,
                           screenHeight: screenHeight,
                           onLoading: (bool loading) {
                             silentProvider.onLoadingStateChange(loading);
-                            // setState(() => _isLoading = loading);
                           },
                           onMessage: (String msg) async {
                             FirebaseAuthServices.showMessageToUser(
@@ -95,13 +96,17 @@ class AuthScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () => FirebaseAuthServices.googleAuth(screenHeight: screenHeight, context: context),
+                  onPressed: () => FirebaseAuthServices.googleAuth(
+                      screenHeight: screenHeight,
+                      context: context,
+                      backgroundColor: Theme.of(context).colorScheme.onBackground,
+                  ),
                   style: ElevatedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15)),
                       backgroundColor:
-                          Theme.of(context).colorScheme.secondaryContainer),
+                          Theme.of(context).colorScheme.onPrimaryContainer),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -110,7 +115,7 @@ class AuthScreen extends StatelessWidget {
                         provider.isLogin
                             ? 'تسجيل الدخول من خلال حساب قوقل'
                             : 'إنشاء حساب من خلال قوقل',
-                        style: AppTextTheme.normalTextStyle,
+                        style: AppTextTheme.normalTextStyle.copyWith(color: Theme.of(context).colorScheme.onPrimary),
                       ),
                       const SizedBox(width: 20),
                       Image.asset('assets/images/Google_logo.png'),
@@ -122,7 +127,7 @@ class AuthScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(provider.isLogin ? 'ليس لديك حساب؟ ' : 'لديك حساب؟ ',
-                        style: AppTextTheme.normalTextStyle),
+                        style: AppTextTheme.normalTextStyle.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
                     GestureDetector(
                       child: Text(
                           provider.isLogin

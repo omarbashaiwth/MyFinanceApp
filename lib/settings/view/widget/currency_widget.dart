@@ -27,6 +27,7 @@ class CurrencyWidget extends StatelessWidget {
                         bottomSheetHeight: MediaQuery.of(ctx).size.height * 0.90,
                         isDismissible: true,
                         willPop: true,
+                        backgroundColor: Theme.of(context).colorScheme.onBackground,
                         onCurrencySelected: (currency)  async {
                           await currencyController.saveCurrency(
                               firestore: firestore,
@@ -34,7 +35,7 @@ class CurrencyWidget extends StatelessWidget {
                               currency: currency
                           );
                           Get.back();
-                        }
+                        },
                     );
                   },
                   showSymbol: false

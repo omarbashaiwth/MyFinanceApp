@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
-import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/onboarding/model/on_boarding.dart';
 import 'package:myfinance_app/onboarding/view/widget/onboarding_image.dart';
 
@@ -31,25 +30,24 @@ class OnBoardingScreen extends StatelessWidget {
           'assets/images/onboarding3.png'
       ),
     ];
-    const pageDecoration = PageDecoration(
+     final pageDecoration = PageDecoration(
         titleTextStyle: TextStyle(
             fontFamily: 'Tajawal',
             fontSize: 36,
             fontWeight: FontWeight.bold,
-            color: redColor
+            color: Theme.of(context).colorScheme.onPrimary
         ),
         bodyTextStyle: TextStyle(
             fontFamily: 'Tajawal',
             fontSize: 18,
-            color: redColor
+            color: Theme.of(context).colorScheme.onPrimary
         ),
-        imagePadding: EdgeInsets.all(50),
+        imagePadding: const EdgeInsets.all(50),
         imageFlex: 2,
     );
-    final currenciesList = Utils.currencies();
     return IntroductionScreen(
       key: onBoardingKey,
-      globalBackgroundColor: whiteColor,
+      globalBackgroundColor: Theme.of(context).colorScheme.background,
       pages: [
         PageViewModel(
             title: onBoardingPages[0].title,
@@ -68,28 +66,28 @@ class OnBoardingScreen extends StatelessWidget {
             decoration: pageDecoration),
       ],
       next: FloatingActionButton(
-        backgroundColor: redColor,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         onPressed: () {onBoardingKey.currentState?.next();},
         child: const Icon(
           Icons.navigate_next,
-          color: whiteColor,
+          color: white,
         ),
       ),
       nextFlex: 0,
       dotsFlex: 3,
       done: FloatingActionButton(
-        backgroundColor: redColor,
+        backgroundColor: Theme.of(context).colorScheme.primary,
         onPressed: (){
           onBoardingEnd(context);
         },
         child: const Icon(
           Icons.done,
-          color: whiteColor,
+          color: white,
         ),
       ),
       onDone: (){},
       dotsDecorator:
-          const DotsDecorator(size: Size(10, 10), activeColor: redColor),
+           DotsDecorator(size: const Size(10, 10), activeColor: Theme.of(context).colorScheme.primary),
     );
   }
 }

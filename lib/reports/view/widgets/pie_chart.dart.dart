@@ -27,7 +27,7 @@ class DrawPieChart extends StatelessWidget {
         PieChartSectionData(
             showTitle: true,
             titleStyle: const TextStyle(
-                fontSize: 10, color: whiteColor, fontWeight: FontWeight.bold),
+                fontSize: 10, color: white, fontWeight: FontWeight.bold),
             title: '${(data[index].value/totalExpenses * 100).round()}%',
             value: data[index].value,
             color: AppTheme.pieChartColors[index]

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/core/widgets/price_widget.dart';
 
@@ -29,16 +28,16 @@ class TransactionHistoryItem extends StatelessWidget {
               children: [
                 Text(
                   transaction.category?.name ?? 'دخل',
-                  style: const TextStyle(
-                      fontFamily: 'Tajawal', fontSize: 13, color: blackColor,
+                  style:  TextStyle(
+                      fontFamily: 'Tajawal', fontSize: 13, color: Theme.of(context).colorScheme.onPrimary,
                   ),
                 ),
                 transaction.note == null || transaction.note!.isEmpty?
                     const SizedBox.shrink():
                 Text(
                   transaction.note!,
-                  style: const TextStyle(
-                      fontFamily: 'Tajawal', fontSize: 11, color: darkGray),
+                  style:  TextStyle(
+                      fontFamily: 'Tajawal', fontSize: 11, color: Theme.of(context).colorScheme.onPrimary),
                 )
               ],
             ),
@@ -57,8 +56,8 @@ class TransactionHistoryItem extends StatelessWidget {
               Utils.dateFormat(date: DateTime.fromMicrosecondsSinceEpoch(
                   transaction.createdAt!.microsecondsSinceEpoch),
               ),
-              style: const TextStyle(
-                  fontFamily: 'Tajawal', fontSize: 11, color: darkGray),
+              style:  TextStyle(
+                  fontFamily: 'Tajawal', fontSize: 11, color: Theme.of(context).colorScheme.onPrimary),
             )
           ],
         )

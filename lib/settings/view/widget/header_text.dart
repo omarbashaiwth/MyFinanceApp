@@ -12,7 +12,7 @@ class HeaderText extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       child:  Text(
         text,
-        style: AppTextTheme.headerTextStyle,
+        style: AppTextTheme.headerTextStyle.copyWith(color: Theme.of(context).colorScheme.onPrimary),
         textAlign: TextAlign.start,
       ),
     );

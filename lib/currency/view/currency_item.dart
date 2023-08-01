@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/currency/model/currency.dart';
 
@@ -20,31 +19,36 @@ class CurrencyItem extends StatelessWidget {
     return GestureDetector(
       onTap: onCurrencySelected,
       child: Container(
+        color: Colors.transparent,
         padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         margin: const EdgeInsets.symmetric(horizontal: 4),
         child: Row(
           children: [
             Expanded(
-                child: Row(
-              children: [
-                _flagWidget(currency.flag),
-                const SizedBox(width: 8),
-                Text(currency.name!,
+              child: Row(
+                children: [
+                  _flagWidget(currency.flag),
+                  const SizedBox(width: 8),
+                  Text(
+                    currency.name!,
                     style: TextStyle(
-                        fontSize: 15, color: Theme.of(context).hintColor)),
-                // Text(
-                //   currency.code!,
-                //   style: const TextStyle(fontSize: 17),
-                // ),
-              ],
-            )),
+                      fontFamily: 'Tajawal',
+                      fontSize: 15,
+                      color: Theme.of(context).hintColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             showSymbol
                 ? Text(
                     currency.symbol!,
                     style: const TextStyle(fontSize: 18),
                   )
-                : const Icon(Icons.keyboard_arrow_left_rounded,
-                    color: blackColor),
+                :  Icon(
+                    Icons.keyboard_arrow_left_rounded,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
           ],
         ),
       ),

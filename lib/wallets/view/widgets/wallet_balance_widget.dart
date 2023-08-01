@@ -14,13 +14,13 @@ class WalletBalance extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: 8),
-        Text(balanceLabel, style: const TextStyle(fontFamily: 'Tajawal', fontSize: 18, color: blackColor)),
+        Text(balanceLabel, style: TextStyle(fontFamily: 'Tajawal', fontSize: 18, color: Theme.of(context).colorScheme.onPrimary)),
         PriceWidget(
             amount: balance,
             currency: currency,
             currencyFontSize: fontSize,
             amountFontSize: fontSize,
-          color: balance < 0 ? Colors.red: Colors.green,
+          color: balance < 0 ? red: green,
         )
       ],
     );

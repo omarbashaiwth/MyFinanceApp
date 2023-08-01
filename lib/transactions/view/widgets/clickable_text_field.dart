@@ -13,7 +13,7 @@ class ClickableTextField extends StatelessWidget {
       required this.onClick,
       required this.text,
       required this.icon,
-        this.color = whiteColor})
+        this.color = white})
       : super(key: key);
 
   @override

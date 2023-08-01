@@ -63,6 +63,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(kToolbarHeight * 2),
           child: AppBarWithTabs(

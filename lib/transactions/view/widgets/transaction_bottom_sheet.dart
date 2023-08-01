@@ -14,9 +14,9 @@ class TransactionBottomSheet {
     final iconsList = ExpensesIcons.iconsList;
     Get.bottomSheet(Container(
       padding: const EdgeInsets.only(top: 4),
-      decoration: const BoxDecoration(
-        color: whiteColor,
-        borderRadius: BorderRadius.only(
+      decoration:  BoxDecoration(
+        color: Theme.of(Get.context!).colorScheme.onBackground,
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(25),
           topRight: Radius.circular(25),
         ),
@@ -24,8 +24,8 @@ class TransactionBottomSheet {
       child: Column(
         children: [
           const SizedBox(height: 16),
-          const Text('أختر نوع النفقة',
-              style: TextStyle(fontFamily: 'Tajawal')),
+          Text('أختر نوع النفقة',
+              style: TextStyle(fontFamily: 'Tajawal', color: Theme.of(Get.context!).colorScheme.onPrimary)),
           const Divider(),
           const SizedBox(height: 32),
           Expanded(
@@ -41,8 +41,8 @@ class TransactionBottomSheet {
                     color: Provider.of<TransactionController>(context)
                                 .selectedIcon ==
                             index
-                        ? redColor
-                        : lightGray,
+                        ? orangeyRed
+                        : lightGrey,
                     onClick: () {
                       Provider.of<TransactionController>(context, listen: false)
                           .onChangeSelectedIcon(index);
@@ -67,9 +67,9 @@ class TransactionBottomSheet {
   }) {
     Get.bottomSheet(Container(
       padding: const EdgeInsets.only(top: 4),
-      decoration: const BoxDecoration(
-        color: whiteColor,
-        borderRadius: BorderRadius.only(
+      decoration:  BoxDecoration(
+        color: Theme.of(Get.context!).colorScheme.onBackground,
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(25),
           topRight: Radius.circular(25),
         ),
@@ -149,7 +149,7 @@ class TransactionBottomSheet {
                     fontFamily: 'Tajawal',
                     fontSize: 13,
                     color: clickable(wallet)
-                        ? blackColor
+                        ? Theme.of(Get.context!).colorScheme.onPrimary
                         : Colors.grey.withOpacity(0.2)),
               ),
               PriceWidget(
@@ -158,8 +158,8 @@ class TransactionBottomSheet {
                 color: !clickable(wallet)
                     ? Colors.grey.withOpacity(0.2)
                     : wallet.currentBalance! < 0
-                        ? Colors.red
-                        : Colors.green,
+                        ? red
+                        : green,
               ),
             ],
           ),

@@ -3,19 +3,25 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myfinance_app/auth/controller/services/firebase_auth_services.dart';
+import 'package:myfinance_app/settings/controller/settings_cntroller.dart';
 import 'package:myfinance_app/settings/view/widget/currency_widget.dart';
 import 'package:myfinance_app/settings/view/widget/header_text.dart';
 import 'package:myfinance_app/settings/view/widget/profile_widget.dart';
+import 'package:myfinance_app/settings/view/widget/theme_options_dialog.dart';
+import 'package:myfinance_app/settings/view/widget/theme_widget.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import '../core/ui/theme.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({super.key});
+  final SharedPreferences prefs;
+  const SettingsScreen({super.key, required this.prefs});
 
   @override
   Widget build(BuildContext context) {
     final auth = FirebaseAuth.instance;
     final firestore = FirebaseFirestore.instance;
+    final settingsController = Provider.of<SettingsController>(context);
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
@@ -26,7 +32,7 @@ class SettingsScreen extends StatelessWidget {
           automaticallyImplyLeading: false,
           leading: IconButton(
             onPressed: () => Get.back(),
-            icon: const Icon(Icons.arrow_back, color: redColor,),
+            icon:  Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSecondary,),
           ),
         ),
         body: Padding(
@@ -45,6 +51,19 @@ class SettingsScreen extends StatelessWidget {
               const SizedBox(height: 10),
               const HeaderText(text: 'العملة'),
               CurrencyWidget(auth: auth, firestore: firestore),
+              const SizedBox(height: 30),
+              const HeaderText(text: 'الثيم'),
+              ThemeWidget(
+                  themeModeOptions: SettingsController.getThemeModeOption(prefs),
+                  onThemeChangeClicked: (){
+                    ThemeOptionsDialog.show(
+                      context: context,
+                      onSelected: (themeMode) {
+                        settingsController.toggleThemeModeOption(themeMode);
+                      }
+                    );
+                  }
+              )
 
             ],
           ),

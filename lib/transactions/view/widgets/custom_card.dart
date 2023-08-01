@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/widgets/price_widget.dart';
 
 class SummaryCard extends StatelessWidget {
@@ -22,6 +21,7 @@ class SummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      color: Theme.of(context).colorScheme.surface,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Row(
@@ -32,10 +32,10 @@ class SummaryCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
+                  style:  TextStyle(
                     fontSize: 18,
                     fontFamily: 'Tajawal',
-                    color: blackColor,
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                 ),
                 const SizedBox(height: 8),

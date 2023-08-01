@@ -7,12 +7,13 @@ import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/core/widgets/empty_widget.dart';
 import 'package:myfinance_app/core/widgets/price_widget.dart';
 import 'package:myfinance_app/reports/view/reports_screen.dart';
-import 'package:myfinance_app/settings/settings_screen.dart';
+import 'package:myfinance_app/settings/view/settings_screen.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/view/screens/transaction_history_screen.dart';
 import 'package:myfinance_app/transactions/view/widgets/centered_header.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../currency/controller/currency_controller.dart';
 import '../../model/transaction.dart' as my_transaction;
 import '../widgets/custom_card.dart';
@@ -34,24 +35,28 @@ class TransactionsScreen extends StatelessWidget {
         statusBarIconBrightness: Brightness.dark));
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
           elevation: 0,
           backgroundColor: Theme.of(context).colorScheme.background,
-          title: const Text(
+          title:  Text(
             'المعاملات',
-            style: AppTextTheme.appBarTitleTextStyle,
+            style: AppTextTheme.appBarTitleTextStyle.copyWith(color: Theme.of(context).colorScheme.onSecondary),
           ),
           centerTitle: true,
           actions: [
             IconButton(
               onPressed: () => Get.to(() => const ReportsScreen()),
-              icon: const Icon(Icons.insert_chart_outlined_rounded,
-                  color: redColor),
+              icon:  Icon(Icons.insert_chart_outlined_rounded,
+                  color: Theme.of(context).colorScheme.onSecondary),
             )
           ],
           leading: IconButton(
-            onPressed: () {Get.to(() => const SettingsScreen());},
-            icon: const Icon(Icons.menu_rounded, color: redColor),
+            onPressed: () async {
+              final prefs = await SharedPreferences.getInstance();
+              Get.to(() =>  SettingsScreen(prefs: prefs));
+              },
+            icon:  Icon(Icons.menu_rounded, color: Theme.of(context).colorScheme.onSecondary),
           ),
         ),
         body: SingleChildScrollView(
@@ -115,7 +120,7 @@ class TransactionsScreen extends StatelessWidget {
                         ))),
                     child: Text('عرض المزيد',
                         style: AppTextTheme.textButtonStyle
-                            .copyWith(color: redColor)),
+                            .copyWith(color: orangeyRed)),
                   )
                 : Container()
           ],
@@ -139,8 +144,8 @@ class TransactionsScreen extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            gradient: const LinearGradient(
-                colors: [redColor, darkRedColor],
+            gradient:  LinearGradient(
+                colors: [Get.isDarkMode? darkGrey:orangeyRed, Get.isDarkMode? darkGrey:redBrown],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 tileMode: TileMode.mirror)),
@@ -152,7 +157,9 @@ class TransactionsScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: Card(
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)),
+                      borderRadius: BorderRadius.circular(20),
+                  ),
+                  color: Theme.of(Get.context!).colorScheme.surface,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     child: PriceWidget(
@@ -163,7 +170,7 @@ class TransactionsScreen extends StatelessWidget {
                       amountFontSize: 30,
                       currencyFontSize: 18,
                       color:
-                          calculateDiff.isNegative ? Colors.red : Colors.green,
+                          calculateDiff.isNegative ? red : green,
                     ),
                   ),
                 ),
@@ -178,7 +185,7 @@ class TransactionsScreen extends StatelessWidget {
                     amount: controller.calculateTotal(
                         transactions: transactionsByMonth, type: 'expense'),
                     currency: currency,
-                    color: Colors.red,
+                    color: red,
                   ),
                   SummaryCard(
                     title: 'الدخل',
@@ -188,7 +195,7 @@ class TransactionsScreen extends StatelessWidget {
                       type: 'income',
                     ),
                     currency: currency,
-                    color: Colors.green,
+                    color: green,
                     quarterRotate: 2,
                   )
                 ],
@@ -208,7 +215,7 @@ class TransactionsScreen extends StatelessWidget {
     return Container(
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
-            border: Border.all(color: darkGray),
+            border: Border.all(color: lightGrey),
             borderRadius: BorderRadius.circular(10)),
         child: Stack(children: [
           transactions.isEmpty

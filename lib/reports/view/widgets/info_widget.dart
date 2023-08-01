@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/ui/theme.dart';
-
 class InfoWidget extends StatelessWidget {
   final String label;
   final double? labelSize;
@@ -25,7 +23,7 @@ class InfoWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
-            Text(label,style:  TextStyle(fontFamily: 'Tajawal', color: blackColor, fontSize: labelSize)),
+            Text(label,style:  TextStyle(fontFamily: 'Tajawal', color: Theme.of(context).colorScheme.onPrimary, fontSize: labelSize)),
           ],
         ),
       ],

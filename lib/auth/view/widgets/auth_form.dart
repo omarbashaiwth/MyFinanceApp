@@ -21,10 +21,8 @@ class AuthForm extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
-                color: Theme
-                    .of(context)
-                    .colorScheme
-                    .secondaryContainer),
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
+            ),
             child: TextFormField(
               key: const ValueKey('email'),
               validator: (value) {
@@ -35,16 +33,13 @@ class AuthForm extends StatelessWidget {
               },
               onSaved: (newValue) => user.email = newValue!,
               keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
+              decoration:  const InputDecoration(
                 border: InputBorder.none,
                 hintText: 'البريد الإلكتروني',
                 hintStyle: AppTextTheme.hintTextStyle,
                 prefixIcon: Icon(
                   Icons.email_outlined,
-                  color: Theme
-                      .of(context)
-                      .colorScheme
-                      .onSecondaryContainer,
+                  color: lightGrey,
                 ),
               ),
             ),
@@ -54,10 +49,8 @@ class AuthForm extends StatelessWidget {
               ? Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
-                color: Theme
-                    .of(context)
-                    .colorScheme
-                    .secondaryContainer),
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+               ),
             child: TextFormField(
               key: const ValueKey('username'),
               validator: (value) {
@@ -68,30 +61,23 @@ class AuthForm extends StatelessWidget {
               },
               onSaved: (newValue) => user.username = newValue!,
               keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: InputBorder.none,
                 hintText: 'اسم المستخدم',
                 hintStyle: AppTextTheme.hintTextStyle,
                 prefixIcon: Icon(
                   Icons.person_2_outlined,
-                  color:
-                  Theme
-                      .of(context)
-                      .colorScheme
-                      .onSecondaryContainer,
+                  color: lightGrey,
                 ),
               ),
             ),
-          )
-              : Container(),
+          ) : Container(),
           !provider.isLogin ? const SizedBox(height: 24) : Container(),
           Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
-                color: Theme
-                    .of(context)
-                    .colorScheme
-                    .secondaryContainer),
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+            ),
             child: TextFormField(
               key: const ValueKey('password'),
               onSaved: (newValue) => user.password = newValue!,
@@ -108,25 +94,17 @@ class AuthForm extends StatelessWidget {
                 border: InputBorder.none,
                 hintText: 'كلمة المرور',
                 hintStyle: AppTextTheme.hintTextStyle,
-                prefixIcon: Icon(Icons.lock_outline,
-                    color: Theme
-                        .of(context)
-                        .colorScheme
-                        .onSecondaryContainer),
+                prefixIcon: const Icon(Icons.lock_outline,
+                    color: lightGrey),
                 suffixIcon: IconButton(
                   splashColor: Colors.transparent,
-                  onPressed: () =>
-                      silentProvider.onShowPasswordStateChange(!provider.showPassword),
-                  // setState(() => _showPassword = !_showPassword),
+                  onPressed: () => silentProvider.onShowPasswordStateChange(!provider.showPassword),
                   icon: Icon(
                       provider.showPassword
                           ? Icons.visibility_outlined
                           : Icons.visibility_off_outlined,
-                      color:
-                      Theme
-                          .of(context)
-                          .colorScheme
-                          .onSecondaryContainer),
+                      color:lightGrey
+                  ),
                 ),
               ),
             ),

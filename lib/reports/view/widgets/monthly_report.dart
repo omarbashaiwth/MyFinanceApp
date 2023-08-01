@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:myfinance_app/core/widgets/empty_widget.dart';
@@ -47,9 +46,9 @@ class MonthlyReport extends StatelessWidget {
           return Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-                border: Border.all(color: normalGray),
+                border: Border.all(color: lightGrey),
                 borderRadius: BorderRadius.circular(10),
-                color: whiteColor),
+                color: Theme.of(context).colorScheme.onBackground),
             child: SingleChildScrollView(
               child: Column(
                 children: [

@@ -15,7 +15,7 @@ class CenteredHeader extends StatelessWidget {
         Expanded(
           child: Container(
             height: 0.5,
-            color: normalGray,
+            color: lightGrey,
           ),
         ),
         Padding(
@@ -28,7 +28,7 @@ class CenteredHeader extends StatelessWidget {
         Expanded(
           child: Container(
             height: 1,
-            color: normalGray,
+            color: lightGrey,
           ),
         ),
       ],

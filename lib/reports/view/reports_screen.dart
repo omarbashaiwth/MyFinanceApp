@@ -13,18 +13,19 @@ class ReportsScreen extends StatelessWidget {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
           automaticallyImplyLeading: false,
           elevation: 0,
           leading: IconButton(
             onPressed: () => Get.back(),
-            icon: const Icon(Icons.arrow_back, color: redColor,),
+            icon:  Icon(Icons.arrow_back, color: Theme.of(context).colorScheme.onSecondary,),
           ),
           centerTitle: true,
           backgroundColor: Theme.of(context).colorScheme.background,
-          title: const Text(
+          title:  Text(
             'التقارير',
-            style: AppTextTheme.appBarTitleTextStyle,
+            style: AppTextTheme.appBarTitleTextStyle.copyWith(color: Theme.of(context).colorScheme.onSecondary),
           ),
         ),
         body: Padding(

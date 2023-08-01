@@ -39,10 +39,11 @@ class WalletWidget extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.only(top: 20),
         child: Card(
+          color: Theme.of(context).colorScheme.onPrimaryContainer,
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
-            side: const BorderSide(color: normalGray),
+            side:  BorderSide(color: Get.isDarkMode? Colors.transparent: lightGrey),
           ),
           child: Column(
             children: [
@@ -82,16 +83,16 @@ class WalletWidget extends StatelessWidget {
                           },
                         onSecondaryActionClicked: () => Get.back())
                   ),
-                  icon: const Icon(Icons.more_vert, color: redColor,),
+                  icon:  Icon(Icons.more_vert, color: Theme.of(Get.context!).colorScheme.onSecondary,),
                   splashRadius: 18,
                 ),
               ),
               Text(
                   wallet.name!,
-                  style: const TextStyle(
+                  style:  TextStyle(
                       fontFamily: 'Tajawal',
                       fontSize: 18,
-                      color: blackColor),
+                      color: Theme.of(Get.context!).colorScheme.onPrimary),
               ),
               const SizedBox(height: 8),
               PriceWidget(
@@ -99,7 +100,7 @@ class WalletWidget extends StatelessWidget {
                 currency: currency,
                 currencyFontSize: 25,
                 amountFontSize: 35,
-                color: wallet.currentBalance! < 0 ? Colors.red: Colors.green,
+                color: wallet.currentBalance! < 0 ? red: green,
               ),
               const SizedBox(height: 26),
             ],
@@ -111,7 +112,7 @@ class WalletWidget extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-              color: normalGray, borderRadius: BorderRadius.circular(30)),
+              color: lightGrey, borderRadius: BorderRadius.circular(30)),
           child: Image.asset(wallet.walletType!.icon, height: 45),
         ),
       )

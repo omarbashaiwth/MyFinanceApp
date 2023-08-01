@@ -16,11 +16,11 @@ class AppBarWithTabs extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.background,
       elevation: 0,
       actions: [
-        IconButton(onPressed: () => onCloseClicked(), icon: const Icon(Icons.close, color: redColor,))
+        IconButton(onPressed: () => onCloseClicked(), icon:  Icon(Icons.close, color: Theme.of(context).colorScheme.onSecondary,))
       ],
       leading: IconButton(
           onPressed: () => onSaveClicked(),
-          icon: const Icon(Icons.check, color: redColor)
+          icon:  Icon(Icons.check, color: Theme.of(context).colorScheme.onSecondary,)
       ),
       bottom: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight * 0.5),
@@ -29,21 +29,21 @@ class AppBarWithTabs extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 8, left: 4, right: 4),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: whiteColor
+            color: Theme.of(context).colorScheme.onPrimaryContainer,
           ),
           child: TabBar(
             onTap:(index) =>  onIndexChange(index),
             padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-            indicator:  BoxDecoration(color: redColor, borderRadius: BorderRadius.circular(20)),
+            indicator:  BoxDecoration(color: orangeyRed, borderRadius: BorderRadius.circular(20)),
             controller: tabController,
             tabs: [
-              _buildTab(label: 'نـفـقــة', labelColor: tabController.index == 0? whiteColor: normalGray),
-              _buildTab(label: 'دخـــــــل', labelColor: tabController.index == 1? whiteColor: normalGray),
+              _buildTab(label: 'نـفـقــة', labelColor: tabController.index == 0? white: lightGrey),
+              _buildTab(label: 'دخـــــــل', labelColor: tabController.index == 1? white: lightGrey),
             ],
           ),
         ),
       ),
-      titleTextStyle: AppTextTheme.appBarTitleTextStyle,
+      titleTextStyle: AppTextTheme.appBarTitleTextStyle.copyWith(color: Theme.of(context).colorScheme.onSecondary),
       title: const Text('إضافة معاملة جديدة'),
     );
   }

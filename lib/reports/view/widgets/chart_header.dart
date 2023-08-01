@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../core/ui/theme.dart';
-
 class ChartHeader extends StatelessWidget {
   final String header;
   final String? buttonLabel;
@@ -20,9 +18,9 @@ class ChartHeader extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(buttonLabel!, style: const TextStyle(fontFamily: 'Tajawal', color: blackColor),),
+              Text(buttonLabel!, style:  TextStyle(fontFamily: 'Tajawal', color: Theme.of(context).colorScheme.onPrimary),),
               const SizedBox(width: 8),
-              const Icon(Icons.keyboard_arrow_down_rounded, color: blackColor,),
+              Icon(Icons.keyboard_arrow_down_rounded, color: Theme.of(context).colorScheme.onPrimary,),
             ],
           ),
         ): const SizedBox.shrink()

@@ -20,6 +20,7 @@ class AddBalanceDialog extends StatelessWidget {
     final firestore = FirebaseFirestore.instance;
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
       child: SizedBox(
         height: 250,
         child: Column(
@@ -27,19 +28,19 @@ class AddBalanceDialog extends StatelessWidget {
             Row(
               children: [
                 const SizedBox(width: 40),
-                const Expanded(
+                Expanded(
                     child: Text(
                       'إضافة رصيد',
-                      style: TextStyle(fontFamily: 'Tajawal'),
+                      style: TextStyle(fontFamily: 'Tajawal', color: Theme.of(context).colorScheme.onSecondary),
                       textAlign: TextAlign.center,
                     ),
                 ),
                 IconButton(
                   onPressed: () => Get.back(),
-                  icon: const Icon(
+                  icon:  Icon(
                     Icons.close,
                     size: 20,
-                    color: normalGray,
+                    color: Theme.of(context).colorScheme.onSecondary,
                   ),
                   splashRadius: 15,
                 )
@@ -58,7 +59,7 @@ class AddBalanceDialog extends StatelessWidget {
                     ),
                     builder:(_,snapshot) => Text(
                       currencyController.currency?.symbol ?? '',
-                    style: const TextStyle(fontFamily: 'Tajawal', fontSize: 20),
+                    style: const TextStyle(fontFamily: 'Tajawal', fontSize: 20, color: lightGrey),
                 ),
                   ),
                 const SizedBox(width: 10),
@@ -68,7 +69,7 @@ class AddBalanceDialog extends StatelessWidget {
                           topLeft: Radius.circular(20),
                           bottomRight: Radius.circular(20),
                       ),
-                      color: Colors.grey.shade100,
+                      color: Theme.of(context).colorScheme.background,
                   ),
                   width: 120,
                   child: TextField(
@@ -90,14 +91,14 @@ class AddBalanceDialog extends StatelessWidget {
               child: OutlinedButton(
                 onPressed: ()=> onPositiveClick(),
                 style: ElevatedButton.styleFrom(
-                    side: const BorderSide(color: redColor),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50),
                     ),
                 ),
                 child:  Text(
                   'إضافة',
                   style: AppTextTheme
-                      .elevatedButtonTextStyle.copyWith(color: blackColor, fontWeight: FontWeight.normal),
+                      .elevatedButtonTextStyle.copyWith(color: white, fontWeight: FontWeight.normal),
                 ),
               ),
             )
