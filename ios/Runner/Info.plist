@@ -20,7 +20,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Myfinance App</string>
+	<string>مصاريفي</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 	 <string>mailto</string>

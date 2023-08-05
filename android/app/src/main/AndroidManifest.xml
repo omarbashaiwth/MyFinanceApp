@@ -9,7 +9,7 @@
         </intent>
     </queries>
     <application
-        android:label="myfinance_app"
+        android:label="مصاريفي"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
