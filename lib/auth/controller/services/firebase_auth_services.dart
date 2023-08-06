@@ -9,6 +9,7 @@ import 'package:myfinance_app/currency/controller/currency_controller.dart';
 import 'package:myfinance_app/currency/view/currenciesBottomSheet.dart';
 import 'package:provider/provider.dart';
 
+import '../../../core/ui/theme.dart';
 
 class FirebaseAuthServices {
   static final _auth = FirebaseAuth.instance;
@@ -16,64 +17,59 @@ class FirebaseAuthServices {
 
   static Future<void> emailPasswordAuth(
       {required Function(String) onMessage,
-      required Function(bool) onLoading,
       required Function onNavigateToHomeScreen,
       required double screenHeight,
-        required Color backgroundColor,
+      required Color backgroundColor,
       required bool isLogin,
-        required BuildContext context,
-      required MyUser user}) async {
-    final currencyController = Provider.of<CurrencyController>(context, listen: false);
+      required BuildContext context,
+      required MyUser user,
+      required Function() onShowLoadingDialog,
+      required Function() onHideLoadingDialog
+      }) async {
+    final currencyController =
+        Provider.of<CurrencyController>(context, listen: false);
+    onShowLoadingDialog();
     try {
       if (isLogin) {
-        onLoading(true);
         final userCredential = await _auth.signInWithEmailAndPassword(
-            email: user.email, password: user.password
-        );
+            email: user.email, password: user.password);
         final firebaseUser = userCredential.user;
         if (!firebaseUser!.emailVerified) {
+          onHideLoadingDialog();
           onMessage('confirm verification');
-          onLoading(false);
         } else {
           final selectedCurrency = await currencyController.hasSelectedCurrency(
             firestore: _firestore,
             userId: firebaseUser.uid,
-
           );
           debugPrint('Selected currency: $selectedCurrency');
-          if(!selectedCurrency){
+          if (!selectedCurrency) {
             CurrenciesBottomSheet.show(
                 backgroundColor: backgroundColor,
                 bottomSheetHeight: screenHeight * 0.90,
                 onCurrencySelected: (currency) async {
-                 await currencyController.saveCurrency(
-                     firestore: _firestore,
-                     user: firebaseUser,
-                     currency: currency
-                 );
-                 Get.back();
-                }
-            );
+                  await currencyController.saveCurrency(
+                      firestore: _firestore,
+                      user: firebaseUser,
+                      currency: currency);
+                  Get.back();
+                });
           } else {
             onNavigateToHomeScreen();
           }
-          onLoading(false);
+          onHideLoadingDialog();
         }
-
       } else {
-        onLoading(true);
         final userCredential = await _auth.createUserWithEmailAndPassword(
-            email: user.email, password: user.password
-        );
-        if(userCredential.user != null) {
+            email: user.email, password: user.password);
+        if (userCredential.user != null) {
           await _sendEmailVerification(onMessage: (msg) => onMessage(msg));
           await _auth.currentUser!.updateDisplayName(user.username);
-          onLoading(false);
+          onHideLoadingDialog();
         } else {
+          onHideLoadingDialog();
           onMessage('حدث خطأ أثناء إنشاء الحساب');
-          onLoading(false);
         }
-
       }
     } on FirebaseAuthException catch (e) {
       String message = 'حدث خطأ ما';
@@ -86,24 +82,26 @@ class FirebaseAuthServices {
       } else if (e.code == 'wrong-password') {
         message = 'كلمة المرور خاطئة. الرجاء إدخال كلمة مرور صحيحة';
       }
+      onHideLoadingDialog();
       onMessage(message);
-      onLoading(false);
       debugPrint('Firebase error: $message: ${e.message}');
     } catch (e) {
+      onHideLoadingDialog();
       onMessage('Error: ${e.toString()}');
-      onLoading(false);
       debugPrint(e.toString());
     }
   }
 
-  static Future<void> googleAuth({required double screenHeight, required BuildContext context, required Color backgroundColor}) async {
-    final currencyController = Provider.of<CurrencyController>(context, listen: false);
+  static Future<void> googleAuth(
+      {required double screenHeight,
+      required BuildContext context,
+      required Color backgroundColor}) async {
+    final currencyController =
+        Provider.of<CurrencyController>(context, listen: false);
     final userCredential = await GoogleAuthService.signInWithGoogle(_auth);
     final firebaseUser = userCredential.user;
-    final selectedCurrency =  await currencyController.hasSelectedCurrency(
-      firestore: _firestore,
-      userId: firebaseUser!.uid
-    );
+    final selectedCurrency = await currencyController.hasSelectedCurrency(
+        firestore: _firestore, userId: firebaseUser!.uid);
     debugPrint('Selected currency: $selectedCurrency');
     if (!selectedCurrency) {
       //show pick currency dialog
@@ -112,13 +110,9 @@ class FirebaseAuthServices {
           bottomSheetHeight: screenHeight * 0.90,
           onCurrencySelected: (currency) async {
             await currencyController.saveCurrency(
-                firestore: _firestore,
-                user: firebaseUser,
-                currency: currency
-            );
+                firestore: _firestore, user: firebaseUser, currency: currency);
             Get.back();
-          }
-      );
+          });
     }
   }
 
@@ -136,6 +130,42 @@ class FirebaseAuthServices {
   static Future<void> logout() async {
     GoogleAuthService.signOut();
     _auth.signOut();
+  }
+
+  static void resetPassword(
+      {required String email,
+        required Function() onShowLoadingDialog,
+        required Function() onHideLoadingDialog,
+      required Function(String, IconData) onMessage,
+      }) async {
+    onShowLoadingDialog();
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      onHideLoadingDialog();
+      onMessage(
+          'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني. الرجاء التحقق من بريدك الإلكتروني واتباع التعليمات لإعادة تعيين كلمة المرور الخاصة بك',
+          Icons.outgoing_mail,
+      );
+    } on FirebaseAuthException catch (e) {
+      String message = 'حدث خطأ ما';
+      IconData icon = Icons.error;
+
+      if (e.code == 'user-not-found') {
+        message = 'هذا المستخدم غير موجود. الرجاء إنشاء حساب';
+        icon = Icons.person_off;
+      }
+      if (e.code == 'invalid-email') {
+        message = 'البريد الإلكتروني غير صحيح';
+        icon = Icons.email;
+      }
+      if (e.code == 'connection-failed') {
+        message = 'لا يوجد اتصال بالإنترنت';
+        icon = Icons.wifi_off;
+      }
+      onHideLoadingDialog();
+      onMessage(message, icon);
+      debugPrint('Firebase error: $message: ${e.message}');
+    }
   }
 
   static void showMessageToUser(

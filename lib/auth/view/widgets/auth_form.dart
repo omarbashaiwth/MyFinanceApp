@@ -13,7 +13,7 @@ class AuthForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AuthController>(context);
-    final silentProvider = Provider.of<AuthController>(context, listen: false);
+    // final silentProvider = Provider.of<AuthController>(context);
     return Form(
       key: formKey,
       child: Column(
@@ -98,7 +98,7 @@ class AuthForm extends StatelessWidget {
                     color: lightGrey),
                 suffixIcon: IconButton(
                   splashColor: Colors.transparent,
-                  onPressed: () => silentProvider.onShowPasswordStateChange(!provider.showPassword),
+                  onPressed: () => provider.onShowPasswordStateChange(!provider.showPassword),
                   icon: Icon(
                       provider.showPassword
                           ? Icons.visibility_outlined

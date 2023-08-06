@@ -7,8 +7,11 @@ import 'package:myfinance_app/auth/view/widgets/auth_form.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/main.dart';
 import 'package:provider/provider.dart';
+import 'package:get/get.dart';
 
+import '../../../core/utils/utils.dart';
 import '../../controller/services/firebase_auth_services.dart';
+import 'reset_password_screen.dart';
 
 class AuthScreen extends StatelessWidget {
   const AuthScreen({Key? key}) : super(key: key);
@@ -41,21 +44,23 @@ class AuthScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Get.to(() => const ResetPasswordScreen());
+                          },
                           child:  Text('نسيت كلمة المرور؟',
                               style: AppTextTheme.textButtonStyle.copyWith(color: Theme.of(context).colorScheme.onPrimary)
                           ),
                         ),
                         const SizedBox(width: 50,),
-                        provider.isLoading
-                            ? const CircularProgressIndicator()
-                            : const SizedBox.shrink(),
+                        // provider.isLoading
+                        //     ? const CircularProgressIndicator()
+                        //     : const SizedBox.shrink(),
                       ],
                     )
-                : provider.isLoading
-                    ? const CircularProgressIndicator()
-                    : const SizedBox.shrink(),
-                const SizedBox(height: 18,),
+                // : provider.isLoading
+                //     ? const CircularProgressIndicator()
+                //     : const SizedBox.shrink(),
+                :const SizedBox(height: 18,),
                 ElevatedButton(
                   onPressed: () async {
                     final isValid = formKey.currentState?.validate();
@@ -68,9 +73,8 @@ class AuthScreen extends StatelessWidget {
                           user: user,
                           isLogin: provider.isLogin,
                           screenHeight: screenHeight,
-                          onLoading: (bool loading) {
-                            silentProvider.onLoadingStateChange(loading);
-                          },
+                          onShowLoadingDialog: () => Utils.showLoadingDialog(context, 'جاري التحقق من البيانات...'),
+                          onHideLoadingDialog: () => Utils.hideLoadingDialog(),
                           onMessage: (String msg) async {
                             FirebaseAuthServices.showMessageToUser(
                                 auth, msg, context);
@@ -138,7 +142,6 @@ class AuthScreen extends StatelessWidget {
                               fontWeight: FontWeight.bold)),
                       onTap: () {
                         silentProvider.onLoginStateChange(!provider.isLogin);
-                        // setState(() => _isLogin = !_isLogin);
                       },
                     ),
                   ],
