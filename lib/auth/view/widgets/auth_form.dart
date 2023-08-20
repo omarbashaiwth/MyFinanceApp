@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:myfinance_app/auth/model/my_user.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/ui/theme.dart';
@@ -7,13 +6,12 @@ import '../../controller/auth_controller.dart';
 
 class AuthForm extends StatelessWidget {
   final Key formKey;
-  final MyUser user;
-  const AuthForm({Key? key, required this.formKey, required this.user}) : super(key: key);
+  const AuthForm({Key? key, required this.formKey}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AuthController>(context);
-    // final silentProvider = Provider.of<AuthController>(context);
+
     return Form(
       key: formKey,
       child: Column(
@@ -31,7 +29,10 @@ class AuthForm extends StatelessWidget {
                 }
                 return null;
               },
-              onSaved: (newValue) => user.email = newValue!,
+              onSaved: (value) {
+                provider.onEmailChange(value!);
+              },
+              controller: provider.emailController,
               keyboardType: TextInputType.emailAddress,
               decoration:  const InputDecoration(
                 border: InputBorder.none,
@@ -59,7 +60,10 @@ class AuthForm extends StatelessWidget {
                 }
                 return null;
               },
-              onSaved: (newValue) => user.username = newValue!,
+              onSaved: (value) {
+                provider.onUsernameChange(value!);
+              },
+              controller: provider.usernameController,
               keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(
                 border: InputBorder.none,
@@ -80,7 +84,6 @@ class AuthForm extends StatelessWidget {
             ),
             child: TextFormField(
               key: const ValueKey('password'),
-              onSaved: (newValue) => user.password = newValue!,
               obscureText: !provider.showPassword,
               validator: (value) {
                 if (value!.isEmpty) {
@@ -90,6 +93,10 @@ class AuthForm extends StatelessWidget {
                 }
                 return null;
               },
+              onSaved: (value) {
+                provider.onPasswordChange(value!);
+              },
+              controller: provider.passwordController,
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: 'كلمة المرور',
@@ -98,7 +105,7 @@ class AuthForm extends StatelessWidget {
                     color: lightGrey),
                 suffixIcon: IconButton(
                   splashColor: Colors.transparent,
-                  onPressed: () => provider.onShowPasswordStateChange(!provider.showPassword),
+                  onPressed: () => provider.onShowPasswordStateChange(),
                   icon: Icon(
                       provider.showPassword
                           ? Icons.visibility_outlined

@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:myfinance_app/auth/controller/auth_controller.dart';
-import 'package:myfinance_app/auth/model/my_user.dart';
 import 'package:myfinance_app/auth/view/widgets/auth_logo.dart';
 import 'package:myfinance_app/auth/view/widgets/auth_form.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
@@ -19,10 +18,8 @@ class AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<AuthController>(context);
-    final silentProvider = Provider.of<AuthController>(context, listen: false);
     final auth = FirebaseAuth.instance;
     final formKey = GlobalKey<FormState>();
-    final MyUser user = MyUser('', '', '');
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
@@ -37,7 +34,7 @@ class AuthScreen extends StatelessWidget {
                     text: provider.isLogin? 'تسجيل الدخول': 'حساب جديد'
                 ),
                 const SizedBox(height: 50),
-                AuthForm(formKey: formKey, user: user),
+                AuthForm(formKey: formKey),
                 const SizedBox(height: 2),
                 provider.isLogin?
                     Row(
@@ -52,25 +49,19 @@ class AuthScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 50,),
-                        // provider.isLoading
-                        //     ? const CircularProgressIndicator()
-                        //     : const SizedBox.shrink(),
                       ],
                     )
-                // : provider.isLoading
-                //     ? const CircularProgressIndicator()
-                //     : const SizedBox.shrink(),
                 :const SizedBox(height: 18,),
                 ElevatedButton(
                   onPressed: () async {
                     final isValid = formKey.currentState?.validate();
-                    FocusScope.of(context).unfocus();
+                    debugPrint("clicked: $isValid");
                     if (isValid != null && isValid) {
                       formKey.currentState?.save();
                       await FirebaseAuthServices.emailPasswordAuth(
                           backgroundColor: Theme.of(context).colorScheme.onBackground,
                           context: context,
-                          user: user,
+                          user: provider.user,
                           isLogin: provider.isLogin,
                           screenHeight: screenHeight,
                           onShowLoadingDialog: () => Utils.showLoadingDialog(context, 'جاري التحقق من البيانات...'),
@@ -141,7 +132,7 @@ class AuthScreen extends StatelessWidget {
                               color: Theme.of(context).colorScheme.primary,
                               fontWeight: FontWeight.bold)),
                       onTap: () {
-                        silentProvider.onLoginStateChange(!provider.isLogin);
+                        provider.onLoginStateChange(!provider.isLogin);
                       },
                     ),
                   ],

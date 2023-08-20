@@ -9,7 +9,6 @@ import 'package:myfinance_app/currency/controller/currency_controller.dart';
 import 'package:myfinance_app/currency/view/currenciesBottomSheet.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/ui/theme.dart';
 
 class FirebaseAuthServices {
   static final _auth = FirebaseAuth.instance;
@@ -77,7 +76,10 @@ class FirebaseAuthServices {
         message = 'كلمة المرور ضعيفة جدا';
       } else if (e.code == 'email-already-in-use') {
         message = 'هذا البريد الالكتروني مستخدم بالفعل. الرجاء تسجيل الدخول';
-      } else if (e.code == 'user-not-found') {
+      } else if(e.code == 'invalid-email'){
+        message = 'البريد الإلكتروني غير صالح';
+      }
+      else if (e.code == 'user-not-found') {
         message = 'هذا المستخدم غير موجود. الرجاء إنشاء حساب';
       } else if (e.code == 'wrong-password') {
         message = 'كلمة المرور خاطئة. الرجاء إدخال كلمة مرور صحيحة';
