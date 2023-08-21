@@ -20,7 +20,7 @@ class ThemeWidget extends StatelessWidget {
             Expanded(
                 child: Row(
               children: [
-                Icon(themeModeOptions.modeIcon, size: 25),
+                Icon(themeModeOptions.modeIcon, size: 25, color: Theme.of(context).colorScheme.onPrimary,),
                 const SizedBox(width: 8),
                 Text(
                   themeModeOptions.modeName,

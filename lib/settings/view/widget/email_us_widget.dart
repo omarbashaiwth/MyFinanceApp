@@ -15,7 +15,7 @@ class EmailUsWidget extends StatelessWidget {
             Expanded(
                 child: Row(
                   children: [
-                    Icon(Icons.email, color: Theme.of(context).colorScheme.onSecondary,),
+                    Icon(Icons.email, color: Theme.of(context).colorScheme.onPrimary),
                     const SizedBox(width: 8),
                     Text(
                       'راسلنا عبر البريد الالكتروني بمقترحاتك أو استفساراتك',
