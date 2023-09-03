@@ -54,6 +54,7 @@ dependencies:
   grouped_list: ^5.1.2
   url_launcher: ^6.1.11
   flutter_launcher_icons:
+  firebase_messaging: ^14.6.7
 
 flutter_icons:
   android: true

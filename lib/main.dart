@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:myfinance_app/core/services/firebase_messaging_service.dart';
 import 'package:myfinance_app/currency/controller/currency_controller.dart';
 import 'package:myfinance_app/onboarding/controller/onboarding_controller.dart';
 import 'package:myfinance_app/reports/controller/reports_controller.dart';
@@ -27,6 +28,7 @@ import 'onboarding/view/on_boarding_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await FirebaseMessagingService.initNotification();
   final prefs = await SharedPreferences.getInstance();
   SettingsController.init(prefs);
   runApp(MultiProvider(providers: [
