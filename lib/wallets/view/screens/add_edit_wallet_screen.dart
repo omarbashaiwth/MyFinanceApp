@@ -89,11 +89,11 @@ class _AddEditWalletScreenState extends State<AddEditWalletScreen> {
                         walletId: id,
                         createdAt: Timestamp.now(),
                         type: null,
-                        note: 'إنشاء محفظة جديدة',
+                        note: newWallet.name,
                         userId: currentUser.uid,
                         category: Category(
                           icon: newWallet.walletType?.icon,
-                          name: newWallet.name
+                          name: 'إنشاء محفظة جديدة'
                         )
                       )
                     );
