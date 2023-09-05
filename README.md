@@ -1,16 +1,24 @@
-# myfinance_app
+# About the app
 
-A new Flutter project.
+This is my first flutter app. It is a personal expenses tracker app where the user can monitor and manage his expenses and income. 
+I used Firebase as a backend and database storage.
 
-## Getting Started
+#  Tools used
 
-This project is a starting point for a Flutter application.
+1. Email/Password and Google auth using FirebaseAuth.
+2. MVC Architecture.
+3. Dark Theme Support.
+4. Push Notification Support using Firebase Cloud Messaging (FCM).
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+# Screenshots
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Login Screen               |  Transactions Screen              | Wallets Screen           | Add Transactions Screen            | Charts Screen
+:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:|:-------------------------:
+![image](https://github.com/omarbashaiwth/myfinance_app/assets/60521259/1063d06a-85cc-429b-b9ac-6ffbd38ee85f)|![image](https://github.com/omarbashaiwth/myfinance_app/assets/60521259/8a8c5f2d-2bb6-411a-8324-777edf4cbde0)|![image](https://github.com/omarbashaiwth/myfinance_app/assets/60521259/4598bf49-fde9-4873-b151-831ef14f3cc7)|![image](https://github.com/omarbashaiwth/myfinance_app/assets/60521259/819c9a3f-6a7a-4b57-b485-870d74675e5b)|![image](https://github.com/omarbashaiwth/myfinance_app/assets/60521259/02505e03-4697-43e6-9c4f-8f1ca98137e3)
+
+
+
+
+
+
