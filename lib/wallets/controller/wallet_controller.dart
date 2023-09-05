@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:myfinance_app/wallets/model/wallet_type.dart';
+import 'package:myfinance_app/transactions/model/transaction.dart' as my_transactions;
+
 
 import '../model/wallet.dart';
 
@@ -77,6 +79,18 @@ class WalletController extends ChangeNotifier {
         .snapshots()
         .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
 
+  }
+  Stream<List<my_transactions.Transaction>> getTransactionsRelatedToWallet(String walletId)  {
+    return _firestore.collection('Transactions')
+        .where('userId', isEqualTo: _auth.currentUser!.uid)
+        .where('walletId', isEqualTo: walletId)
+        .orderBy('createdAt',descending: true)
+        .withConverter<my_transactions.Transaction>(
+          fromFirestore: my_transactions.Transaction.fromFirestore,
+          toFirestore: (my_transactions.Transaction transaction,_) => transaction.toFirestore()
+        )
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
   }
 
   void clearSelections(){

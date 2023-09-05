@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
-import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
 import 'package:myfinance_app/wallets/model/wallet.dart';
-import 'package:myfinance_app/wallets/view/screens/add_edit_wallet_screen.dart';
-import 'package:myfinance_app/wallets/view/widgets/add_balance_dialog.dart';
-import 'package:myfinance_app/wallets/view/widgets/transfer_balance_dialog.dart';
+import 'package:myfinance_app/wallets/view/screens/wallet_details.dart';
 import 'package:get/get.dart';
-import 'package:myfinance_app/wallets/view/widgets/wallet_bottom_sheets.dart';
 
 import '../../../core/widgets/price_widget.dart';
 
@@ -35,87 +31,63 @@ class WalletWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Padding(
-        padding: const EdgeInsets.only(top: 20),
+    return GestureDetector(
+      onTap: () => Get.to(() => WalletDetails(
+        wallet: wallet,
+        addBalanceController: addBalanceController,
+        transferBalanceController: transferBalanceController,
+        onAddBalance: onAddBalance,
+        onTransferBalance: onTransferBalance,
+        onDeleteWallet: onDeleteWallet,
+      )
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(top: 10),
         child: Card(
           color: Theme.of(context).colorScheme.onPrimaryContainer,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-            side:  BorderSide(color: Get.isDarkMode? Colors.transparent: lightGrey),
+            borderRadius: BorderRadius.circular(12),
+            side: BorderSide(
+                color: Get.isDarkMode ? Colors.transparent : lightGrey),
           ),
-          child: Column(
-            children: [
-              Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  onPressed: () => WalletBottomSheets.showWalletOptionsBT(
-                    onEditClick: () => Get.to(() => AddEditWalletScreen(wallet: wallet)),
-                    onAddBalanceClick: () => showDialog(
-                      context: context,
-                      builder: (_) => AddBalanceDialog(
-                        textEditingController: addBalanceController,
-                        onPositiveClick: onAddBalance,
-                      ),
-                    ),
-                    onTransferBalanceClick: () => showDialog(
-                        context: context,
-                        builder: (_) => TransferBalanceDialog(
-                          textEditingController: transferBalanceController,
-                          walletController: walletController,
-                          currency: currency,
-                          transferFrom: wallet,
-                          onClose: onClose,
-                          onPositiveClick: onTransferBalance,
-                          userId: wallet.userId!,
-                        ),
-                    ),
-                    onDeleteClick: () => Utils.showAlertDialog(
-                        context: context,
-                        primaryActionLabel: 'حذف',
-                        secondaryActionLabel: 'إغلاق',
-                        title: 'تأكيد الحذف',
-                        content: 'هل أنت متأكد من حذف هذه المحفظة؟ ',
-                        onPrimaryActionClicked: () {
-                          Get.back();
-                          return onDeleteWallet();
-                          },
-                        onSecondaryActionClicked: () => Get.back())
-                  ),
-                  icon:  Icon(Icons.more_vert, color: Theme.of(Get.context!).colorScheme.onSecondary,),
-                  splashRadius: 18,
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                      color: lightGrey, borderRadius: BorderRadius.circular(35)),
+                  child: Image.asset(wallet.walletType!.icon, height: 35),
                 ),
-              ),
-              Text(
-                  wallet.name!,
-                  style:  TextStyle(
-                      fontFamily: 'Tajawal',
-                      fontSize: 18,
-                      color: Theme.of(Get.context!).colorScheme.onPrimary),
-              ),
-              const SizedBox(height: 8),
-              PriceWidget(
-                amount: wallet.currentBalance!,
-                currency: currency,
-                currencyFontSize: 25,
-                amountFontSize: 35,
-                color: wallet.currentBalance! < 0 ? red: green,
-              ),
-              const SizedBox(height: 26),
-            ],
+                const SizedBox(width: 8,),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      wallet.name!,
+                      style: TextStyle(
+                          fontFamily: 'Tajawal',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(Get.context!).colorScheme.onPrimary),
+                    ),
+                    PriceWidget(
+                      amount: wallet.currentBalance!,
+                      currency: currency,
+                      currencyFontSize: 14,
+                      amountFontSize: 16,
+                      color: wallet.currentBalance! < 0 ? red : green,
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
-      Align(
-        alignment: Alignment.topCenter,
-        child: Container(
-          padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-              color: lightGrey, borderRadius: BorderRadius.circular(30)),
-          child: Image.asset(wallet.walletType!.icon, height: 45),
-        ),
-      )
-    ]);
+    );
   }
 }

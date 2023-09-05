@@ -5,9 +5,10 @@ import 'package:myfinance_app/core/widgets/price_widget.dart';
 class TotalBalanceWidget extends StatelessWidget {
   final double balance;
   final String? currency;
+  final String label;
   final double currencyFontSize;
   final double amountFontSize;
-  const TotalBalanceWidget({Key? key, required this.balance,required this.currencyFontSize, required this.amountFontSize, required this.currency}) : super(key: key);
+  const TotalBalanceWidget({Key? key, required this.balance,required this.currencyFontSize, required this.amountFontSize, required this.currency, this.label = 'إجمالي الرصيد'}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +22,7 @@ class TotalBalanceWidget extends StatelessWidget {
       ),
       child: Column(
         children: [
-          const Text('إجمالي الرصيد', style: AppTextTheme.headerTextStyle),
+          Text(label, style: AppTextTheme.headerTextStyle),
           const SizedBox(height: 8),
           PriceWidget(
               amount: balance,

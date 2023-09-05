@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/view/widgets/clickable_text_field.dart';
 import 'package:myfinance_app/transactions/view/widgets/transaction_bottom_sheet.dart';
@@ -13,13 +15,12 @@ import '../../../currency/controller/currency_controller.dart';
 class TransferBalanceDialog extends StatelessWidget {
   final TextEditingController textEditingController;
   final Function() onPositiveClick;
-  final Function() onClose;
   final WalletController walletController;
   final Wallet transferFrom;
   final String? currency;
   final String userId;
 
-  const TransferBalanceDialog({Key? key, required this.textEditingController, required this.onPositiveClick, required this.userId, required this.walletController, required this.transferFrom, required this.onClose, required this.currency}) : super(key: key);
+  const TransferBalanceDialog({Key? key, required this.textEditingController, required this.onPositiveClick, required this.userId, required this.walletController, required this.transferFrom, required this.currency}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +48,7 @@ class TransferBalanceDialog extends StatelessWidget {
                     ),
                   ),
                   IconButton(
-                    onPressed: onClose,
+                    onPressed: () => Get.back(),
                     icon:  Icon(
                       Icons.close,
                       size: 20,
