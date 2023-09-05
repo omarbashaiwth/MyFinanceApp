@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
+import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
+import 'package:myfinance_app/transactions/model/category.dart';
+import 'package:myfinance_app/transactions/model/transaction.dart' as my_transaction;
 import 'package:myfinance_app/transactions/view/widgets/custom_text_form_field.dart';
 import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
 import 'package:myfinance_app/wallets/model/wallet.dart';
@@ -40,6 +43,7 @@ class _AddEditWalletScreenState extends State<AddEditWalletScreen> {
   Widget build(BuildContext context) {
     final watchProvider = context.watch<WalletController>();
     final readProvider = context.read<WalletController>();
+    final transactionProvider = context.read<TransactionController>();
     final currentUser = FirebaseAuth.instance.currentUser;
     final walletToUpdate = widget.wallet;
     debugPrint('rebuild: ${watchProvider.walletType?.type ?? 'red'}');
@@ -77,8 +81,22 @@ class _AddEditWalletScreenState extends State<AddEditWalletScreen> {
                     Fluttertoast.showToast(msg: 'اختر نوع المحفظة');
                   }
                   if(walletToUpdate == null && newWallet.walletType != null) {
-                    await readProvider.insertWallet(newWallet);
-                    Fluttertoast.showToast(msg: 'تم الإضافة');
+                    final id = await readProvider.insertWallet(newWallet);
+                    Fluttertoast.showToast(msg: 'تمت الإضافة');
+                    await transactionProvider.saveTransaction(
+                      my_transaction.Transaction(
+                        amount: newWallet.currentBalance,
+                        walletId: id,
+                        createdAt: Timestamp.now(),
+                        type: null,
+                        note: 'إنشاء محفظة جديدة',
+                        userId: currentUser.uid,
+                        category: Category(
+                          icon: newWallet.walletType?.icon,
+                          name: newWallet.name
+                        )
+                      )
+                    );
                     watchProvider.clearSelections();
                     Get.back();
                   }

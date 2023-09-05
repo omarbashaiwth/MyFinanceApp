@@ -33,10 +33,11 @@ class WalletDetails extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
         appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.background,
           automaticallyImplyLeading: false,
           leading: IconButton(
             onPressed: () => Get.back(),
-            icon:  Icon(Icons.arrow_back_rounded, color: Theme.of(context).colorScheme.onPrimary,),
+            icon:  Icon(Icons.arrow_back_rounded, color: Theme.of(context).colorScheme.onSecondary,),
           ),
           title: Text(
               '${wallet.name}',
@@ -81,7 +82,7 @@ class WalletDetails extends StatelessWidget {
                       )
                   );
                 },
-                icon: Icon(Icons.more_vert_rounded, color: Theme.of(context).colorScheme.onPrimary,))
+                icon: Icon(Icons.more_vert_rounded, color: Theme.of(context).colorScheme.onSecondary,))
           ],
           centerTitle: true,
           elevation: 0,

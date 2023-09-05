@@ -29,7 +29,7 @@ class WalletController extends ChangeNotifier {
     return totalBalance;
   }
 
-  Future<void> insertWallet(Wallet wallet) async {
+  Future<String> insertWallet(Wallet wallet) async {
     final docRef = _firestore.collection('Wallets').doc();
     final walletToInsert = Wallet(
       id: docRef.id,
@@ -43,6 +43,7 @@ class WalletController extends ChangeNotifier {
             fromFirestore: Wallet.fromFirestore,
             toFirestore: (Wallet wallet, _) => wallet.toFirestore())
         .set(walletToInsert);
+    return docRef.id;
 
   }
   
