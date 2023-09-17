@@ -152,7 +152,21 @@ class _WalletsScreenState extends State<WalletsScreen> {
                                       userId: auth.currentUser!.uid,
                                       category: Category(
                                           icon: 'assets/icons/transfer.png',
-                                          name: 'تحويل رصيد',
+                                          name: '${from.name}',
+                                      )
+                                  )
+                              );
+                              await transactionProvider.saveTransaction(
+                                  my_transaction.Transaction(
+                                      amount: transferAmount,
+                                      walletId: to.id!,
+                                      createdAt: Timestamp.now(),
+                                      type: null,
+                                      note: "استقبال رصيد من ${from.name}",
+                                      userId: auth.currentUser!.uid,
+                                      category: Category(
+                                        icon: 'assets/icons/transfer.png',
+                                        name: '${to.name}',
                                       )
                                   )
                               );
@@ -173,9 +187,16 @@ class _WalletsScreenState extends State<WalletsScreen> {
                           onDeleteWallet: (wallet) async {
                             await walletProvider.deleteWallet(
                                 walletId: wallet.id!);
-                          }
-                      )
-                  )
+                            Get.back();
+                          },
+                          onDeleteWalletAndTransactions: (wallet) async {
+                            await walletProvider.deleteWallet(
+                                walletId: wallet.id!);
+                            await walletProvider
+                                .deleteTransactionsRelatedToWallet(
+                                    walletId: wallet.id!);
+                            Get.back();
+                          }))
                   //
                 ],
               ),
@@ -193,6 +214,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
     required Function(Wallet from, Wallet? to) onTransferBalance,
     required Function(Wallet) onAddBalance,
     required Function(Wallet) onDeleteWallet,
+    required Function(Wallet) onDeleteWalletAndTransactions,
     required Function() onClose
   }) {
     final wallets = snapshot.data;
@@ -225,7 +247,8 @@ class _WalletsScreenState extends State<WalletsScreen> {
                   onTransferBalance: () =>
                       onTransferBalance(
                           wallets[index], transactionController.selectedWallet),
-                  onDeleteWallet: () => onDeleteWallet(wallets[index]),
+                  onDeleteWalletOnly: () => onDeleteWallet(wallets[index]),
+                  onDeleteWalletAndTransactions: () => onDeleteWalletAndTransactions(wallets[index]),
                   onClose: onClose,
                 );
               }),

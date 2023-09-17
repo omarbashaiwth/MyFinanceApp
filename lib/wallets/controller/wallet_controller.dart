@@ -15,8 +15,16 @@ class WalletController extends ChangeNotifier {
 
   WalletType? get walletType => _walletType;
 
+  bool _deleteRelatedTransactions = false;
+  bool get deleteRelatedTransactions => _deleteRelatedTransactions;
+
   void onWalletTypeChange(WalletType value) {
     _walletType = value;
+    notifyListeners();
+  }
+
+  void onToggleDeleteTransactions(bool value){
+    _deleteRelatedTransactions = value;
     notifyListeners();
   }
 
@@ -67,6 +75,17 @@ class WalletController extends ChangeNotifier {
   Future<void> deleteWallet({required String walletId}) async{
     final docRef =  _firestore.collection('Wallets').doc(walletId);
     docRef.delete();
+  }
+
+  Future<void> deleteTransactionsRelatedToWallet({required String walletId}) async{
+    final docRef = _firestore.collection('Transactions')
+        .where('walletId', isEqualTo: walletId)
+        .where('userId', isEqualTo: _auth.currentUser!.uid);
+    docRef.get().then((snapshot) {
+      for (var doc in snapshot.docs) {
+        doc.reference.delete();
+      }
+    });
   }
 
   Stream<List<Wallet>> getWallets()  {

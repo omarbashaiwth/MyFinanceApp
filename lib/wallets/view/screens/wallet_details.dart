@@ -8,6 +8,7 @@ import 'package:myfinance_app/transactions/view/widgets/transaction_history_item
 import 'package:myfinance_app/wallets/model/wallet.dart';
 import 'package:myfinance_app/wallets/view/screens/add_edit_wallet_screen.dart';
 import 'package:myfinance_app/wallets/view/widgets/add_balance_dialog.dart';
+import 'package:myfinance_app/wallets/view/widgets/alert_dialog.dart';
 import 'package:myfinance_app/wallets/view/widgets/total_balance_widget.dart';
 import 'package:myfinance_app/wallets/view/widgets/transfer_balance_dialog.dart';
 import 'package:myfinance_app/wallets/view/widgets/wallet_bottom_sheets.dart';
@@ -21,8 +22,9 @@ class WalletDetails extends StatelessWidget {
   final TextEditingController transferBalanceController;
   final Function() onAddBalance;
   final Function() onTransferBalance;
-  final Function() onDeleteWallet;
-  const WalletDetails({super.key, required this.wallet, required this.onAddBalance, required this.onDeleteWallet, required this.onTransferBalance, required this.addBalanceController, required this.transferBalanceController});
+  final Function() onDeleteWalletOnly;
+  final Function() onDeleteWalletAndTransactions;
+  const WalletDetails({super.key, required this.wallet, required this.onAddBalance, required this.onDeleteWalletOnly, required this.onTransferBalance, required this.addBalanceController, required this.transferBalanceController, required this.onDeleteWalletAndTransactions});
 
   @override
   Widget build(BuildContext context) {
@@ -68,18 +70,69 @@ class WalletDetails extends StatelessWidget {
                               currency: currencyController.currency!.symbol,
                           )
                       ),
-                      onDeleteClick: () => Utils.showAlertDialog(
+                      onDeleteClick: () => showDialog(
                           context: context,
-                          title: 'تأكيد الحذف',
-                          content: 'هل أنت متأكد من حذف هذه المحفظة؟ ',
-                          primaryActionLabel: 'حذف',
-                          secondaryActionLabel: 'إغلاق',
-                          onPrimaryActionClicked: (){
-                            onDeleteWallet();
-                            Get.back();
-                          },
-                        onSecondaryActionClicked: () => Get.back()
-                      )
+                          builder: (ctx) => ShowAlertDialog(
+                                title: 'تأكيد الحذف',
+                                content: (controller) => Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  child:  Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Text(
+                                          'هل أنت متأكد من حذف هذه المحفظة؟ '),
+                                      const SizedBox(height: 50),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          const Text(
+                                              'حذف المعاملات المرتبطة بالمحفظة'),
+                                          Checkbox(
+                                              activeColor: Theme.of(context).colorScheme.primary,
+                                              value: controller
+                                                  .deleteRelatedTransactions,
+                                              onChanged: (value) => controller
+                                                  .onToggleDeleteTransactions(value!)),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                secondaryActionLabel: 'إغلاق',
+                                onSecondaryActionClicked: () {
+                                  walletController.onToggleDeleteTransactions(false);
+                                  Get.back();
+                                },
+                                primaryActionLabel: 'حذف',
+                                onPrimaryActionClicked: (controller) {
+                                  controller.deleteRelatedTransactions? onDeleteWalletAndTransactions() :
+                                  onDeleteWalletOnly();
+                                  walletController.onToggleDeleteTransactions(false);
+                                  Get.back();
+                                },
+                          ))
+                      // onDeleteClick: () => Utils.showAlertDialog(
+                      //     context: context,
+                      //     title: 'تأكيد الحذف',
+                      //     content: Column(
+                      //       mainAxisSize: MainAxisSize.min,
+                      //       children: [
+                      //         const Text('هل أنت متأكد من حذف هذه المحفظة؟ '),
+                      //         CheckboxListTile(
+                      //           value: walletController.deleteRelatedTransactions,
+                      //           onChanged: (value) => walletController.onToggleDeleteTransactions(value!),
+                      //           title: const Text('حذف المعاملات المرتبطة بالمحفظة'),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //     primaryActionLabel: 'حذف',
+                      //     secondaryActionLabel: 'إغلاق',
+                      //     onPrimaryActionClicked: (){
+                      //       onDeleteWallet();
+                      //       Get.back();
+                      //     },
+                      //     onSecondaryActionClicked: () => Get.back()
+                      // )
                   );
                 },
                 icon: Icon(Icons.more_vert_rounded, color: Theme.of(context).colorScheme.onSecondary,))

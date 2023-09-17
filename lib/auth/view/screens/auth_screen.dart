@@ -31,28 +31,35 @@ class AuthScreen extends StatelessWidget {
               children: [
                 const SizedBox(height: 40),
                 AuthLogo(
-                    image: provider.isLogin? 'assets/images/log_in.png':'assets/images/sign_up.png',
-                    text: provider.isLogin? 'تسجيل الدخول': 'حساب جديد'
-                ),
+                    image: provider.isLogin
+                        ? 'assets/images/log_in.png'
+                        : 'assets/images/sign_up.png',
+                    text: provider.isLogin ? 'تسجيل الدخول' : 'حساب جديد'),
                 const SizedBox(height: 50),
                 AuthForm(formKey: formKey),
                 const SizedBox(height: 2),
-                provider.isLogin?
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        TextButton(
-                          onPressed: () {
-                            Get.to(() => const ResetPasswordScreen());
-                          },
-                          child:  Text('نسيت كلمة المرور؟',
-                              style: AppTextTheme.textButtonStyle.copyWith(color: Theme.of(context).colorScheme.onPrimary)
+                provider.isLogin
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          TextButton(
+                            onPressed: () {
+                              Get.to(() => const ResetPasswordScreen());
+                            },
+                            child: Text('نسيت كلمة المرور؟',
+                                style: AppTextTheme.textButtonStyle.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onPrimary)),
                           ),
-                        ),
-                        const SizedBox(width: 50,),
-                      ],
-                    )
-                :const SizedBox(height: 18,),
+                          const SizedBox(
+                            width: 50,
+                          ),
+                        ],
+                      )
+                    : const SizedBox(
+                        height: 18,
+                      ),
                 ElevatedButton(
                   onPressed: () async {
                     final isValid = formKey.currentState?.validate();
@@ -60,16 +67,21 @@ class AuthScreen extends StatelessWidget {
                     if (isValid != null && isValid) {
                       formKey.currentState?.save();
                       await FirebaseAuthServices.emailPasswordAuth(
-                          backgroundColor: Theme.of(context).colorScheme.onBackground,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.onBackground,
                           context: context,
                           user: provider.user,
                           isLogin: provider.isLogin,
                           screenHeight: screenHeight,
-                          onShowLoadingDialog: () => Utils.showLoadingDialog(context, 'جاري التحقق من البيانات...'),
+                          onShowLoadingDialog: () => Utils.showLoadingDialog(
+                              context, 'جاري التحقق من البيانات...'),
                           onHideLoadingDialog: () => Utils.hideLoadingDialog(),
-                          onMessage: (String msg) async {
+                          onTag: (String tag) async {
                             FirebaseAuthServices.showMessageToUser(
-                                auth, msg, context);
+                                auth: auth,
+                                tag: tag,
+                                context: context,
+                                content: (msg) => Text(msg));
                           },
                           onNavigateToHomeScreen: () {
                             Navigator.pushReplacement(
@@ -93,9 +105,9 @@ class AuthScreen extends StatelessWidget {
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () => FirebaseAuthServices.googleAuth(
-                      screenHeight: screenHeight,
-                      context: context,
-                      backgroundColor: Theme.of(context).colorScheme.onBackground,
+                    screenHeight: screenHeight,
+                    context: context,
+                    backgroundColor: Theme.of(context).colorScheme.onBackground,
                   ),
                   style: ElevatedButton.styleFrom(
                       minimumSize: const Size(double.infinity, 50),
@@ -111,7 +123,8 @@ class AuthScreen extends StatelessWidget {
                         provider.isLogin
                             ? 'تسجيل الدخول من خلال حساب قوقل'
                             : 'إنشاء حساب من خلال قوقل',
-                        style: AppTextTheme.normalTextStyle.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                        style: AppTextTheme.normalTextStyle.copyWith(
+                            color: Theme.of(context).colorScheme.onPrimary),
                       ),
                       const SizedBox(width: 20),
                       Image.asset('assets/images/Google_logo.png'),
@@ -123,7 +136,8 @@ class AuthScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(provider.isLogin ? 'ليس لديك حساب؟ ' : 'لديك حساب؟ ',
-                        style: AppTextTheme.normalTextStyle.copyWith(color: Theme.of(context).colorScheme.onPrimary)),
+                        style: AppTextTheme.normalTextStyle.copyWith(
+                            color: Theme.of(context).colorScheme.onPrimary)),
                     GestureDetector(
                       child: Text(
                           provider.isLogin

@@ -15,7 +15,8 @@ class WalletWidget extends StatelessWidget {
   final String? currency;
   final Function() onAddBalance;
   final Function() onTransferBalance;
-  final Function() onDeleteWallet;
+  final Function() onDeleteWalletOnly;
+  final Function() onDeleteWalletAndTransactions;
   final Function() onClose;
 
   const WalletWidget(
@@ -26,7 +27,7 @@ class WalletWidget extends StatelessWidget {
       required this.transferBalanceController,
       required this.walletController,
       required this.onTransferBalance,
-      required this.onDeleteWallet, required this.onClose, required this.currency})
+      required this.onDeleteWalletOnly, required this.onClose, required this.currency, required this.onDeleteWalletAndTransactions})
       : super(key: key);
 
   @override
@@ -38,7 +39,8 @@ class WalletWidget extends StatelessWidget {
         transferBalanceController: transferBalanceController,
         onAddBalance: onAddBalance,
         onTransferBalance: onTransferBalance,
-        onDeleteWallet: onDeleteWallet,
+        onDeleteWalletOnly: onDeleteWalletOnly,
+        onDeleteWalletAndTransactions: onDeleteWalletAndTransactions,
       )
       ),
       child: Padding(

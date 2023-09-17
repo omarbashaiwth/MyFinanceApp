@@ -9,13 +9,12 @@ import 'package:myfinance_app/currency/controller/currency_controller.dart';
 import 'package:myfinance_app/currency/view/currenciesBottomSheet.dart';
 import 'package:provider/provider.dart';
 
-
 class FirebaseAuthServices {
   static final _auth = FirebaseAuth.instance;
   static final _firestore = FirebaseFirestore.instance;
 
   static Future<void> emailPasswordAuth(
-      {required Function(String) onMessage,
+      {required Function(String) onTag,
       required Function onNavigateToHomeScreen,
       required double screenHeight,
       required Color backgroundColor,
@@ -23,8 +22,7 @@ class FirebaseAuthServices {
       required BuildContext context,
       required MyUser user,
       required Function() onShowLoadingDialog,
-      required Function() onHideLoadingDialog
-      }) async {
+      required Function() onHideLoadingDialog}) async {
     final currencyController =
         Provider.of<CurrencyController>(context, listen: false);
     onShowLoadingDialog();
@@ -35,7 +33,7 @@ class FirebaseAuthServices {
         final firebaseUser = userCredential.user;
         if (!firebaseUser!.emailVerified) {
           onHideLoadingDialog();
-          onMessage('confirm verification');
+          onTag('confirm verification');
         } else {
           final selectedCurrency = await currencyController.hasSelectedCurrency(
             firestore: _firestore,
@@ -62,12 +60,12 @@ class FirebaseAuthServices {
         final userCredential = await _auth.createUserWithEmailAndPassword(
             email: user.email, password: user.password);
         if (userCredential.user != null) {
-          await _sendEmailVerification(onMessage: (msg) => onMessage(msg));
+          await _sendEmailVerification(onMessage: (msg) => onTag(msg));
           await _auth.currentUser!.updateDisplayName(user.username);
           onHideLoadingDialog();
         } else {
           onHideLoadingDialog();
-          onMessage('حدث خطأ أثناء إنشاء الحساب');
+          onTag('حدث خطأ أثناء إنشاء الحساب');
         }
       }
     } on FirebaseAuthException catch (e) {
@@ -76,20 +74,19 @@ class FirebaseAuthServices {
         message = 'كلمة المرور ضعيفة جدا';
       } else if (e.code == 'email-already-in-use') {
         message = 'هذا البريد الالكتروني مستخدم بالفعل. الرجاء تسجيل الدخول';
-      } else if(e.code == 'invalid-email'){
+      } else if (e.code == 'invalid-email') {
         message = 'البريد الإلكتروني غير صالح';
-      }
-      else if (e.code == 'user-not-found') {
+      } else if (e.code == 'user-not-found') {
         message = 'هذا المستخدم غير موجود. الرجاء إنشاء حساب';
       } else if (e.code == 'wrong-password') {
         message = 'كلمة المرور خاطئة. الرجاء إدخال كلمة مرور صحيحة';
       }
       onHideLoadingDialog();
-      onMessage(message);
+      onTag(message);
       debugPrint('Firebase error: $message: ${e.message}');
     } catch (e) {
       onHideLoadingDialog();
-      onMessage('Error: ${e.toString()}');
+      onTag('Error: ${e.toString()}');
       debugPrint(e.toString());
     }
   }
@@ -134,19 +131,19 @@ class FirebaseAuthServices {
     _auth.signOut();
   }
 
-  static void resetPassword(
-      {required String email,
-        required Function() onShowLoadingDialog,
-        required Function() onHideLoadingDialog,
-      required Function(String, IconData) onMessage,
-      }) async {
+  static void resetPassword({
+    required String email,
+    required Function() onShowLoadingDialog,
+    required Function() onHideLoadingDialog,
+    required Function(String, IconData) onMessage,
+  }) async {
     onShowLoadingDialog();
     try {
       await _auth.sendPasswordResetEmail(email: email);
       onHideLoadingDialog();
       onMessage(
-          'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني. الرجاء التحقق من بريدك الإلكتروني واتباع التعليمات لإعادة تعيين كلمة المرور الخاصة بك',
-          Icons.outgoing_mail,
+        'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني. الرجاء التحقق من بريدك الإلكتروني واتباع التعليمات لإعادة تعيين كلمة المرور الخاصة بك',
+        Icons.outgoing_mail,
       );
     } on FirebaseAuthException catch (e) {
       String message = 'حدث خطأ ما';
@@ -171,32 +168,37 @@ class FirebaseAuthServices {
   }
 
   static void showMessageToUser(
-      FirebaseAuth auth, String msg, BuildContext context) {
-    if (msg == 'confirm verification') {
+      {required FirebaseAuth auth,
+      required String tag,
+      required BuildContext context,
+      required Widget Function(String) content}) {
+    if (tag == 'confirm verification') {
       Utils.showAlertDialog(
           context: context,
           primaryActionLabel: 'إعادة الإرسال',
           secondaryActionLabel: 'إغلاق',
           title: 'تأكيد الحساب',
-          content:
-              'لم يتم تأكيد ملكية هذا الحساب بعد. الرجاء مراحعة بريدك الإلكتروني للتأكد من أنك قمت بالضغط على رابط التأكيد المرسل لك.',
+          content: content(
+            'لم يتم تأكيد ملكية هذا الحساب بعد. الرجاء مراحعة بريدك الإلكتروني للتأكد من أنك قمت بالضغط على رابط التأكيد المرسل لك.',
+          ),
           onPrimaryActionClicked: (ctx) {
             auth.currentUser!.sendEmailVerification();
             Utils.showSnackBar(ctx, 'تم ارسال التأكيد الى بريدك الإلكتروني');
             Navigator.pop(ctx);
           },
           onSecondaryActionClicked: () => Get.back());
-    } else if (msg == 'send email verification') {
+    } else if (tag == 'send email verification') {
       Utils.showAlertDialog(
         context: context,
         title: 'تأكيد الحساب',
-        content:
-            'لقد قمنا بإرسال رابط التحقق عبر البريد الإلكتروني المدخل. يرجى مراجعة البريد الإلكتروني وتأكيد الحساب',
+        content: content(
+          'لقد قمنا بإرسال رابط التحقق عبر البريد الإلكتروني المدخل. يرجى مراجعة البريد الإلكتروني وتأكيد الحساب',
+        ),
         primaryActionLabel: 'تم',
         onPrimaryActionClicked: () => Get.back(),
       );
     } else {
-      Utils.showSnackBar(context, msg);
+      Utils.showSnackBar(context, tag);
     }
   }
 }

@@ -72,7 +72,7 @@ class ResetPasswordScreen extends StatelessWidget {
                               context: context,
                               icon: icon,
                               title: '',
-                              content: message,
+                              content: Text(message),
                               primaryActionLabel: 'حسناً',
                               onPrimaryActionClicked: () {
                                 Get.back();
@@ -87,7 +87,7 @@ class ResetPasswordScreen extends StatelessWidget {
                         context: context,
                         icon: Icons.error,
                         title: '',
-                        content: 'الرجاء إدخال البريد الإلكتروني',
+                        content: const Text('الرجاء إدخال البريد الإلكتروني'),
                         primaryActionLabel: 'حسناً',
                         onPrimaryActionClicked: () {
                           Get.back();

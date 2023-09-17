@@ -45,7 +45,7 @@ class Utils {
   static void showAlertDialog({
     required BuildContext context,
     required String title,
-    required String content,
+    required Widget content,
     required String primaryActionLabel,
     required Function onPrimaryActionClicked,
     IconData icon = Icons.warning_amber_rounded,
@@ -68,7 +68,7 @@ class Utils {
               title: Text(title),
               contentTextStyle: AppTextTheme.normalTextStyle
                   .copyWith(color: Theme.of(context).colorScheme.onPrimary),
-              content: Text(content),
+              content: content,
               actions: [
                 secondaryActionLabel != null
                     ? TextButton(
