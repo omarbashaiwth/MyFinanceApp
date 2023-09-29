@@ -2,6 +2,8 @@ import  'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/model/transaction.dart' as my_transaction;
@@ -71,9 +73,12 @@ class TransactionForm {
                           currency: currency,
                           userId: currentUser.uid,
                           availableWallets: snapshot.data!,
+                          onWalletClick: (wallet){
+                            transactionController.onWalletChange(wallet);
+                            Get.back();
+                          },
                           walletClickable: (wallet) => expenseAmount <= wallet.currentBalance!,
-                        )
-                            : Fluttertoast.showToast(msg: 'قم بإدخال المبلغ أولاً');
+                        ) : Fluttertoast.showToast(msg: 'قم بإدخال المبلغ أولاً');
                       },
                     );
                   },
@@ -81,7 +86,17 @@ class TransactionForm {
                 const SizedBox(height: 20),
                 ClickableTextField(
                   color: Theme.of(context).colorScheme.onPrimaryContainer,
-                  onClick: () => TransactionBottomSheet.showExpensesIconsBS(),
+                  onClick: () => TransactionBottomSheet.showExpensesIconsBS(
+                    onClick: (index, category){
+                      transactionController.onChangeSelectedIcon(index);
+                      transactionController.onCategoryChange(category);
+                      Get.back();
+                    },
+                    selectedColor: (index) =>
+                        transactionController.selectedIcon == index
+                            ? orangeyRed
+                            : lightGrey
+                  ),
                   text: transactionController.selectedCategory?.name ?? 'نوع النفقة',
                   icon: transactionController.selectedCategory?.icon ?? 'assets/icons/category.png',
                 ),
@@ -172,6 +187,10 @@ class TransactionForm {
                         currency: currency,
                         userId: currentUser.uid,
                         availableWallets: snapshot.data!,
+                        onWalletClick: (wallet){
+                          transactionController.onWalletChange(wallet);
+                          Get.back();
+                        },
                         walletClickable: (_) => true,
                       ),
                     );

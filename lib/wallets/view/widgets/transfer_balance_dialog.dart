@@ -121,6 +121,10 @@ class TransferBalanceDialog extends StatelessWidget {
                                 title: 'تحويل المبلغ إلى',
                                 currency: currency,
                                 userId: userId,
+                                onWalletClick: (wallet) {
+                                  transactionProvider.onWalletChange(wallet);
+                                  Get.back();
+                                },
                                 availableWallets: snapshot.data!,
                                 walletClickable: (wallet ) => wallet.id != transferFrom.id
                             );

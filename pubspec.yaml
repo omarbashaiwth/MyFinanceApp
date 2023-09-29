@@ -55,6 +55,7 @@ dependencies:
   url_launcher: ^6.1.11
   flutter_launcher_icons:
   firebase_messaging: ^14.6.7
+  uuid: ^4.1.0
 
 flutter_icons:
   android: true

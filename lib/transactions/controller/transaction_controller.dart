@@ -49,11 +49,12 @@ class TransactionController extends ChangeNotifier {
   Future<void> saveTransaction(my_transaction.Transaction transaction) async {
     _firestore
         .collection('Transactions')
+        .doc(transaction.id)
         .withConverter(
             fromFirestore: my_transaction.Transaction.fromFirestore,
             toFirestore: (my_transaction.Transaction transaction, _) =>
                 transaction.toFirestore())
-        .add(transaction);
+        .set(transaction);
   }
 
   List<my_transaction.Transaction>? transactionsByMonth({required List<my_transaction.Transaction>? transactions, required DateTime pickedMonth}){

@@ -100,6 +100,19 @@ class WalletController extends ChangeNotifier {
         .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
 
   }
+
+  Future<Wallet?> getWalletById(String walletId) {
+    return _firestore.collection('Wallets')
+        .doc(walletId)
+        .withConverter<Wallet>(
+        fromFirestore: Wallet.fromFirestore,
+        toFirestore: (Wallet wallet, _) => wallet.toFirestore()
+    )
+        .get()
+        .then((value) => value.data());
+
+  }
+  
   Stream<List<my_transactions.Transaction>> getTransactionsRelatedToWallet(String walletId)  {
     return _firestore.collection('Transactions')
         .where('userId', isEqualTo: _auth.currentUser!.uid)

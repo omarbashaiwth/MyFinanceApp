@@ -4,13 +4,16 @@ import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/utils/expenses_icons.dart';
 import 'package:myfinance_app/core/widgets/empty_widget.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
+import 'package:myfinance_app/transactions/model/category.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../core/widgets/price_widget.dart';
 import '../../../../wallets/model/wallet.dart';
 
 class TransactionBottomSheet {
-  static void showExpensesIconsBS() {
+  static void showExpensesIconsBS(
+        {required Function(int, Category ) onClick, required Color Function(int) selectedColor}
+      ) {
     final iconsList = ExpensesIcons.iconsList;
     Get.bottomSheet(Container(
       padding: const EdgeInsets.only(top: 4),
@@ -38,18 +41,11 @@ class TransactionBottomSheet {
                   return _expenseCategoryItem(
                     icon: iconsList[index].icon!,
                     label: iconsList[index].name!,
-                    color: Provider.of<TransactionController>(context)
-                                .selectedIcon ==
-                            index
-                        ? orangeyRed
-                        : lightGrey,
-                    onClick: () {
-                      Provider.of<TransactionController>(context, listen: false)
-                          .onChangeSelectedIcon(index);
-                      Provider.of<TransactionController>(context, listen: false)
-                          .onCategoryChange(iconsList[index]);
-                      Get.back();
-                    },
+                    color: selectedColor(index),
+                    onClick: () => onClick(
+                      index,
+                      iconsList[index]
+                    )
                   );
                 }),
           )
@@ -64,6 +60,7 @@ class TransactionBottomSheet {
     required String? currency,
     required List<Wallet> availableWallets,
     required bool Function(Wallet) walletClickable,
+    required Function(Wallet) onWalletClick,
   }) {
     Get.bottomSheet(Container(
       padding: const EdgeInsets.only(top: 4),
@@ -98,11 +95,7 @@ class TransactionBottomSheet {
                                   currency: currency,
                                   clickable: walletClickable,
                                   onClick: () {
-                                    Provider.of<TransactionController>(context,
-                                            listen: false)
-                                        .onWalletChange(
-                                            availableWallets[index]);
-                                    Get.back();
+                                    onWalletClick(availableWallets[index]);
                                   }),
                               const SizedBox(height: 12)
                             ]);

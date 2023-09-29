@@ -10,6 +10,7 @@ import 'package:myfinance_app/currency/controller/currency_controller.dart';
 import 'package:myfinance_app/onboarding/controller/onboarding_controller.dart';
 import 'package:myfinance_app/reports/controller/reports_controller.dart';
 import 'package:myfinance_app/settings/controller/settings_cntroller.dart';
+import 'package:myfinance_app/transactions/controller/edit_transaction_controller.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/view/screens/add_transaction_screen.dart';
 import 'package:myfinance_app/transactions/view/screens/transactions_screen.dart';
@@ -43,7 +44,8 @@ void main() async {
     ChangeNotifierProvider<CurrencyController>(
         create: (_) => CurrencyController(prefs)),
     ChangeNotifierProvider<SettingsController>(
-        create: (_) => SettingsController())
+        create: (_) => SettingsController()),
+    ChangeNotifierProvider<EditTransactionController>(create: (_) => EditTransactionController()),
   ], child: const MyApp()));
 }
 

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:uuid/uuid.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/model/transaction.dart'
     as my_transaction;
@@ -57,6 +58,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
       createdAt: transactionController.selectedDate,
       category: transactionController.selectedCategory,
       walletId: transactionController.selectedWallet?.id,
+      id: const Uuid().v4()
     );
 
 
