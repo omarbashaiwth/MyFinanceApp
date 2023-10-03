@@ -1,10 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
-import 'package:myfinance_app/currency/controller/currency_controller.dart';
 import 'package:myfinance_app/transactions/controller/edit_transaction_controller.dart';
 import 'package:myfinance_app/transactions/model/transaction.dart' as my_transaction;
 import 'package:myfinance_app/transactions/view/widgets/custom_text_form_field.dart';
@@ -28,7 +25,6 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
 
   late EditTransactionController editController;
   late WalletController walletController;
-  // late CurrencyController currencyController;
   late TextEditingController amountTextEditingController;
   late TextEditingController noteTextEditingController;
   
@@ -43,18 +39,12 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('build');
     editController = Provider.of<EditTransactionController>(context);
     walletController = Provider.of<WalletController>(context);
-    // currencyController = Provider.of<CurrencyController>(context);
-
-    final currentUser = FirebaseAuth.instance.currentUser;
 
     return WillPopScope(
       onWillPop: () async {
         editController.clearSelections();
-        // walletController.clearSelections();
-        // amountTextEditingController.dispose();
         return true;
       },
       child: Directionality(
@@ -65,6 +55,16 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
             centerTitle: true,
             elevation: 0,
             automaticallyImplyLeading: false,
+            leading: IconButton(
+              onPressed: () {
+                editController.clearSelections();
+                Get.back();
+              },
+              icon:  Icon(
+                Icons.arrow_back_rounded,
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
+            ),
             backgroundColor: Theme
                 .of(context)
                 .colorScheme
@@ -95,51 +95,6 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
 
                     ),
                   ),
-                  // const SizedBox(height: 20,),
-                  // StreamBuilder(
-                  //   stream: walletController.getWallets(),
-                  //   builder: (_, availableWallets) =>
-                  //       FutureBuilder(
-                  //         future: walletController.getWalletById(
-                  //             widget.transaction.walletId!),
-                  //         builder: (_, selectedWallet) {
-                  //           debugPrint('selectedWallet: ${selectedWallet.data
-                  //               ?.name}');
-                  //           return ClickableTextField(
-                  //             text: editController.selectedWallet?.walletType
-                  //                 ?.type ?? selectedWallet.data?.name ??
-                  //                 'خصم المبلغ من',
-                  //             icon: editController.selectedWallet?.walletType
-                  //                 ?.icon ??
-                  //                 selectedWallet.data?.walletType?.icon ??
-                  //                 'assets/icons/wallet.png',
-                  //             color: Theme
-                  //                 .of(context)
-                  //                 .colorScheme
-                  //                 .onPrimaryContainer,
-                  //             onClick: () {
-                  //               final expenseAmount =
-                  //               double.tryParse(amountTextEditingController.text);
-                  //               expenseAmount != null
-                  //                   ? TransactionBottomSheet.showWalletsBS(
-                  //                 title: 'خصم المبلغ من',
-                  //                 currency: currencyController.currency?.symbol,
-                  //                 userId: currentUser!.uid,
-                  //                 onWalletClick: (wallet) {
-                  //                     editController.onWalletChange(wallet);
-                  //                     Get.back();
-                  //                   },
-                  //                 availableWallets: availableWallets.data!,
-                  //                 walletClickable: (wallet) =>
-                  //                 expenseAmount <= wallet.currentBalance!,
-                  //               )
-                  //                   : Fluttertoast.showToast(
-                  //                   msg: 'قم بإدخال المبلغ أولاً');
-                  //             },
-                  //           );
-                  //         },
-                  //       ),
-                  // ),
                   const SizedBox(height: 20,),
                   ClickableTextField(
                     text: editController.selectedCategory?.name ??
@@ -192,6 +147,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                   const SizedBox(height: 40),
                   ElevatedButton(
                       onPressed: () async {
+                        final wallet = await walletController.getWalletById(widget.transaction.walletId!);
                         await editController.updateTransaction(
                             transactionId: widget.transaction.id!,
                             data: my_transaction.Transaction(
@@ -205,22 +161,13 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                               walletId: widget.transaction.walletId,
                             )
                         );
-                        if(await walletController.getWalletById(widget.transaction.walletId!) != null){
+                        if(wallet != null){
                           await walletController.updateWalletBalance(
                             walletId: widget.transaction.walletId!,
                             value: widget.transaction.amount! - double.parse(amountTextEditingController.text),
                           );
                         }
                         Get.back();
-                        // await walletController.updateWalletBalance(
-                        //   walletId: editController.selectedWallet!.id!,
-                        //   value: -(widget.transaction.amount! - double.parse(amountTextEditingController.text)),
-                        // );
-                        // await walletController.updateWalletBalance(
-                        //   walletId: widget.transaction.walletId!,
-                        //   value: widget.transaction.amount! - double.parse(amountTextEditingController.text),
-                        // );
-                        // Get.back();
                       },
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(double.infinity, 50),

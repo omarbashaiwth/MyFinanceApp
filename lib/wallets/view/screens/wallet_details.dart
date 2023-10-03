@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
-import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/currency/controller/currency_controller.dart';
+import 'package:myfinance_app/transactions/view/screens/edit_transaction_screen.dart';
 import 'package:myfinance_app/transactions/view/widgets/centered_header.dart';
 import 'package:myfinance_app/transactions/view/widgets/transaction_history_item.dart';
 import 'package:myfinance_app/wallets/model/wallet.dart';
@@ -165,7 +165,8 @@ class WalletDetails extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 12, right: 12, left: 12),
                         child: TransactionHistoryItem(
                             transaction: transactions[index],
-                            currency: currencyController.currency!.symbol
+                            currency: currencyController.currency!.symbol,
+                          onItemClicked: () => Get.to(() => EditTransactionScreen(transaction: transactions[index])),
                         ),
                       );
                     },

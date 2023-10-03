@@ -8,6 +8,7 @@ import 'package:myfinance_app/transactions/view/widgets/transaction_history_item
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
 import '../../controller/transaction_controller.dart';
+import 'edit_transaction_screen.dart';
 
 class TransactionHistoryScreen extends StatelessWidget {
   final String? currency;
@@ -67,7 +68,13 @@ class TransactionHistoryScreen extends StatelessWidget {
                           child: Column(
                             children: [
                               const SizedBox(height: 8),
-                              TransactionHistoryItem(transaction: transaction, currency: currency),
+                              TransactionHistoryItem(
+                                transaction: transaction,
+                                currency: currency,
+                                onItemClicked: () => Get.to(() =>
+                                    EditTransactionScreen(
+                                        transaction: transaction)),
+                              ),
                               // index != transactions.indexOf(transactions.last)?
                             ],
                           ),

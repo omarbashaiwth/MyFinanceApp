@@ -9,6 +9,7 @@ import 'package:myfinance_app/core/widgets/price_widget.dart';
 import 'package:myfinance_app/reports/view/reports_screen.dart';
 import 'package:myfinance_app/settings/view/settings_screen.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
+import 'package:myfinance_app/transactions/view/screens/edit_transaction_screen.dart';
 import 'package:myfinance_app/transactions/view/screens/transaction_history_screen.dart';
 import 'package:myfinance_app/transactions/view/widgets/centered_header.dart';
 import 'package:provider/provider.dart';
@@ -230,6 +231,9 @@ class TransactionsScreen extends StatelessWidget {
                         TransactionHistoryItem(
                           transaction: transactions[index],
                           currency: currency,
+                          onItemClicked: () {
+                            Get.to(() => EditTransactionScreen(transaction: transactions[index]));
+                          },
                         ),
                         index != transactions.indexOf(transactions.last)
                             ? const Divider()
