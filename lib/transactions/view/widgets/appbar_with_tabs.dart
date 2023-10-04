@@ -34,7 +34,7 @@ class AppBarWithTabs extends StatelessWidget {
           child: TabBar(
             onTap:(index) =>  onIndexChange(index),
             padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
-            indicator:  BoxDecoration(color: orangeyRed, borderRadius: BorderRadius.circular(20)),
+            indicator:  BoxDecoration(color: tabController.index == 0? orangeyRed : green, borderRadius: BorderRadius.circular(20)),
             controller: tabController,
             tabs: [
               _buildTab(label: 'نـفـقــة', labelColor: tabController.index == 0? white: lightGrey),

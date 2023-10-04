@@ -34,7 +34,7 @@ class TransactionForm {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: lightGrey)
+                border: Border.all(color: orangeyRed)
             ),
             child: Column(
               children: [
@@ -153,7 +153,7 @@ class TransactionForm {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: lightGrey)
+                border: Border.all(color: green)
             ),
             child: Column(
               children: [
