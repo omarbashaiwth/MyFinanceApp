@@ -52,16 +52,10 @@ class AddBalanceDialog extends StatelessWidget {
               mainAxisAlignment:
               MainAxisAlignment.center,
               children: [
-                  FutureBuilder(
-                    future: currencyController.getCurrencyFromFirebase(
-                      userId: user?.uid ?? '',
-                      firestore: firestore
-                    ),
-                    builder:(_,snapshot) => Text(
-                      currencyController.currency?.symbol ?? '',
-                    style: const TextStyle(fontFamily: 'Tajawal', fontSize: 20, color: lightGrey),
+                  Text(
+                    currencyController.currency?.symbol ?? '',
+                  style: const TextStyle(fontFamily: 'Tajawal', fontSize: 20, color: lightGrey),
                 ),
-                  ),
                 const SizedBox(width: 10),
                 Container(
                   decoration: BoxDecoration(

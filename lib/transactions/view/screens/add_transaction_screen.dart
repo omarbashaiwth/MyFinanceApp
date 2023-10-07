@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:myfinance_app/core/utils/expenses_icons.dart';
+import 'package:myfinance_app/transactions/model/category.dart';
 import 'package:uuid/uuid.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/model/transaction.dart'
@@ -30,11 +33,13 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
   var _currentTabIndex = 0;
   late final TabController _tabController;
   late final TextEditingController _expenseTextEditingController;
+  late final TextEditingController _newIconTextEditingController;
 
   @override
   void initState() {
     _tabController = TabController(length: 2, vsync: this);
     _expenseTextEditingController = TextEditingController();
+    _newIconTextEditingController = TextEditingController();
     super.initState();
   }
 
@@ -42,6 +47,7 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
   void dispose() {
     _tabController.dispose();
     _expenseTextEditingController.dispose();
+    _newIconTextEditingController.dispose();
     super.dispose();
   }
 
@@ -51,7 +57,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
     final currentUser = FirebaseAuth.instance.currentUser;
     final transactionController = Provider.of<TransactionController>(context);
     final walletController = Provider.of<WalletController>(context);
-    final firestore = FirebaseFirestore.instance;
     final transaction = my_transaction.Transaction(
       type: _currentTabIndex == 0? 'expense': 'income',
       userId: currentUser!.uid,
@@ -60,7 +65,6 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
       walletId: transactionController.selectedWallet?.id,
       id: const Uuid().v4()
     );
-
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -109,13 +113,14 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
             },
           ),
         ),
-        body: FutureBuilder(
-          future:currencyController.getCurrencyFromFirebase(userId: currentUser.uid, firestore: firestore),
-          builder: (_, currency) => TabBarView(
-            physics: const NeverScrollableScrollPhysics(),
-            controller: _tabController,
-            children: [
-              TransactionForm.expenseForm(
+        body: TabBarView(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: _tabController,
+          children: [
+            StreamBuilder(
+              stream: transactionController.getUserCategories(currentUser.uid),
+              builder: (context, snapshot) {
+                return TransactionForm.expenseForm(
                   key: _expenseFormKey,
                   textEditingController: _expenseTextEditingController,
                   context: context,
@@ -124,18 +129,79 @@ class _AddTransactionScreenState extends State<AddTransactionScreen>
                   currentUser: currentUser,
                   transactionController: transactionController,
                   walletController: walletController,
-              ),
-              TransactionForm.incomeForm(
-                  key: _incomeFormKey,
-                  context: context,
-                currency: currencyController.currency?.symbol ?? '',
-                currentUser: currentUser,
-                  transaction: transaction,
-                  transactionController: transactionController,
-                  walletController: walletController,
-              )
-            ],
-          ),
+                  userCategories: snapshot.data ?? [],
+                  onAddIconClick:(){
+                    showDialog(context: context, builder: (ctx){
+                          return Directionality(
+                            textDirection: TextDirection.rtl,
+                            child: AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+                              title:  Text('إضافة نوع نفقة جديد', style: TextStyle(color: Theme.of(context).colorScheme.onSecondary,fontFamily: 'Tajawal'), ),
+                              content: TextField(
+                                controller: _newIconTextEditingController,
+                                decoration: const InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  hintText: 'اسم النفقة',
+                                  hintStyle: TextStyle(fontFamily: 'Tajawal'),
+                                ),
+                                maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                                maxLength: 15,
+                                maxLines: 1,
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () async {
+                                    await transactionController.addNewCategory(
+                                        currentUser.uid,
+                                        Category(
+                                            icon: 'assets/icons/expenses_icons/more.png',
+                                            name: _newIconTextEditingController.text
+                                        )
+                                    );
+                                    Get.back();
+                                  },
+                                  child: Text(
+                                    "إضافة",
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        fontFamily: 'Tajawal'),
+                                  )),
+                              TextButton(
+                                  onPressed: () {
+                                    Get.back();
+                                  },
+                                  child: Text(
+                                    "إلغاء",
+                                    style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSecondary,
+                                        fontFamily: 'Tajawal'),
+                                  )),
+                            ],
+                            ),
+                          );
+                        }
+                    );
+                  },
+              );
+              }
+            ),
+            TransactionForm.incomeForm(
+                key: _incomeFormKey,
+                context: context,
+              currency: currencyController.currency?.symbol ?? '',
+              currentUser: currentUser,
+                transaction: transaction,
+                transactionController: transactionController,
+                walletController: walletController,
+            )
+          ],
         ),
       ),
     );

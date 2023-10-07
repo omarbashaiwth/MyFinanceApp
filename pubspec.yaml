@@ -121,6 +121,7 @@ flutter:
     - assets/icons/expenses_icons/zakat.png
     - assets/icons/expenses_icons/telephone-call.png
     - assets/icons/expenses_icons/food.png
+    - assets/icons/expenses_icons/more.png
 
   fonts:
     - family: Tajawal

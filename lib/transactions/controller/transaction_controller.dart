@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:myfinance_app/auth/model/my_user.dart';
 import 'package:myfinance_app/transactions/model/transaction.dart'
     as my_transaction;
 import 'package:myfinance_app/transactions/model/category.dart';
@@ -93,6 +94,23 @@ class TransactionController extends ChangeNotifier {
               previousValue + transaction.amount!
       );
     }
+  }
+
+  Future<void> addNewCategory(String userId, Category category) async {
+    _firestore.collection('Users').doc(userId).update({
+      'categories': FieldValue.arrayUnion([category.toJson()])
+    });
+  }
+
+  Stream<List<Category>?> getUserCategories(String id) {
+    return _firestore
+        .collection('Users')
+        .doc(id)
+        .snapshots()
+        .map((snapshot) => snapshot.data()?['categories'])
+        .map((categories) => categories
+            .map<Category>((category) => Category.fromJson(category))
+            .toList());
   }
 
   void clearSelections() {

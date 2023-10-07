@@ -12,9 +12,9 @@ import '../../../../wallets/model/wallet.dart';
 
 class TransactionBottomSheet {
   static void showExpensesIconsBS(
-        {required Function(int, Category ) onClick, required Color Function(int) selectedColor}
+        {required List<Category> userCategories,required Function onAddIconClick,required Function(int, Category ) onIconClick, required Color Function(int) selectedColor}
       ) {
-    final iconsList = ExpensesIcons.iconsList;
+    final iconsList = ExpensesIcons.iconsList + userCategories;
     Get.bottomSheet(Container(
       padding: const EdgeInsets.only(top: 4),
       decoration:  BoxDecoration(
@@ -26,11 +26,23 @@ class TransactionBottomSheet {
       ),
       child: Column(
         children: [
-          const SizedBox(height: 16),
-          Text('أختر نوع النفقة',
-              style: TextStyle(fontFamily: 'Tajawal', color: Theme.of(Get.context!).colorScheme.onPrimary)),
+          // const SizedBox(height: 16),
+          Stack(
+            alignment: Alignment.centerRight,
+            children: [
+              IconButton(
+                  onPressed: () => onAddIconClick(),
+                  icon: Icon(Icons.add, color: Theme.of(Get.context!).colorScheme.onPrimary,),
+                splashRadius: 1,
+              ),
+              Align(
+                alignment: Alignment.center,
+                child: Text('أختر نوع النفقة',
+                style: TextStyle(fontFamily: 'Tajawal', color: Theme.of(Get.context!).colorScheme.onPrimary)),
+              ),
+            ]),
           const Divider(),
-          const SizedBox(height: 32),
+          const SizedBox(height: 16),
           Expanded(
             child: GridView.builder(
                 itemCount: iconsList.length,
@@ -42,9 +54,8 @@ class TransactionBottomSheet {
                     icon: iconsList[index].icon!,
                     label: iconsList[index].name!,
                     color: selectedColor(index),
-                    onClick: () => onClick(
-                      index,
-                      iconsList[index]
+                    onClick: () => onIconClick(
+                      index, iconsList[index]
                     )
                   );
                 }),
@@ -176,7 +187,7 @@ class TransactionBottomSheet {
                 borderRadius: BorderRadius.circular(20), color: color),
             child: Image.asset(icon, height: 35),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 4),
           Expanded(
             child: Text(
               label,

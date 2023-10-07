@@ -30,6 +30,7 @@ class TransactionsScreen extends StatelessWidget {
     final currency = currencyController.currency;
     final auth = FirebaseAuth.instance;
     final firestore = FirebaseFirestore.instance;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -80,6 +81,7 @@ class TransactionsScreen extends StatelessWidget {
                             controller: transactionController,
                             snapshot: snapshot,
                             currency: currency?.symbol ?? '',
+                            width: screenWidth/2.5
                         ),
                         const SizedBox(height: 16),
                         _headerSection(
@@ -134,6 +136,7 @@ class TransactionsScreen extends StatelessWidget {
   Widget _monthlySummarySection(
       {required AsyncSnapshot<List<my_transaction.Transaction>> snapshot,
       required String? currency,
+        required double width,
       required TransactionController controller}) {
     final transactionsByMonth = controller.transactionsByMonth(
             transactions: snapshot.data, pickedMonth: DateTime.now()) ??
@@ -187,6 +190,7 @@ class TransactionsScreen extends StatelessWidget {
                         transactions: transactionsByMonth, type: 'expense'),
                     currency: currency,
                     color: red,
+                    width: width,
                   ),
                   SummaryCard(
                     title: 'الدخل',
@@ -197,7 +201,7 @@ class TransactionsScreen extends StatelessWidget {
                     ),
                     currency: currency,
                     color: green,
-                    quarterRotate: 2,
+                    width: width,
                   )
                 ],
               ),

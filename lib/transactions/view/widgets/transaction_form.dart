@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
+import 'package:myfinance_app/transactions/model/category.dart';
 import 'package:myfinance_app/transactions/model/transaction.dart' as my_transaction;
 import 'package:myfinance_app/transactions/view/widgets/transaction_bottom_sheet.dart';
 import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
@@ -23,6 +24,8 @@ class TransactionForm {
         required String? currency,
       required TextEditingController textEditingController,
       required BuildContext context,
+        required Function onAddIconClick,
+        required List<Category> userCategories,
       required Key key}) {
     return Form(
       key: key,
@@ -87,7 +90,9 @@ class TransactionForm {
                 ClickableTextField(
                   color: Theme.of(context).colorScheme.onPrimaryContainer,
                   onClick: () => TransactionBottomSheet.showExpensesIconsBS(
-                    onClick: (index, category){
+                    userCategories: userCategories,
+                    onAddIconClick: ()=> onAddIconClick(),
+                    onIconClick: (index, category){
                       transactionController.onChangeSelectedIcon(index);
                       transactionController.onCategoryChange(category);
                       Get.back();

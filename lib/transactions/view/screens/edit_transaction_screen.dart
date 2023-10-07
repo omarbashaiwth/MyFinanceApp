@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/transactions/controller/edit_transaction_controller.dart';
+import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/model/transaction.dart' as my_transaction;
 import 'package:myfinance_app/transactions/view/widgets/custom_text_form_field.dart';
 import 'package:myfinance_app/wallets/controller/wallet_controller.dart';
@@ -31,7 +32,7 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
   @override
   void initState() {
     amountTextEditingController =
-        TextEditingController(text: widget.transaction.amount?.toStringAsFixed(0));
+        TextEditingController(text: widget.transaction.amount?.toString());
     noteTextEditingController = TextEditingController(text: widget.transaction.note);
 
     super.initState();
@@ -96,25 +97,31 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                     ),
                   ),
                   const SizedBox(height: 20,),
-                  ClickableTextField(
-                    text: editController.selectedCategory?.name ??
-                        widget.transaction.category!.name!,
-                    icon: editController.selectedCategory?.icon ??
-                        widget.transaction.category!.icon!,
-                    color: Theme
-                        .of(context)
-                        .colorScheme
-                        .onPrimaryContainer,
-                    onClick: () {
-                      TransactionBottomSheet.showExpensesIconsBS(
-                          onClick: (index, category) {
-                            editController.onCategoryChange(category);
-                            Get.back();
-                          },
-                          selectedColor: (_) => lightGrey
-
+                  StreamBuilder(
+                    stream: editController.getUserCategories(widget.transaction.userId!),
+                    builder: (context, snapshot) {
+                      return ClickableTextField(
+                        text: editController.selectedCategory?.name ??
+                            widget.transaction.category!.name!,
+                        icon: editController.selectedCategory?.icon ??
+                            widget.transaction.category!.icon!,
+                        color: Theme
+                            .of(context)
+                            .colorScheme
+                            .onPrimaryContainer,
+                        onClick: () {
+                          TransactionBottomSheet.showExpensesIconsBS(
+                              onIconClick: (index, category) {
+                                editController.onCategoryChange(category);
+                                Get.back();
+                              },
+                              onAddIconClick: (){},
+                              selectedColor: (_) => lightGrey,
+                              userCategories: snapshot.data ?? [],
+                          );
+                        },
                       );
-                    },
+                    }
                   ),
                   const SizedBox(height: 20,),
                   ClickableTextField(
