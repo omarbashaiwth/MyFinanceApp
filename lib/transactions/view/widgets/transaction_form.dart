@@ -178,6 +178,16 @@ class TransactionForm {
                   ),
                 ),
                 const SizedBox(height: 20),
+                CustomTextFormField(
+                  textFormKey: 'name',
+                  hint: 'اسم الدخل',
+                  leadingIcon: Icons.text_snippet_outlined,
+                  readOnly: false,
+                  onSaved: (newValue) {
+                    transaction.note = newValue;
+                  },
+                ),
+                const SizedBox(height: 20),
                 StreamBuilder(
                   stream: walletController.getWallets(),
                   builder: (_, snapshot) {
@@ -217,17 +227,6 @@ class TransactionForm {
                         transaction.createdAt!.microsecondsSinceEpoch)
                     ),
                     icon: 'assets/icons/calendar.png'
-                ),
-                const SizedBox(height: 20),
-                CustomTextFormField(
-                  isRequired: false,
-                  textFormKey: 'note',
-                  hint: 'ملاحظة (اختياري)',
-                  leadingIcon: Icons.text_snippet_outlined,
-                  readOnly: false,
-                  onSaved: (newValue) {
-                    transaction.note = newValue;
-                  },
                 ),
               ],
             ),

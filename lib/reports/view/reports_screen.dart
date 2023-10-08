@@ -28,11 +28,11 @@ class ReportsScreen extends StatelessWidget {
             style: AppTextTheme.appBarTitleTextStyle.copyWith(color: Theme.of(context).colorScheme.onSecondary),
           ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(8),
+        body: const Padding(
+          padding: EdgeInsets.all(8),
           child: SingleChildScrollView(
             child: Column(
-              children: const [
+              children: [
                 ExpensesReport(),
                 SizedBox(height: 18),
                 MonthlyReport()

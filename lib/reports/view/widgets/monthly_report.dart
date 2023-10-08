@@ -60,11 +60,11 @@ class MonthlyReport extends StatelessWidget {
                   (transactions != null && transactions.isNotEmpty)? Column(
                     children: [
                       SizedBox(height: 200, child: DrawBarChart(data: data)),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 18, bottom: 8),
+                      const Padding(
+                        padding: EdgeInsets.only(top: 18, bottom: 8),
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: const [
+                            children: [
                               InfoWidget(
                                   label: 'مجموع النفقات',
                                   color: Color(0xFFEF4A37),

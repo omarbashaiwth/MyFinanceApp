@@ -23,16 +23,16 @@ class DrawBarChart extends StatelessWidget {
             }),
         ),
         titlesData: FlTitlesData(
-            topTitles: AxisTitles(axisNameWidget: null),
+            topTitles: const AxisTitles(axisNameWidget: null),
             leftTitles: AxisTitles(
                 sideTitles: SideTitles(
-                  reservedSize: 30,
+                  reservedSize: 40,
               showTitles: true,
               getTitlesWidget: (value,meta) {
                     return Text(value == meta.max? '' : meta.formattedValue);
               }
             )),
-            rightTitles: AxisTitles(axisNameWidget: null),
+            rightTitles: const AxisTitles(axisNameWidget: null),
             bottomTitles: AxisTitles(
                 sideTitles: SideTitles(
               showTitles: true,
@@ -45,7 +45,7 @@ class DrawBarChart extends StatelessWidget {
               ),
             ))),
         borderData: FlBorderData(show: false),
-        gridData: FlGridData(drawVerticalLine: false),
+        gridData: const FlGridData(drawVerticalLine: false),
         barGroups: _buildBars(data: data)));
   }
 
