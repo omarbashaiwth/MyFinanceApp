@@ -6,11 +6,11 @@ class ClickableTextField extends StatelessWidget {
   final String text;
   final String icon;
   final Color color;
-  final Function onClick;
+  final Function()? onClick;
 
   const ClickableTextField(
       {Key? key,
-      required this.onClick,
+        this.onClick,
       required this.text,
       required this.icon,
         this.color = white})
@@ -19,7 +19,13 @@ class ClickableTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onClick(),
+      onTap: () {
+        if (onClick != null) {
+          onClick!();
+        }else{
+          {}
+        }
+      },
       child: Container(
           padding: const EdgeInsets.all(15),
           width: double.infinity,

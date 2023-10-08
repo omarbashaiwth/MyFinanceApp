@@ -236,7 +236,9 @@ class TransactionsScreen extends StatelessWidget {
                           transaction: transactions[index],
                           currency: currency,
                           onItemClicked: () {
-                            Get.to(() => EditTransactionScreen(transaction: transactions[index]));
+                            if(transactions[index].type == 'expense' || transactions[index].type == 'income'){
+                              Get.to(() => EditTransactionScreen(transaction: transactions[index]));
+                            }
                           },
                         ),
                         index != transactions.indexOf(transactions.last)

@@ -97,14 +97,15 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                     ),
                   ),
                   const SizedBox(height: 20,),
+                  widget.transaction.type == 'expense' ?
                   StreamBuilder(
                     stream: editController.getUserCategories(widget.transaction.userId!),
                     builder: (context, snapshot) {
                       return ClickableTextField(
                         text: editController.selectedCategory?.name ??
-                            widget.transaction.category!.name!,
+                            widget.transaction.category?.name?? widget.transaction.note!,
                         icon: editController.selectedCategory?.icon ??
-                            widget.transaction.category!.icon!,
+                            widget.transaction.category?.icon ?? "assets/icons/salary.png",
                         color: Theme
                             .of(context)
                             .colorScheme
@@ -122,6 +123,11 @@ class _EditTransactionScreenState extends State<EditTransactionScreen> {
                         },
                       );
                     }
+                  ): ClickableTextField(
+                      text: 'دخل',
+                      icon: "assets/icons/salary.png",
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      onClick: null,
                   ),
                   const SizedBox(height: 20,),
                   ClickableTextField(
