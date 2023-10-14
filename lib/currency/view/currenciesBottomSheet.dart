@@ -7,7 +7,6 @@ import 'currencies_list.dart';
 
 class CurrenciesBottomSheet {
   static show({
-    required double bottomSheetHeight,
     bool isDismissible = false,
     bool willPop = false,
     required Color backgroundColor,
@@ -16,7 +15,6 @@ class CurrenciesBottomSheet {
     Get.bottomSheet(WillPopScope(
       onWillPop: () async =>  willPop,
       child: Container(
-        height: bottomSheetHeight,
         decoration:  BoxDecoration(
             color: backgroundColor,
             borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))

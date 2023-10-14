@@ -16,23 +16,19 @@ class FirebaseAuthServices {
   static Future<void> emailPasswordAuth(
       {required Function(String) onTag,
       required Function onNavigateToHomeScreen,
-      required double screenHeight,
       required Color backgroundColor,
       required bool isLogin,
       required BuildContext context,
       required MyUser user,
-      required Function() onShowLoadingDialog,
-      required Function() onHideLoadingDialog}) async {
+      }) async {
     final currencyController =
         Provider.of<CurrencyController>(context, listen: false);
-    onShowLoadingDialog();
     try {
       if (isLogin) {
         final userCredential = await _auth.signInWithEmailAndPassword(
             email: user.email, password: user.password);
         final firebaseUser = userCredential.user;
         if (!firebaseUser!.emailVerified) {
-          onHideLoadingDialog();
           onTag('confirm verification');
         } else {
           final selectedCurrency = await currencyController.hasSelectedCurrency(
@@ -43,28 +39,28 @@ class FirebaseAuthServices {
           if (!selectedCurrency) {
             CurrenciesBottomSheet.show(
                 backgroundColor: backgroundColor,
-                bottomSheetHeight: screenHeight * 0.90,
                 onCurrencySelected: (currency) async {
                   await currencyController.saveCurrency(
                       firestore: _firestore,
                       user: firebaseUser,
                       currency: currency);
                   Get.back();
+                  onNavigateToHomeScreen();
                 });
           } else {
             onNavigateToHomeScreen();
           }
-          onHideLoadingDialog();
         }
       } else {
+        // onShowLoadingDialog();
         final userCredential = await _auth.createUserWithEmailAndPassword(
             email: user.email, password: user.password);
         if (userCredential.user != null) {
           await _sendEmailVerification(onMessage: (msg) => onTag(msg));
           await _auth.currentUser!.updateDisplayName(user.username);
-          onHideLoadingDialog();
+          debugPrint('Send Email:');
         } else {
-          onHideLoadingDialog();
+          debugPrint('Something Wrong:');
           onTag('حدث خطأ أثناء إنشاء الحساب');
         }
       }
@@ -81,11 +77,9 @@ class FirebaseAuthServices {
       } else if (e.code == 'wrong-password') {
         message = 'كلمة المرور خاطئة. الرجاء إدخال كلمة مرور صحيحة';
       }
-      onHideLoadingDialog();
       onTag(message);
       debugPrint('Firebase error: $message: ${e.message}');
     } catch (e) {
-      onHideLoadingDialog();
       onTag('Error: ${e.toString()}');
       debugPrint(e.toString());
     }
@@ -106,7 +100,6 @@ class FirebaseAuthServices {
       //show pick currency dialog
       CurrenciesBottomSheet.show(
           backgroundColor: backgroundColor,
-          bottomSheetHeight: screenHeight * 0.90,
           onCurrencySelected: (currency) async {
             await currencyController.saveCurrency(
                 firestore: _firestore, user: firebaseUser, currency: currency);

@@ -72,10 +72,6 @@ class AuthScreen extends StatelessWidget {
                           context: context,
                           user: provider.user,
                           isLogin: provider.isLogin,
-                          screenHeight: screenHeight,
-                          onShowLoadingDialog: () => Utils.showLoadingDialog(
-                              context, 'جاري التحقق من البيانات...'),
-                          onHideLoadingDialog: () => Utils.hideLoadingDialog(),
                           onTag: (String tag) async {
                             FirebaseAuthServices.showMessageToUser(
                                 auth: auth,

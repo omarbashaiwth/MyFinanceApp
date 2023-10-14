@@ -24,7 +24,6 @@ class CurrencyWidget extends StatelessWidget {
                   currency: currencyController.currency!,
                   onCurrencySelected: () {
                     CurrenciesBottomSheet.show(
-                        bottomSheetHeight: MediaQuery.of(ctx).size.height * 0.90,
                         isDismissible: true,
                         willPop: true,
                         backgroundColor: Theme.of(context).colorScheme.onBackground,
