@@ -55,7 +55,7 @@ class TransactionHistoryItem extends StatelessWidget {
                   amount: transaction.amount!,
                   currency: currency,
                   color: transaction.type == null? Theme.of(context).colorScheme.onPrimary :
-                      transaction.type == 'expense' ? Colors.red : Colors.green,
+                      (transaction.type == 'expense' || transaction.type == 'down') ? Colors.red : Colors.green,
                   fontWeight: FontWeight.normal,
                 ),
                 Text(

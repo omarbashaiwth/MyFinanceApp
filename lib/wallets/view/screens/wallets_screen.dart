@@ -146,7 +146,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
                                       amount: transferAmount,
                                       walletId: from.id!,
                                       createdAt: Timestamp.now(),
-                                      type: null,
+                                      type: 'down',
                                       note: "تحويل من ${from.name} الى ${to
                                           .name}",
                                       userId: auth.currentUser!.uid,
@@ -161,7 +161,7 @@ class _WalletsScreenState extends State<WalletsScreen> {
                                       amount: transferAmount,
                                       walletId: to.id!,
                                       createdAt: Timestamp.now(),
-                                      type: null,
+                                      type: 'up',
                                       note: "استقبال رصيد من ${from.name}",
                                       userId: auth.currentUser!.uid,
                                       category: Category(

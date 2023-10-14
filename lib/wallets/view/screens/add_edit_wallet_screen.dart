@@ -88,7 +88,7 @@ class _AddEditWalletScreenState extends State<AddEditWalletScreen> {
                         amount: newWallet.currentBalance,
                         walletId: id,
                         createdAt: Timestamp.now(),
-                        type: null,
+                        type: 'up',
                         note: newWallet.name,
                         userId: currentUser.uid,
                         category: Category(
