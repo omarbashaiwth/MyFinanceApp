@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/transactions/controller/transaction_controller.dart';
 import 'package:myfinance_app/transactions/model/category.dart';
@@ -118,7 +117,7 @@ class TransactionForm {
                       transactionController.onSelectedDateChange(Timestamp.fromDate(pickedDate!));
                     },
                     text: Utils.dateFormat(date: DateTime.fromMicrosecondsSinceEpoch(
-                        transaction.createdAt!.microsecondsSinceEpoch),
+                        transactionController.selectedDate.microsecondsSinceEpoch),
                     ),
                     icon: 'assets/icons/calendar.png'
                 ),

@@ -87,6 +87,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   var _selectedIndex = 0;
   var _isFabVisible = true;
   late AnimationController _hideBottomBarAnimationController;
+  final tutTargetsKeys = [
+    GlobalKey(),
+    GlobalKey(),
+    GlobalKey(),
+  ];
 
   bool onScrollNotification(ScrollNotification notification) {
     if (notification is UserScrollNotification &&
@@ -124,16 +129,21 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness:
-          Theme.of(Get.context!).brightness == Brightness.light
-              ? Brightness.light
-              : Brightness.dark,
-    ));
-
+    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    //   statusBarColor: Colors.transparent,
+    //   statusBarIconBrightness:
+    //       Theme.of(context).brightness == Brightness.light
+    //           ? Brightness.light
+    //           : Brightness.dark,
+    // ));
     final bottomNanScreens = [
-      const TransactionsScreen(),
+      TransactionsScreen(
+        tutTargetsKeys: tutTargetsKeys ,
+        onNavigateToWalletScreen: (){
+          setState(() => _selectedIndex = 1);
+          Get.to(() => const AddEditWalletScreen());
+        },
+      ),
       const WalletsScreen()
     ];
     return Directionality(
@@ -148,6 +158,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     duration: const Duration(milliseconds: 500),
                     height: _isFabVisible ? 60.0 : 0.0,
                     child: FloatingActionButton(
+                      key: tutTargetsKeys[2],
                       backgroundColor: orangeyRed,
                       onPressed: () {
                         Get.to(() => _selectedIndex == 0
@@ -168,8 +179,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             builder: (context, snapshot) {
               if (snapshot.hasData && snapshot.data!.emailVerified) {
                 return AnimatedBottomNavigationBar.builder(
-                  backgroundColor:
-                      Theme.of(context).colorScheme.onPrimaryContainer,
+                  backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
                   itemCount: 2,
                   tabBuilder: (index, isActive) {
                     return Column(
@@ -180,6 +190,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                               ? Icons.cached_sharp
                               : Icons.account_balance_wallet_outlined,
                           size: 24,
+                          key: tutTargetsKeys[index],
                           color: isActive ? orangeyRed : lightGrey,
                         ),
                         const SizedBox(height: 4),

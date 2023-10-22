@@ -1,7 +1,7 @@
+import 'dart:ui';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:myfinance_app/core/ui/theme.dart';
 import 'package:myfinance_app/core/utils/utils.dart';
 import 'package:myfinance_app/core/widgets/empty_widget.dart';
@@ -15,13 +15,37 @@ import 'package:myfinance_app/transactions/view/widgets/centered_header.dart';
 import 'package:provider/provider.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
+import '../../../core/widgets/tutorial_targets.dart';
 import '../../../currency/controller/currency_controller.dart';
 import '../../model/transaction.dart' as my_transaction;
 import '../widgets/custom_card.dart';
 import '../widgets/transaction_history_item.dart';
 
-class TransactionsScreen extends StatelessWidget {
-  const TransactionsScreen({Key? key}) : super(key: key);
+class TransactionsScreen extends StatefulWidget {
+  final List<GlobalKey> tutTargetsKeys;
+  final Function onNavigateToWalletScreen;
+  const TransactionsScreen({Key? key, required this.tutTargetsKeys, required this.onNavigateToWalletScreen}) : super(key: key);
+
+  @override
+  State<TransactionsScreen> createState() => _TransactionsScreenState();
+}
+
+class _TransactionsScreenState extends State<TransactionsScreen> {
+
+  late TutorialCoachMark tutorialCoachMark;
+
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () async {
+      final prefs = await SharedPreferences.getInstance();
+      if (prefs.getBool('tutorial') ?? true) {
+        createTutorial(prefs, widget.tutTargetsKeys);
+        showTutorial();
+      }
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +56,6 @@ class TransactionsScreen extends StatelessWidget {
     final firestore = FirebaseFirestore.instance;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark));
     return SafeArea(
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.background,
@@ -249,5 +270,25 @@ class TransactionsScreen extends StatelessWidget {
                   },
                 )
         ]));
+  }
+
+  void showTutorial() {
+    tutorialCoachMark.show(context: context);
+  }
+
+  void createTutorial(SharedPreferences prefs, List<GlobalKey> keys) {
+    tutorialCoachMark = TutorialCoachMark(
+      targets: TutorialTargets.createTargets(keys),
+      hideSkip: true,
+      colorShadow: Colors.grey[600]!,
+      opacityShadow: 0.4,
+      imageFilter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+      onFinish: () => prefs.setBool('tutorial', false),
+      onClickTarget: (target) {
+        if(target.identify == 'tut_target_3'){
+          widget.onNavigateToWalletScreen();
+        }
+      },
+    );
   }
 }
