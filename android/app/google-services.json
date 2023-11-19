@@ -22,7 +22,7 @@
           }
         },
         {
-          "client_id": "387081524028-6org7k3aiefbemlf9ph17pa8u22skof1.apps.googleusercontent.com",
+          "client_id": "387081524028-qqm23cu0cf8pseb7162rckijmntd5d29.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -37,6 +37,13 @@
             {
               "client_id": "387081524028-6org7k3aiefbemlf9ph17pa8u22skof1.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "387081524028-vuuiqc87ajgqh56hf7l9qqkcn77abgik.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.omarbashaiwth.myfinanceApp"
+              }
             }
           ]
         }
