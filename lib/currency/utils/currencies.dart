@@ -469,6 +469,12 @@ List<Map<String, dynamic>> currencies = [
     "flag": "MKD",
   },
   {
+    "code": "LYD",
+    "name": "الدينار الليبي",
+    "symbol": "ل.د",
+    "flag": "LY"
+  },
+  {
     "code": "MWK",
     "name": "الكواشا الملاوية",
     "symbol": "MK",
